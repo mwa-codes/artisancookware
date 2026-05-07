@@ -115,6 +115,7 @@ export async function createProductAction(_: ProductActionState, formData: FormD
     const priceValue = parseNumber(formData.get("priceValue"));
     const factoryPriceValue = parseNumber(formData.get("factoryPriceValue"));
     const fobPriceValue = parseNumber(formData.get("fobPriceValue"));
+    const isFeatured = String(formData.get("isFeatured") ?? "") === "on";
     const imageFile = formData.get("image") as File | null;
 
     if (!name || !categoryId) {
@@ -142,6 +143,7 @@ export async function createProductAction(_: ProductActionState, formData: FormD
         price_value: priceValue,
         factory_price_value: factoryPriceValue ?? (priceType === "Factory" ? priceValue : null),
         fob_price_value: fobPriceValue ?? (priceType === "FOB" ? priceValue : null),
+        is_featured: isFeatured,
         image_url: imageUrl
     });
 
@@ -170,6 +172,7 @@ export async function updateProductAction(_: ProductActionState, formData: FormD
     const priceValue = parseNumber(formData.get("priceValue"));
     const factoryPriceValue = parseNumber(formData.get("factoryPriceValue"));
     const fobPriceValue = parseNumber(formData.get("fobPriceValue"));
+    const isFeatured = String(formData.get("isFeatured") ?? "") === "on";
     const imageFile = formData.get("image") as File | null;
 
     if (!id || !name || !categoryId) {
@@ -196,7 +199,8 @@ export async function updateProductAction(_: ProductActionState, formData: FormD
         price_type: priceType,
         price_value: priceValue,
         factory_price_value: factoryPriceValue ?? (priceType === "Factory" ? priceValue : null),
-        fob_price_value: fobPriceValue ?? (priceType === "FOB" ? priceValue : null)
+        fob_price_value: fobPriceValue ?? (priceType === "FOB" ? priceValue : null),
+        is_featured: isFeatured
     };
 
     if (typeof imageUrl !== "undefined") {

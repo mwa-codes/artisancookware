@@ -20,8 +20,9 @@ export default async function AdminProductsPage() {
         supabase
             .from("products")
             .select(
-                "id, name, description, sizes, features, category_id, price_type, price_value, factory_price_value, fob_price_value, image_url, created_at, category:categories(id, name)"
+                "id, name, description, sizes, features, category_id, price_type, price_value, factory_price_value, fob_price_value, is_featured, image_url, created_at, category:categories(id, name)"
             )
+            .order("is_featured", { ascending: false })
             .order("created_at", { ascending: false })
     ]);
 
@@ -42,6 +43,7 @@ export default async function AdminProductsPage() {
         price_value: product.price_value,
         factory_price_value: product.factory_price_value,
         fob_price_value: product.fob_price_value,
+        is_featured: Boolean(product.is_featured),
         image_url: product.image_url,
         created_at: product.created_at
     }));

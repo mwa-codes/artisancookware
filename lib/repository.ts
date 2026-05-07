@@ -23,6 +23,7 @@ type SupabaseProductRow = {
     price_value: number | null;
     factory_price_value?: number | null;
     fob_price_value?: number | null;
+    is_featured?: boolean | null;
 };
 
 type SupabaseVariantRow = {
@@ -176,8 +177,9 @@ export const getFeaturedProducts = cache(async (limit: number = 3): Promise<Prod
         const { data, error } = await client
             .from("products")
             .select(
-                "id, category_id, name, description, sizes, features, specifications, image_url, price_type, price_value, factory_price_value, fob_price_value"
+                "id, category_id, name, description, sizes, features, specifications, image_url, price_type, price_value, factory_price_value, fob_price_value, is_featured"
             )
+            .order("is_featured", { ascending: false })
             .order("created_at", { ascending: false })
             .limit(take);
 
@@ -230,6 +232,7 @@ export const getFeaturedProducts = cache(async (limit: number = 3): Promise<Prod
                         product.factory_price_value ?? (product.price_type === "Factory" ? product.price_value ?? null : null),
                     fobPriceValue:
                         product.fob_price_value ?? (product.price_type === "FOB" ? product.price_value ?? null : null),
+                    isFeatured: Boolean(product.is_featured),
                     category: category ?? undefined
                 },
                 variantPool
@@ -275,9 +278,10 @@ export const getProductsByCategorySlug = cache(async (slug: string): Promise<Pro
         const { data, error } = await client
             .from("products")
             .select(
-                "id, category_id, name, description, sizes, features, specifications, image_url, price_type, price_value, factory_price_value, fob_price_value"
+                "id, category_id, name, description, sizes, features, specifications, image_url, price_type, price_value, factory_price_value, fob_price_value, is_featured"
             )
             .eq("category_id", category.id)
+            .order("is_featured", { ascending: false })
             .order("name");
 
         if (error) {
@@ -336,6 +340,7 @@ export const getProductsByCategorySlug = cache(async (slug: string): Promise<Pro
                         product.factory_price_value ?? (product.price_type === "Factory" ? product.price_value ?? null : null),
                     fobPriceValue:
                         product.fob_price_value ?? (product.price_type === "FOB" ? product.price_value ?? null : null),
+                    isFeatured: Boolean(product.is_featured),
                     category
                 },
                 variantPool
@@ -380,7 +385,7 @@ export const getProductById = cache(async (id: string): Promise<ProductWithRelat
         const { data, error } = await client
             .from("products")
             .select(
-                "id, category_id, name, description, sizes, features, specifications, image_url, price_type, price_value, factory_price_value, fob_price_value"
+                "id, category_id, name, description, sizes, features, specifications, image_url, price_type, price_value, factory_price_value, fob_price_value, is_featured"
             )
             .eq("id", id)
             .maybeSingle();
@@ -440,6 +445,7 @@ export const getProductById = cache(async (id: string): Promise<ProductWithRelat
                 priceValue: data.price_value ?? null,
                 factoryPriceValue: data.factory_price_value ?? (data.price_type === "Factory" ? data.price_value ?? null : null),
                 fobPriceValue: data.fob_price_value ?? (data.price_type === "FOB" ? data.price_value ?? null : null),
+                isFeatured: Boolean(data.is_featured),
                 category
             },
             variantPool

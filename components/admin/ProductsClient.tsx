@@ -22,6 +22,7 @@ export type AdminProduct = {
     price_value: number | null;
     factory_price_value: number | null;
     fob_price_value: number | null;
+    is_featured: boolean;
     image_url: string | null;
     created_at: string;
 };
@@ -104,6 +105,18 @@ function ProductModal({ open, onClose, product, categories }: ProductModalProps)
                             ))}
                         </select>
                     </div>
+                </div>
+                <div className="rounded-2xl border border-brand-primary/20 bg-brand-light/20 px-4 py-3">
+                    <label className="inline-flex items-center gap-3 text-sm font-medium text-slate-700" htmlFor="product-featured">
+                        <input
+                            id="product-featured"
+                            name="isFeatured"
+                            type="checkbox"
+                            defaultChecked={product?.is_featured ?? false}
+                            className="h-4 w-4 rounded border-brand-primary/40 text-brand-primary focus:ring-brand-primary/30"
+                        />
+                        Feature this product in homepage slider
+                    </label>
                 </div>
                 <div className="space-y-2">
                     <label className="text-sm font-medium text-slate-700" htmlFor="product-description">
@@ -304,6 +317,7 @@ export function ProductsClient({ products, categories }: { products: AdminProduc
     const [modalProduct, setModalProduct] = useState<AdminProduct | null>(null);
     const [deleteProduct, setDeleteProduct] = useState<AdminProduct | null>(null);
     const [showCreate, setShowCreate] = useState(false);
+    const featuredCount = products.filter((product) => product.is_featured).length;
 
     const filtered = useMemo(() => {
         const keyword = search.trim().toLowerCase();
@@ -328,6 +342,9 @@ export function ProductsClient({ products, categories }: { products: AdminProduc
                 <div>
                     <h1 className="font-heading text-2xl font-semibold text-slate-900">Products</h1>
                     <p className="text-sm text-slate-600">Manage the Artisan Cookware product catalogue and pricing.</p>
+                </div>
+                <div className="rounded-full border border-brand-primary/25 bg-brand-light/40 px-4 py-2 text-xs font-semibold uppercase tracking-[0.2em] text-brand-dark">
+                    Featured {featuredCount}/4
                 </div>
                 <button
                     type="button"
@@ -382,7 +399,14 @@ export function ProductsClient({ products, categories }: { products: AdminProduc
                                                 </div>
                                             )}
                                             <div>
-                                                <p className="font-semibold text-slate-900">{product.name}</p>
+                                                <p className="font-semibold text-slate-900">
+                                                    {product.name}
+                                                    {product.is_featured ? (
+                                                        <span className="ml-2 rounded-full bg-brand-primary/10 px-2 py-0.5 text-[10px] font-bold uppercase tracking-[0.2em] text-brand-primary">
+                                                            Featured
+                                                        </span>
+                                                    ) : null}
+                                                </p>
                                                 <p className="text-xs text-slate-500 line-clamp-2">{product.description ?? "No description"}</p>
                                             </div>
                                         </div>

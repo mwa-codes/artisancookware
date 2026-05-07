@@ -18,6 +18,7 @@ export type Product = {
     priceValue: number | null;
     factoryPriceValue?: number | null;
     fobPriceValue?: number | null;
+    isFeatured?: boolean;
 };
 
 export type ProductSpecification = {
