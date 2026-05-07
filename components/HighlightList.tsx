@@ -9,8 +9,8 @@ export function HighlightList({ items }: HighlightListProps) {
     return (
         <ul className="space-y-3">
             {items.map((item) => (
-                <li key={item} className="flex items-start gap-3 text-sm text-slate-700">
-                    <CheckCircle className="mt-0.5 h-5 w-5 text-emerald-500" />
+                <li key={item} className="flex items-start gap-3 text-sm text-[color:rgba(13,13,13,0.75)]">
+                    <CheckCircle className="mt-0.5 h-5 w-5 text-gold" />
                     <span>{item}</span>
                 </li>
             ))}

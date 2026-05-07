@@ -1,57 +1,39 @@
 import Link from "next/link";
-import { ArrowRight, ChefHat } from "lucide-react";
+import Image from "next/image";
 import type { Category } from "@/lib/types";
-import { slugify } from "@/lib/utils";
 
-type CategoryCardProps = {
-    category: Category;
-};
+const FALLBACK =
+    "https://images.unsplash.com/photo-1589307004390-97eb644ed3f2?auto=format&fit=crop&w=1200&q=80";
 
-export function CategoryCard({ category }: CategoryCardProps) {
-    const href = `/categories/${category.slug ?? slugify(category.name)}`;
+export function CategoryCard({ category, productCount }: { category: Category; productCount?: number }) {
+    const img = category.imageUrl?.trim() || FALLBACK;
 
     return (
         <Link
-            href={href}
-            className="group relative flex h-full flex-col overflow-hidden rounded-2xl border border-gray-200 bg-white p-8 shadow-card backdrop-blur transition-all duration-500 hover:-translate-y-2 hover:border-brand-red/20 hover:shadow-card-hover"
-            aria-label={`View the ${category.name} collection`}
+            href={`/categories/${category.slug}`}
+            className="group relative block aspect-[3/4] overflow-hidden bg-ink"
+            aria-label={`View ${category.name} collection`}
         >
-            {/* Premium Background Effects */}
-            <div className="absolute inset-0 bg-gradient-to-br from-brand-red/5 via-transparent to-brand-gold/5 opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-            <div className="absolute -right-16 -top-20 h-40 w-40 rounded-full bg-gradient-to-br from-brand-gold/20 to-transparent blur-3xl transition-transform duration-500 group-hover:scale-125" />
+            <Image
+                src={img}
+                alt={category.name}
+                fill
+                className="object-cover transition-transform duration-500 group-hover:scale-[1.06]"
+                sizes="(min-width: 1280px) 25vw, 40vw"
+                unoptimized={img.startsWith("http")}
+            />
+            <div className="absolute inset-0 bg-gradient-to-t from-[rgba(13,13,13,0.85)] via-[rgba(13,13,13,0.35)] to-transparent" />
 
-            <div className="relative flex flex-col gap-6">
-                {/* Header Section */}
-                <div className="flex items-start justify-between gap-4">
-                    <div className="space-y-3">
-                        {/* Category Badge */}
-                        <span className="inline-flex items-center gap-2 rounded-full border border-brand-red/20 bg-brand-red/5 px-4 py-1.5 text-[10px] font-bold uppercase tracking-[0.25em] text-brand-red shadow-sm">
-                            <ChefHat className="h-3.5 w-3.5" /> Premium collection
-                        </span>
-                        {/* Category Name */}
-                        <h3 className="heading-card text-2xl transition-colors group-hover:text-brand-red">
-                            {category.name}
-                        </h3>
-                        {/* Description */}
-                        <p className="text-sm leading-relaxed text-text-body line-clamp-3">
-                            {category.description ?? "Discover premium cookware engineered for professional kitchens and discerning home chefs."}
-                        </p>
-                    </div>
-                    {/* Brand Icon */}
-                    <span className="grid h-12 w-12 flex-shrink-0 place-items-center rounded-xl border border-brand-red/20 bg-gradient-to-br from-white to-gray-50 text-sm font-bold text-brand-red shadow-sm transition-all duration-300 group-hover:scale-110 group-hover:border-brand-red group-hover:from-brand-red group-hover:to-brand-red-hover group-hover:text-white">
-                        AC
-                    </span>
-                </div>
-
-                {/* CTA Footer */}
-                <div className="mt-auto flex items-center justify-between rounded-xl border border-gray-200 bg-gray-50 px-4 py-3 transition-all group-hover:border-brand-red/30 group-hover:bg-white">
-                    <span className="text-xs font-bold uppercase tracking-[0.3em] text-text-muted transition-colors group-hover:text-brand-red">
-                        View collection
-                    </span>
-                    <span className="grid h-10 w-10 place-items-center rounded-full bg-brand-red text-white shadow-sm transition-all group-hover:bg-brand-gold group-hover:shadow-md">
-                        <ArrowRight className="h-4 w-4 transition-transform group-hover:translate-x-0.5" />
-                    </span>
-                </div>
+            <div className="absolute inset-x-0 bottom-0 p-6">
+                <p className="font-heading text-xl text-white">{category.name}</p>
+                {typeof productCount === "number" ? (
+                    <p className="mt-2 inline-block rounded-[2px] bg-white/10 px-2 py-1 font-mono text-[11px] text-white/90 backdrop-blur-sm">
+                        {productCount} {productCount === 1 ? "product" : "products"}
+                    </p>
+                ) : null}
+                <span className="mt-4 inline-block text-[13px] text-[rgba(255,255,255,0.5)] transition-colors group-hover:text-gold">
+                    Explore →
+                </span>
             </div>
         </Link>
     );

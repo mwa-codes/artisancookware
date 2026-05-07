@@ -15,7 +15,7 @@ export function VariantSelector({ variants, selectedVariantId, onSelect }: Varia
 
     return (
         <div className="space-y-3">
-            <p className="text-sm font-medium text-slate-700">Available colors</p>
+            <p className="text-[12px] font-semibold uppercase tracking-[0.08em] text-ink-60">Available finishes</p>
             <div className="flex flex-wrap gap-3">
                 {variants.map((variant) => {
                     const isActive = variant.id === selectedVariantId;
@@ -27,13 +27,13 @@ export function VariantSelector({ variants, selectedVariantId, onSelect }: Varia
                             onClick={() => onSelect(variant)}
                             aria-pressed={isActive}
                             className={cn(
-                                "group flex items-center gap-3 rounded-full border px-3 py-2 text-sm font-medium transition focus:outline-none focus:ring-2 focus:ring-brand-primary/70",
+                                "group flex items-center gap-3 rounded-[2px] border px-3 py-2 text-sm font-medium transition focus:outline-none focus:ring-1 focus:ring-ink",
                                 isActive
-                                    ? "border-brand-primary bg-brand-light text-brand-primary shadow-sm"
-                                    : "border-slate-200 text-slate-600 hover:border-brand-primary/40 hover:text-brand-primary"
+                                    ? "border-ink bg-parchment text-ink shadow-card"
+                                    : "border-ink-20 text-ink-60 hover:border-ink hover:text-ink"
                             )}
                         >
-                            <span className="relative h-10 w-10 overflow-hidden rounded-full border border-white/60 bg-slate-200 shadow">
+                            <span className="relative h-10 w-10 overflow-hidden rounded-[2px] border border-ink-20 bg-parchment shadow-sm">
                                 {variant.imageUrl ? (
                                     <Image
                                         src={variant.imageUrl}
@@ -43,7 +43,7 @@ export function VariantSelector({ variants, selectedVariantId, onSelect }: Varia
                                         className="object-cover"
                                     />
                                 ) : (
-                                    <span className="flex h-full w-full items-center justify-center text-xs uppercase text-slate-600">
+                                    <span className="flex h-full w-full items-center justify-center text-xs uppercase text-ink-60">
                                         {variant.colorName.slice(0, 2)}
                                     </span>
                                 )}

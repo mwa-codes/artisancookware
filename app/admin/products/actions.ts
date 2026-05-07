@@ -6,6 +6,7 @@ import { Buffer } from "node:buffer";
 import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { ADMIN_EMAIL } from "@/lib/constants";
+import { slugify } from "@/lib/utils";
 import { getSupabaseSession } from "@/lib/supabaseServer";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 
@@ -31,6 +32,7 @@ function revalidateProductRoutes() {
     revalidatePath("/admin/variants");
     revalidatePath("/");
     revalidatePath("/categories");
+    revalidatePath("/products");
 }
 
 async function uploadImage(file: File | null, bucket: string) {
@@ -133,8 +135,11 @@ export async function createProductAction(_: ProductActionState, formData: FormD
         imageUrl = uploadResult.publicUrl;
     }
 
+    const slug = `${slugify(name)}-${randomUUID().slice(0, 6)}`;
+
     const { error } = await supabase.from("products").insert({
         name,
+        slug,
         description,
         sizes,
         features,
@@ -144,7 +149,11 @@ export async function createProductAction(_: ProductActionState, formData: FormD
         factory_price_value: factoryPriceValue ?? (priceType === "Factory" ? priceValue : null),
         fob_price_value: fobPriceValue ?? (priceType === "FOB" ? priceValue : null),
         is_featured: isFeatured,
-        image_url: imageUrl
+        image_url: imageUrl,
+        moq: 50,
+        lead_time_weeks: 4,
+        status: "active",
+        oem_available: false
     });
 
     if (error) {
@@ -215,7 +224,7 @@ export async function updateProductAction(_: ProductActionState, formData: FormD
     }
 
     revalidateProductRoutes();
-    revalidatePath(`/products/${id}`);
+    revalidatePath(`/products`);
     return { success: true };
 }
 
@@ -240,6 +249,6 @@ export async function deleteProductAction(_: ProductActionState, formData: FormD
     }
 
     revalidateProductRoutes();
-    revalidatePath(`/products/${id}`);
+    revalidatePath(`/products`);
     return { success: true };
 }

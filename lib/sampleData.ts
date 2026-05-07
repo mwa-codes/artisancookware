@@ -1,30 +1,54 @@
 import { slugify } from "@/lib/utils";
 import type { Category, Product, ProductVariant } from "@/lib/types";
 
+function productSlug(name: string, id: string): string {
+    return `${slugify(name)}-${id.replace(/-/g, "").slice(0, 6)}`.toLowerCase();
+}
+
+function usdFromPkr(pkr: number | null | undefined): number | null {
+    if (pkr == null || !Number.isFinite(pkr)) return null;
+    return Math.round((pkr / 278) * 100) / 100;
+}
+
+const unsplash = (id: string) =>
+    `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1200&q=80`;
+
 export const categories: Category[] = [
     {
         id: "9ab4f474-3f19-4bf6-8465-63683bcab9d1",
         name: "Anodised/Dull",
         description: "Durable anodised cookware with a timeless matte finish, ideal for heavy duty kitchens.",
-        slug: "anodised-dull"
+        slug: "anodised-dull",
+        imageUrl: unsplash("photo-1506368249639-73a05d6f6488"),
+        displayOrder: 1,
+        isFeatured: true
     },
     {
         id: "0d83e4cf-5014-4909-9e66-7bda83ed17f7",
         name: "Metal Finish",
         description: "Polished metal cookware that shines in presentation and performance.",
-        slug: "metal-finish"
+        slug: "metal-finish",
+        imageUrl: unsplash("photo-1589307004390-97eb644ed3f2"),
+        displayOrder: 2,
+        isFeatured: true
     },
     {
         id: "ad21925e-7b3d-4c28-8c4f-cc6f4ef67663",
         name: "Non-Stick",
         description: "Modern non-stick collections designed for low-fat, effortless cooking.",
-        slug: "non-stick"
+        slug: "non-stick",
+        imageUrl: unsplash("photo-1516912481808-3406841bd33c"),
+        displayOrder: 3,
+        isFeatured: true
     },
     {
         id: "2e89714d-0bf4-4e37-8f9e-dd2a44596c11",
         name: "Soda Finish",
         description: "Classic soda-finish cookware celebrated for its distinctive texture.",
-        slug: "soda-finish"
+        slug: "soda-finish",
+        imageUrl: unsplash("photo-1556910096-6f5e72db6803"),
+        displayOrder: 4,
+        isFeatured: true
     }
 ];
 
@@ -32,6 +56,7 @@ export const products: Product[] = [
     {
         id: "8c4c668c-0be3-47c5-9453-51f63f923c2a",
         categoryId: categories[1].id,
+        slug: productSlug("15-Piece Metal Finish Gift Set", "8c4c668c-0be3-47c5-9453-51f63f923c2a"),
         name: "15-Piece Metal Finish Gift Set",
         description:
             "Complete cookware bundle with polished metal finish, ideal for gifting and outfitting kitchens in one go.",
@@ -53,11 +78,19 @@ export const products: Product[] = [
         priceType: "Factory",
         priceValue: 5400,
         factoryPriceValue: 5400,
-        fobPriceValue: 6100
+        fobPriceValue: 6100,
+        factoryPriceUsd: usdFromPkr(5400),
+        fobPriceUsd: usdFromPkr(6100),
+        moq: 50,
+        oemAvailable: true,
+        leadTimeWeeks: 4,
+        status: "active",
+        isFeatured: true
     },
     {
         id: "0f735b0b-d93c-4c56-8a16-1dc2812f6a0a",
         categoryId: categories[2].id,
+        slug: productSlug("18-Piece Non-Stick Gift Set", "0f735b0b-d93c-4c56-8a16-1dc2812f6a0a"),
         name: "18-Piece Non-Stick Gift Set",
         description:
             "Versatile non-stick set tailored for modern kitchens with multiple colorways to match your style.",
@@ -79,11 +112,19 @@ export const products: Product[] = [
         priceType: "Factory",
         priceValue: 6200,
         factoryPriceValue: 6200,
-        fobPriceValue: 6900
+        fobPriceValue: 6900,
+        factoryPriceUsd: usdFromPkr(6200),
+        fobPriceUsd: usdFromPkr(6900),
+        moq: 50,
+        oemAvailable: false,
+        leadTimeWeeks: 4,
+        status: "active",
+        isFeatured: true
     },
     {
         id: "8dc1d98f-9168-4a5b-8fd7-b9cd680b7f7c",
         categoryId: categories[0].id,
+        slug: productSlug("Dull/Anodised Cooking Set", "8dc1d98f-9168-4a5b-8fd7-b9cd680b7f7c"),
         name: "Dull/Anodised Cooking Set",
         description:
             "Hard-anodised cookware built to endure intensive commercial and home kitchen use.",
@@ -104,11 +145,19 @@ export const products: Product[] = [
         priceType: "Factory",
         priceValue: 4800,
         factoryPriceValue: 4800,
-        fobPriceValue: 5400
+        fobPriceValue: 5400,
+        factoryPriceUsd: usdFromPkr(4800),
+        fobPriceUsd: usdFromPkr(5400),
+        moq: 50,
+        oemAvailable: true,
+        leadTimeWeeks: 4,
+        status: "active",
+        isFeatured: true
     },
     {
         id: "aba9a069-7938-4b82-9d14-d58a1d8f5c31",
         categoryId: categories[1].id,
+        slug: productSlug("Metal Finish Wok Set", "aba9a069-7938-4b82-9d14-d58a1d8f5c31"),
         name: "Metal Finish Wok Set",
         description:
             "Heavy-duty wok series crafted for traditional Pakistani recipes and high-heat cooking.",
@@ -128,7 +177,14 @@ export const products: Product[] = [
         priceType: "Factory",
         priceValue: 5100,
         factoryPriceValue: 5100,
-        fobPriceValue: 5800
+        fobPriceValue: 5800,
+        factoryPriceUsd: usdFromPkr(5100),
+        fobPriceUsd: usdFromPkr(5800),
+        moq: 50,
+        oemAvailable: false,
+        leadTimeWeeks: 4,
+        status: "active",
+        isFeatured: false
     }
 ];
 

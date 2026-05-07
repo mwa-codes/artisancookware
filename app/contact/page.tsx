@@ -1,59 +1,67 @@
-import { SectionHeading } from "@/components/SectionHeading";
-import { InquiryForm } from "@/components/InquiryForm";
+import { InquirySection } from "@/components/InquirySection";
+import { getAllProductsForListing } from "@/lib/repository";
 
 export const metadata = {
-    title: "Contact Artisan Cookware",
-    description: "Connect with Artisan Cookware for wholesale, export, and OEM cookware inquiries."
+    title: "Contact | Artisan Cookware",
+    description: "Reach our export desk for wholesale pricing, sampling, and shipping terms."
 };
 
-export default function ContactPage() {
-    const whatsappLink = `https://wa.me/${process.env.NEXT_PUBLIC_WHATSAPP_NUMBER ?? "923001234567"}`;
+export default async function ContactPage() {
+    const catalogue = await getAllProductsForListing();
+    const productOptions = catalogue.map((p) => ({ id: p.id, label: p.name }));
 
     return (
-        <div className="container-grid space-y-14 py-16">
-            <SectionHeading
-                eyebrow="Contact"
-                title="Let's craft cookware that elevates your brand"
-                description="Share your requirements, order volumes, or export plans. Our team will respond within one business day."
-                align="center"
-            />
-
-            <div className="grid gap-12 lg:grid-cols-[1.2fr,1fr]">
-                <div className="space-y-6 rounded-3xl border border-slate-200 bg-white p-8 shadow-sm">
-                    <h2 className="font-heading text-2xl font-semibold text-slate-900">Send an inquiry</h2>
-                    <InquiryForm />
+        <div className="bg-white">
+            <header className="border-b border-ink-20 bg-parchment">
+                <div className="container-site py-14 sm:py-16">
+                    <h1 className="font-heading text-display font-light text-ink">Contact</h1>
+                    <p className="mt-6 max-w-2xl text-[15px] font-light leading-relaxed text-[color:rgba(13,13,13,0.6)]">
+                        WhatsApp, email, or the wholesale form — choose what&apos;s fastest for your team.
+                    </p>
                 </div>
-                <div className="space-y-6 rounded-3xl border border-slate-200 bg-slate-50 p-8">
-                    <h3 className="font-heading text-xl font-semibold text-slate-900">Reach us directly</h3>
-                    <ul className="space-y-4 text-sm text-slate-700">
-                        <li>
-                            <span className="font-semibold text-slate-900">Location:</span> Gujranwala, Punjab, Pakistan
-                        </li>
-                        <li>
-                            <span className="font-semibold text-slate-900">WhatsApp:</span>{" "}
-                            <a href={whatsappLink} target="_blank" rel="noopener noreferrer" className="text-brand-primary">
-                                {whatsappLink}
+            </header>
+
+            <section className="container-site py-14 lg:py-20">
+                <div className="grid gap-10 lg:grid-cols-2 lg:gap-14">
+                    <div className="space-y-6">
+                        <div className="rounded-[4px] border border-ink-20 bg-white p-6">
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">WhatsApp</p>
+                            <a href="https://wa.me/923016636557" className="mt-2 block text-lg text-ink hover:text-brand-red">
+                                +92 301 6636557
                             </a>
-                        </li>
-                        <li>
-                            <span className="font-semibold text-slate-900">Email:</span>{" "}
-                            <a href="mailto:info@artisancookware.com" className="text-brand-primary">
-                                info@artisancookware.com
+                        </div>
+                        <div className="rounded-[4px] border border-ink-20 bg-white p-6">
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">Email</p>
+                            <a href="mailto:m.waqar.ahmed@gmail.com" className="mt-2 block text-lg text-ink hover:text-brand-red">
+                                m.waqar.ahmed@gmail.com
                             </a>
-                        </li>
-                        <li>
-                            <span className="font-semibold text-slate-900">Phone:</span> +92 (300) 123 4567
-                        </li>
-                    </ul>
-                    <div className="rounded-2xl border border-dashed border-brand-primary/40 bg-brand-light/40 p-6 text-sm text-slate-600">
-                        <p className="font-semibold text-slate-900">Factory tours & OEM consultations</p>
-                        <p className="mt-2">
-                            Book an appointment to review our production line, coatings lab, and packaging facilities. We welcome retailer and
-                            export partners.
+                        </div>
+                        <div className="rounded-[4px] border border-ink-20 bg-white p-6">
+                            <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">Address</p>
+                            <p className="mt-2 text-[15px] font-light leading-relaxed text-[color:rgba(13,13,13,0.65)]">
+                                Industrial Estate, Gujranwala, Punjab, Pakistan
+                            </p>
+                        </div>
+                        <div className="relative aspect-video overflow-hidden rounded-[4px] border border-ink-20">
+                            <iframe
+                                title="Gujranwala map"
+                                className="absolute inset-0 h-full w-full"
+                                loading="lazy"
+                                referrerPolicy="no-referrer-when-downgrade"
+                                src="https://www.google.com/maps?q=Gujranwala%20Pakistan&output=embed"
+                            />
+                        </div>
+                    </div>
+
+                    <div>
+                        <p className="rounded-[4px] border border-ink-20 bg-parchment px-4 py-3 text-[13px] text-ink-60">
+                            Export inquiry? Use our wholesale form — include quantities, destination port, and packaging needs.
                         </p>
                     </div>
                 </div>
-            </div>
+            </section>
+
+            <InquirySection productOptions={productOptions} />
         </div>
     );
 }

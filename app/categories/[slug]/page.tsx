@@ -1,6 +1,5 @@
 import { notFound } from "next/navigation";
-import { SectionHeading } from "@/components/SectionHeading";
-import { ProductCard } from "@/components/ProductCard";
+import { CategoryProducts } from "@/components/CategoryProducts";
 import { getCategoryBySlug, getProductsByCategorySlug } from "@/lib/repository";
 
 interface CategoryPageProps {
@@ -17,7 +16,7 @@ export async function generateMetadata({ params }: CategoryPageProps) {
     }
 
     return {
-        title: `${category.name} Cookware | Artisan Cookware`,
+        title: `${category.name} | Artisan Cookware`,
         description: category.description ?? `${category.name} cookware collections from Artisan Cookware.`
     };
 }
@@ -30,35 +29,27 @@ export default async function CategoryDetailPage({ params }: CategoryPageProps) 
         notFound();
     }
 
-    const resolvedCategory = category!;
-
     const products = await getProductsByCategorySlug(slug);
 
     return (
-        <div className="container-grid space-y-12 py-16">
-            <SectionHeading
-                eyebrow="Collection"
-                title={`${resolvedCategory.name} Cookware`}
-                description={
-                    resolvedCategory.description ?? "Explore cookware engineered for balance, durability, and heat performance."
-                }
-                align="center"
-            />
+        <div>
+            <header className="bg-parchment border-b border-ink-20">
+                <div className="container-site py-14 sm:py-16">
+                    <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">Collection</p>
+                    <h1 className="font-heading text-display font-light text-ink">{category.name}</h1>
+                    {category.description ? (
+                        <p className="mt-6 max-w-3xl text-[15px] font-light leading-relaxed text-[color:rgba(13,13,13,0.6)]">
+                            {category.description}
+                        </p>
+                    ) : null}
+                </div>
+            </header>
 
-            {products.length ? (
-                <div className="grid grid-cols-1 gap-8 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4">
-                    {products.map((product) => (
-                        <ProductCard key={product.id} product={product} />
-                    ))}
+            <section className="bg-white">
+                <div className="container-site py-14 sm:py-16">
+                    <CategoryProducts products={products} />
                 </div>
-            ) : (
-                <div className="rounded-3xl border border-dashed border-brand-primary/40 bg-brand-light/40 p-10 text-center">
-                    <p className="text-base font-medium text-brand-primary">We are curating new pieces for this category.</p>
-                    <p className="mt-2 text-sm text-slate-600">
-                        Reach out via WhatsApp for custom orders or upcoming production schedules.
-                    </p>
-                </div>
-            )}
+            </section>
         </div>
     );
 }

@@ -1,31 +1,22 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
-import { useState, useEffect } from "react";
+import { useEffect, useState } from "react";
 import { cn } from "@/lib/utils";
+import { CurrencySelector } from "@/components/CurrencySelector";
 
 const navItems = [
-    { href: "/", label: "Home" },
     { href: "/categories", label: "Collections" },
-    { href: "/about", label: "About Us" },
+    { href: "/products", label: "Products" },
+    { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" }
 ];
 
 export function Header() {
     const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
-    const [scrolled, setScrolled] = useState(false);
     const pathname = usePathname();
-
-    useEffect(() => {
-        const handleScroll = () => {
-            setScrolled(window.scrollY > 20);
-        };
-        window.addEventListener("scroll", handleScroll);
-        return () => window.removeEventListener("scroll", handleScroll);
-    }, []);
 
     useEffect(() => {
         setMobileMenuOpen(false);
@@ -33,110 +24,76 @@ export function Header() {
 
     return (
         <header
-            className={cn(
-                "sticky top-0 z-50 border-b transition-all duration-300",
-                scrolled
-                    ? "border-gray-700/30 bg-brand-black/95 shadow-xl shadow-brand-red/10 backdrop-blur-xl"
-                    : "border-gray-700/20 bg-brand-black/90 backdrop-blur-md"
-            )}
+            className="fixed left-0 right-0 top-0 z-[100] h-[68px] border-b border-[rgba(13,13,13,0.1)] bg-[rgba(254,254,254,0.96)] backdrop-blur-[12px]"
         >
-            <div className="container-grid">
-                <div className="flex h-24 items-center justify-between">
-                    {/* Enhanced Logo with Slogan */}
-                    <Link href="/" className="group flex items-center transition-all duration-300 hover:scale-105">
-                        <div className="flex items-center gap-4">
-                            {/* Logo Image */}
-                            <div className="relative">
-                                <Image
-                                    src="/Artisan-logo.jpg"
-                                    alt="ArtisanCookware - Your Kitchen Needs"
-                                    width={240}
-                                    height={56}
-                                    priority
-                                    className="h-12 w-auto brightness-110 transition-all duration-300 group-hover:brightness-125"
-                                />
-                                {/* Glow effect */}
-                                <div className="absolute inset-0 -z-10 bg-gradient-to-r from-brand-red/20 to-brand-gold/20 blur-xl opacity-0 transition-opacity duration-300 group-hover:opacity-100" />
-                            </div>
+            <div className="container-site flex h-full items-center justify-between gap-6">
+                <Link href="/" className="flex items-center gap-3 shrink-0">
+                    <span className="grid h-8 w-8 shrink-0 place-items-center bg-ink text-[11px] font-bold uppercase tracking-tight text-gold-light">
+                        AC
+                    </span>
+                    <span className="font-heading text-[20px] font-normal leading-none text-ink">Artisan Cookware</span>
+                </Link>
 
-                            {/* Slogan - visible on desktop */}
-                            <div className="hidden flex-col lg:flex">
-                                <span className="text-xs font-bold uppercase tracking-[0.15em] text-brand-gold">
-                                    Your Kitchen Needs
-                                </span>
-                                <span className="text-[10px] font-medium text-gray-400">
-                                    Premium Pakistani Craftsmanship
-                                </span>
-                            </div>
-                        </div>
+                <nav className="hidden md:flex flex-1 justify-center">
+                    <ul className="flex items-center gap-10">
+                        {navItems.map((item) => {
+                            const isActive =
+                                pathname === item.href ||
+                                (item.href !== "/" && pathname.startsWith(item.href));
+                            return (
+                                <li key={item.href}>
+                                    <Link
+                                        href={item.href}
+                                        className={cn(
+                                            "relative py-2 text-[13px] font-medium uppercase tracking-[0.06em] transition-colors",
+                                            isActive ? "text-ink" : "text-[color:rgba(13,13,13,0.6)] hover:text-ink"
+                                        )}
+                                    >
+                                        {item.label}
+                                        {isActive ? (
+                                            <span className="absolute bottom-0 left-0 right-0 h-px bg-gold" />
+                                        ) : null}
+                                    </Link>
+                                </li>
+                            );
+                        })}
+                    </ul>
+                </nav>
+
+                <div className="hidden md:flex items-center gap-4 shrink-0">
+                    <CurrencySelector />
+                    <Link href="/contact" className="btn-primary">
+                        Request Quote
                     </Link>
-
-                    {/* Desktop Navigation and CTA */}
-                    <div className="hidden lg:flex lg:items-center lg:gap-8">
-                        <nav>
-                            <ul className="flex items-center gap-8">
-                                {navItems.map((item) => {
-                                    const isActive = pathname === item.href;
-                                    return (
-                                        <li key={item.href}>
-                                            <Link
-                                                href={item.href}
-                                                className={cn(
-                                                    "group relative px-3 py-2 text-sm font-bold uppercase tracking-[0.1em] transition-all duration-300",
-                                                    isActive
-                                                        ? "text-brand-gold"
-                                                        : "text-gray-300 hover:text-brand-red"
-                                                )}
-                                            >
-                                                {item.label}
-                                                {isActive && (
-                                                    <span className="absolute -bottom-1 left-1/2 h-0.5 w-6 -translate-x-1/2 rounded-full bg-gradient-to-r from-brand-red to-brand-gold" />
-                                                )}
-                                                {!isActive && (
-                                                    <span className="absolute -bottom-1 left-1/2 h-0.5 w-0 -translate-x-1/2 rounded-full bg-gradient-to-r from-brand-red to-brand-gold transition-all duration-300 group-hover:w-6" />
-                                                )}
-                                            </Link>
-                                        </li>
-                                    );
-                                })}
-                            </ul>
-                        </nav>
-
-                        {/* CTA Button */}
-                        <Link
-                            href="/contact"
-                            className="rounded-xl bg-gradient-to-r from-brand-red to-brand-red-hover px-6 py-2.5 text-sm font-bold text-white shadow-lg shadow-brand-red/30 transition-all duration-300 hover:-translate-y-0.5 hover:scale-105 hover:shadow-xl hover:shadow-brand-red/40"
-                        >
-                            Get Quote
-                        </Link>
-                    </div>
-
-                    {/* Mobile Menu Button */}
-                    <button
-                        type="button"
-                        onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
-                        className="inline-flex items-center justify-center rounded-2xl border border-gray-600 bg-gray-800 p-3 text-gray-300 transition-all duration-300 hover:border-brand-red hover:bg-brand-red hover:text-white lg:hidden"
-                        aria-label="Toggle menu"
-                    >
-                        {mobileMenuOpen ? <X className="h-6 w-6" /> : <Menu className="h-6 w-6" />}
-                    </button>
                 </div>
 
-                {/* Enhanced Mobile Navigation */}
-                {mobileMenuOpen && (
-                    <nav className="border-t border-gray-700/30 bg-gradient-to-b from-brand-black to-gray-900 py-6 lg:hidden">
-                        <ul className="space-y-3">
+                <button
+                    type="button"
+                    onClick={() => setMobileMenuOpen(!mobileMenuOpen)}
+                    className="inline-flex h-10 w-10 items-center justify-center rounded-[2px] border border-ink-20 text-ink md:hidden"
+                    aria-label="Toggle menu"
+                >
+                    {mobileMenuOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
+                </button>
+            </div>
+
+            {mobileMenuOpen ? (
+                <div className="border-t border-[rgba(13,13,13,0.08)] bg-[rgba(254,254,254,0.98)] px-5 py-4 md:hidden">
+                    <nav aria-label="Mobile">
+                        <ul className="flex flex-col gap-1">
                             {navItems.map((item) => {
-                                const isActive = pathname === item.href;
+                                const isActive =
+                                    pathname === item.href ||
+                                    (item.href !== "/" && pathname.startsWith(item.href));
                                 return (
                                     <li key={item.href}>
                                         <Link
                                             href={item.href}
                                             className={cn(
-                                                "block rounded-2xl px-6 py-4 text-base font-bold uppercase tracking-[0.1em] transition-all duration-300",
+                                                "block rounded-[2px] px-3 py-3 text-[13px] font-medium uppercase tracking-[0.06em]",
                                                 isActive
-                                                    ? "bg-gradient-to-r from-brand-red to-brand-red-hover text-white shadow-lg"
-                                                    : "text-gray-300 hover:bg-gray-800 hover:text-brand-gold"
+                                                    ? "bg-parchment text-ink"
+                                                    : "text-[color:rgba(13,13,13,0.6)]"
                                             )}
                                         >
                                             {item.label}
@@ -144,18 +101,16 @@ export function Header() {
                                     </li>
                                 );
                             })}
-                            <li className="pt-4">
-                                <Link
-                                    href="/contact"
-                                    className="block w-full rounded-2xl bg-gradient-to-r from-brand-gold to-brand-gold-hover px-6 py-4 text-center text-base font-bold text-black shadow-xl shadow-brand-gold/30 transition-all duration-300 hover:scale-105 hover:shadow-2xl"
-                                >
-                                    Get Quote
-                                </Link>
-                            </li>
                         </ul>
+                        <div className="mt-4 flex flex-col gap-3 border-t border-ink-20 pt-4">
+                            <CurrencySelector />
+                            <Link href="/contact" className="btn-primary justify-center">
+                                Request Quote
+                            </Link>
+                        </div>
                     </nav>
-                )}
-            </div>
+                </div>
+            ) : null}
         </header>
     );
 }
