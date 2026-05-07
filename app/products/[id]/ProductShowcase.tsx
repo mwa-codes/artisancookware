@@ -42,6 +42,9 @@ export function ProductShowcase({ productName, description, sizes, imageUrl, var
                         fill
                         className="object-cover"
                         sizes="(min-width: 1024px) 40vw, 100vw"
+                        unoptimized={
+                            displayImage.startsWith("http://") || displayImage.startsWith("https://")
+                        }
                         onError={() => setImageHasError(true)}
                     />
                 </div>

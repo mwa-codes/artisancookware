@@ -14,6 +14,12 @@ type HeroProductSliderProps = {
 const AUTOPLAY_INTERVAL = 5000;
 const FALLBACK_PRODUCT_IMAGE = "/logo-with-slogan.jpeg";
 
+function resolveProductImageUrl(product: ProductWithRelations): string {
+    const variantImage = product.variants?.find((v) => v.imageUrl)?.imageUrl ?? null;
+    const raw = product.imageUrl ?? variantImage;
+    return raw?.trim() ? raw.trim() : FALLBACK_PRODUCT_IMAGE;
+}
+
 export function HeroProductSlider({ products }: HeroProductSliderProps) {
     const slides = useMemo(
         () =>
@@ -22,7 +28,7 @@ export function HeroProductSlider({ products }: HeroProductSliderProps) {
                     id: product.id,
                     name: product.name,
                     description: product.description ?? "Premium cookware for modern kitchens.",
-                    imageUrl: product.imageUrl ?? FALLBACK_PRODUCT_IMAGE,
+                    imageUrl: resolveProductImageUrl(product),
                     category: product.category?.name ?? "Cookware",
                     priceLabel: product.priceType ?? (product.factoryPriceValue ? "Factory" : product.fobPriceValue ? "FOB" : null),
                     priceValue:
@@ -66,7 +72,12 @@ export function HeroProductSlider({ products }: HeroProductSliderProps) {
                 <div className="absolute -inset-1 rounded-[2.5rem] bg-gradient-to-r from-brand-red/60 via-brand-gold/40 to-brand-red/60 opacity-20 blur-xl transition-opacity duration-500 group-hover:opacity-30" />
 
                 <div className="relative aspect-[4/3] overflow-hidden rounded-[2rem] border border-brand-gold/40 bg-gradient-to-br from-gray-800 to-brand-black shadow-xl">
-                    {slides.map((slide, index) => (
+                    {slides.map((slide, index) => {
+                        const imgSrc = failedSlideIds[slide.id] ? FALLBACK_PRODUCT_IMAGE : slide.imageUrl;
+                        const useUnoptimized =
+                            imgSrc.startsWith("http://") || imgSrc.startsWith("https://");
+
+                        return (
                         <div
                             key={slide.id}
                             className={cn(
@@ -78,18 +89,20 @@ export function HeroProductSlider({ products }: HeroProductSliderProps) {
                             aria-hidden={index !== activeIndex}
                         >
                             <Image
-                                src={failedSlideIds[slide.id] ? FALLBACK_PRODUCT_IMAGE : slide.imageUrl}
+                                src={imgSrc}
                                 alt={slide.name}
                                 fill
                                 priority={index === 0}
                                 sizes="(min-width: 1280px) 30vw, (min-width: 1024px) 35vw, (min-width: 768px) 40vw, 90vw"
                                 className="object-cover"
+                                unoptimized={useUnoptimized}
                                 onError={() => {
                                     setFailedSlideIds((prev) => ({ ...prev, [slide.id]: true }));
                                 }}
                             />
                         </div>
-                    ))}
+                        );
+                    })}
 
                     <div className="absolute inset-0 bg-gradient-to-t from-brand-black/45 via-transparent to-transparent" />
 

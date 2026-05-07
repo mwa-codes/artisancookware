@@ -7,8 +7,15 @@ import { useState } from "react";
 import type { ProductWithRelations } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 
+function initialCardImage(product: ProductWithRelations) {
+    const variantUrl = product.variants?.find((v) => v.imageUrl)?.imageUrl ?? null;
+    const main = product.imageUrl?.trim();
+    const variant = variantUrl?.trim();
+    return main || variant || "/logo-with-slogan.jpeg";
+}
+
 export function ProductCard({ product }: { product: ProductWithRelations }) {
-    const [imageSrc, setImageSrc] = useState(product.imageUrl ?? "/logo-with-slogan.jpeg");
+    const [imageSrc, setImageSrc] = useState(() => initialCardImage(product));
     const preferredPrice =
         product.priceType === "FOB"
             ? product.fobPriceValue ?? product.priceValue ?? product.factoryPriceValue ?? null
@@ -29,6 +36,9 @@ export function ProductCard({ product }: { product: ProductWithRelations }) {
                         fill
                         className="product-image object-cover"
                         sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 768px) 33vw, 90vw"
+                        unoptimized={
+                            imageSrc.startsWith("http://") || imageSrc.startsWith("https://")
+                        }
                         onError={() => setImageSrc("/logo-with-slogan.jpeg")}
                     />
                     {/* Red gradient overlay on hover */}
