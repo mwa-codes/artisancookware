@@ -18,29 +18,32 @@ export type ProductShowcaseProps = {
 export function ProductShowcase({ productName, description, sizes, imageUrl, variants, specifications }: ProductShowcaseProps) {
     const initialVariant = useMemo(() => variants.at(0) ?? null, [variants]);
     const [selectedVariant, setSelectedVariant] = useState(initialVariant);
+    const [imageHasError, setImageHasError] = useState(false);
 
     useEffect(() => {
         setSelectedVariant(initialVariant);
     }, [initialVariant]);
 
     const activeImage = selectedVariant?.imageUrl ?? imageUrl;
+    const displayImage = !imageHasError && activeImage ? activeImage : "/logo-with-slogan.jpeg";
     const activeAlt = selectedVariant ? `${productName} - ${selectedVariant.colorName}` : productName;
+
+    useEffect(() => {
+        setImageHasError(false);
+    }, [activeImage]);
 
     return (
         <div className="grid gap-10 lg:grid-cols-2">
             <div className="space-y-4">
                 <div className="relative aspect-[4/3] overflow-hidden rounded-3xl border border-slate-200 bg-slate-100">
-                    {activeImage ? (
-                        <Image
-                            src={activeImage}
-                            alt={activeAlt}
-                            fill
-                            className="object-cover"
-                            sizes="(min-width: 1024px) 40vw, 100vw"
-                        />
-                    ) : (
-                        <div className="flex h-full items-center justify-center text-sm text-slate-500">Image coming soon</div>
-                    )}
+                    <Image
+                        src={displayImage}
+                        alt={activeAlt}
+                        fill
+                        className="object-cover"
+                        sizes="(min-width: 1024px) 40vw, 100vw"
+                        onError={() => setImageHasError(true)}
+                    />
                 </div>
                 <VariantSelector
                     variants={variants}

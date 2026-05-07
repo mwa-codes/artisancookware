@@ -1,10 +1,14 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { useState } from "react";
 import type { ProductWithRelations } from "@/lib/types";
 import { formatCurrency } from "@/lib/utils";
 
 export function ProductCard({ product }: { product: ProductWithRelations }) {
+    const [imageSrc, setImageSrc] = useState(product.imageUrl ?? "/logo-with-slogan.jpeg");
     const preferredPrice =
         product.priceType === "FOB"
             ? product.fobPriceValue ?? product.priceValue ?? product.factoryPriceValue ?? null
@@ -18,23 +22,18 @@ export function ProductCard({ product }: { product: ProductWithRelations }) {
         <article className="product-card group flex h-full flex-col transition-all duration-300 hover:-translate-y-1">
             {/* Product Image with Hover Overlay */}
             <div className="relative aspect-[4/5] w-full overflow-hidden rounded-t-2xl bg-gray-50">
-                {product.imageUrl ? (
-                    <>
-                        <Image
-                            src={product.imageUrl}
-                            alt={product.name}
-                            fill
-                            className="product-image object-cover"
-                            sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 768px) 33vw, 90vw"
-                        />
-                        {/* Red gradient overlay on hover */}
-                        <div className="absolute inset-0 bg-gradient-to-t from-brand-black/60 via-brand-red/20 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
-                    </>
-                ) : (
-                    <div className="flex h-full items-center justify-center text-sm text-text-muted">
-                        Image coming soon
-                    </div>
-                )}
+                <>
+                    <Image
+                        src={imageSrc}
+                        alt={product.name}
+                        fill
+                        className="product-image object-cover"
+                        sizes="(min-width: 1280px) 20vw, (min-width: 1024px) 25vw, (min-width: 768px) 33vw, 90vw"
+                        onError={() => setImageSrc("/logo-with-slogan.jpeg")}
+                    />
+                    {/* Red gradient overlay on hover */}
+                    <div className="absolute inset-0 bg-gradient-to-t from-brand-black/60 via-brand-red/20 to-transparent opacity-0 transition-opacity duration-500 group-hover:opacity-100" />
+                </>
 
                 {/* Category Badge */}
                 <div className="absolute left-4 top-4 z-10">

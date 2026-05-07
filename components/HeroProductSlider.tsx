@@ -12,17 +12,17 @@ type HeroProductSliderProps = {
 };
 
 const AUTOPLAY_INTERVAL = 5000;
+const FALLBACK_PRODUCT_IMAGE = "/logo-with-slogan.jpeg";
 
 export function HeroProductSlider({ products }: HeroProductSliderProps) {
     const slides = useMemo(
         () =>
             (products ?? [])
-                .filter((product) => Boolean(product?.imageUrl))
                 .map((product) => ({
                     id: product.id,
                     name: product.name,
                     description: product.description ?? "Premium cookware for modern kitchens.",
-                    imageUrl: product.imageUrl as string,
+                    imageUrl: product.imageUrl ?? FALLBACK_PRODUCT_IMAGE,
                     category: product.category?.name ?? "Cookware",
                     priceLabel: product.priceType ?? (product.factoryPriceValue ? "Factory" : product.fobPriceValue ? "FOB" : null),
                     priceValue:
@@ -32,6 +32,7 @@ export function HeroProductSlider({ products }: HeroProductSliderProps) {
     );
 
     const [activeIndex, setActiveIndex] = useState(0);
+    const [failedSlideIds, setFailedSlideIds] = useState<Record<string, boolean>>({});
     const hasMultipleSlides = slides.length > 1;
 
     useEffect(() => {
@@ -77,12 +78,15 @@ export function HeroProductSlider({ products }: HeroProductSliderProps) {
                             aria-hidden={index !== activeIndex}
                         >
                             <Image
-                                src={slide.imageUrl}
+                                src={failedSlideIds[slide.id] ? FALLBACK_PRODUCT_IMAGE : slide.imageUrl}
                                 alt={slide.name}
                                 fill
                                 priority={index === 0}
                                 sizes="(min-width: 1280px) 30vw, (min-width: 1024px) 35vw, (min-width: 768px) 40vw, 90vw"
                                 className="object-cover"
+                                onError={() => {
+                                    setFailedSlideIds((prev) => ({ ...prev, [slide.id]: true }));
+                                }}
                             />
                         </div>
                     ))}
