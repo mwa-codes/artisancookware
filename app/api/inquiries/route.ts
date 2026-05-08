@@ -28,10 +28,14 @@ function formatField(label: string, value?: string | null) {
     return value ? `${label}: ${value}` : `${label}: -`;
 }
 
+function cleanEnvValue(value: string) {
+    return value.trim().replace(/^["']|["']$/g, "");
+}
+
 async function sendInquiryNotification(inquiry: InquiryNotification) {
     const apiKey = process.env.RESEND_API_KEY;
-    const notifyTo = process.env.INQUIRY_NOTIFY_TO ?? "info@artisancookware.co";
-    const notifyFrom = process.env.INQUIRY_NOTIFY_FROM ?? "Artisan Cookware <no-reply@artisancookware.co>";
+    const notifyTo = cleanEnvValue(process.env.INQUIRY_NOTIFY_TO ?? "info@artisancookware.co");
+    const notifyFrom = cleanEnvValue(process.env.INQUIRY_NOTIFY_FROM ?? "Artisan Cookware <no-reply@artisancookware.co>");
 
     if (!apiKey) {
         console.info("Skipping inquiry email notification: RESEND_API_KEY is not configured.");
