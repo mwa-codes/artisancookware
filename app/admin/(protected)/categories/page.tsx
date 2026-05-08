@@ -11,7 +11,7 @@ export default async function AdminCategoriesPage() {
         .order("created_at", { ascending: false });
 
     return (
-        <div className="space-y-6 w-full">
+        <div className="w-full space-y-6">
             <AdminPageHeader
                 title="Collections"
                 description="Manage product collections — add images, set display order, control homepage visibility."

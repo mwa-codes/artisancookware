@@ -21,7 +21,7 @@ export default async function AdminCurrencyPage() {
     const entries = rates ? Object.entries(rates).sort(([a], [b]) => a.localeCompare(b)) : [];
 
     return (
-        <div className="space-y-10 w-full">
+        <div className="w-full space-y-6">
             <AdminPageHeader
                 title="Currency & Exchange Rates"
                 description="View cached exchange rates. Rates update automatically every hour via the API."
@@ -49,29 +49,30 @@ export default async function AdminCurrencyPage() {
                 <div className="mt-6 overflow-hidden rounded-[4px] border border-ink-20">
                     <div className="overflow-x-auto">
                         <table className="min-w-full divide-y divide-ink-20 text-sm">
-                        <thead className="bg-parchment">
-                            <tr>
-                                <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-60">Currency</th>
-                                <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-60">Units per 1 USD</th>
-                            </tr>
-                        </thead>
-                        <tbody className="divide-y divide-ink-20">
-                            {entries.length === 0 ? (
+                            <thead className="bg-parchment">
                                 <tr>
-                                    <td className="px-4 py-8 text-ink-60" colSpan={2}>
-                                        No cached rates yet — configure <code className="font-mono text-xs">EXCHANGE_RATE_API_KEY</code> and load the public site (or force refresh).
-                                    </td>
+                                    <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-60">Currency</th>
+                                    <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-60">Units per 1 USD</th>
                                 </tr>
-                            ) : (
-                                entries.map(([code, value]) => (
-                                    <tr key={code}>
-                                        <td className="px-4 py-3 font-mono text-sm">{code}</td>
-                                        <td className="px-4 py-3 text-ink-60">{String(value)}</td>
+                            </thead>
+                            <tbody className="divide-y divide-ink-20">
+                                {entries.length === 0 ? (
+                                    <tr>
+                                        <td className="px-4 py-8 text-ink-60" colSpan={2}>
+                                            No cached rates yet — configure <code className="font-mono text-xs">EXCHANGE_RATE_API_KEY</code> and load the public
+                                            site (or force refresh).
+                                        </td>
                                     </tr>
-                                ))
-                            )}
-                        </tbody>
-                    </table>
+                                ) : (
+                                    entries.map(([code, value]) => (
+                                        <tr key={code}>
+                                            <td className="px-4 py-3 font-mono text-sm">{code}</td>
+                                            <td className="px-4 py-3 text-ink-60">{String(value)}</td>
+                                        </tr>
+                                    ))
+                                )}
+                            </tbody>
+                        </table>
                     </div>
                 </div>
             </section>

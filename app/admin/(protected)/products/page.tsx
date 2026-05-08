@@ -57,7 +57,7 @@ export default async function AdminProductsPage() {
     }));
 
     return (
-        <div className="space-y-6 w-full">
+        <div className="w-full space-y-6">
             <AdminPageHeader
                 title="Products"
                 description="Manage your product catalogue — add, edit, or remove products."

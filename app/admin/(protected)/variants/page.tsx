@@ -57,7 +57,7 @@ export default async function VariantsPage() {
     }));
 
     return (
-        <div>
+        <div className="w-full space-y-6">
             <AdminPageHeader
                 title="Product Variants"
                 description="Manage colour variants and images for each product."

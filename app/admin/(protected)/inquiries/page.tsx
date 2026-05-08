@@ -34,7 +34,7 @@ export default async function AdminInquiriesPage() {
     });
 
     return (
-        <div>
+        <div className="w-full space-y-6">
             <AdminPageHeader
                 title="Inquiries"
                 description="View and manage wholesale inquiries. Click any row to open the detail drawer."
