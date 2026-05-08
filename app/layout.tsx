@@ -27,9 +27,9 @@ export const metadata: Metadata = {
             "Premium aluminium cookware manufacturer in Gujranwala, Pakistan.",
         images: [
             {
-                url: "/og-image.png",
-                width: 1730,
-                height: 909,
+                url: "/og-image.jpg",
+                width: 1200,
+                height: 630,
                 alt: "Artisan Cookware — premium aluminium cookware from Pakistan"
             }
         ]
@@ -38,7 +38,7 @@ export const metadata: Metadata = {
         card: "summary_large_image",
         title: "Artisan Cookware | Premium Aluminium Cookware — Pakistan",
         description: "Wholesale aluminium cookware from Gujranwala — ISO certified, export-ready.",
-        images: ["/og-image.png"]
+        images: ["/og-image.jpg"]
     }
 };
 
