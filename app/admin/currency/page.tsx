@@ -1,4 +1,5 @@
 import Link from "next/link";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { requireAdminSession } from "@/lib/adminAuth";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 
@@ -20,11 +21,12 @@ export default async function AdminCurrencyPage() {
     const entries = rates ? Object.entries(rates).sort(([a], [b]) => a.localeCompare(b)) : [];
 
     return (
-        <div className="space-y-10">
-            <div>
-                <h1 className="font-heading text-3xl font-light text-ink">Currency &amp; Pricing Settings</h1>
-                <p className="mt-2 text-sm text-ink-60">Cached FX rates used by the public currency selector (USD base).</p>
-            </div>
+        <div className="space-y-10 w-full">
+            <AdminPageHeader
+                title="Currency & Exchange Rates"
+                description="View cached exchange rates. Rates update automatically every hour via the API."
+                crumbs={[{ label: "Currency" }]}
+            />
 
             <section className="rounded-[4px] border border-ink-20 bg-white p-6">
                 <div className="flex flex-wrap items-center justify-between gap-4">
@@ -45,7 +47,8 @@ export default async function AdminCurrencyPage() {
                 </div>
 
                 <div className="mt-6 overflow-hidden rounded-[4px] border border-ink-20">
-                    <table className="min-w-full divide-y divide-ink-20 text-sm">
+                    <div className="overflow-x-auto">
+                        <table className="min-w-full divide-y divide-ink-20 text-sm">
                         <thead className="bg-parchment">
                             <tr>
                                 <th className="px-4 py-3 text-left text-[11px] font-semibold uppercase tracking-[0.08em] text-ink-60">Currency</th>
@@ -69,6 +72,7 @@ export default async function AdminCurrencyPage() {
                             )}
                         </tbody>
                     </table>
+                    </div>
                 </div>
             </section>
 

@@ -1,23 +1,29 @@
+"use client";
+
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
 import type { ProductWithRelations } from "@/lib/types";
 import { HeroOverlayPrice } from "@/components/HeroOverlayPrice";
+import { HeroImagePlaceholder } from "@/components/MediaPlaceholder";
 
 type HeroProps = {
     products: ProductWithRelations[];
 };
 
-const FALLBACK_IMG =
-    "https://images.unsplash.com/photo-1589307004390-97eb644ed3f2?auto=format&fit=crop&w=1400&q=85";
-
 export function Hero({ products }: HeroProps) {
     const hero = products[0];
-    const imageUrl =
-        hero?.imageUrl?.trim() ||
-        hero?.variants?.find((v) => v.imageUrl)?.imageUrl?.trim() ||
-        FALLBACK_IMG;
+    const rawHeroImage =
+        hero?.imageUrl?.trim() || hero?.variants?.find((v) => v.imageUrl?.trim())?.imageUrl?.trim() || "";
 
+    const [heroImageFailed, setHeroImageFailed] = useState(false);
+
+    useEffect(() => {
+        setHeroImageFailed(false);
+    }, [rawHeroImage]);
+
+    const showHeroPhoto = Boolean(rawHeroImage) && !heroImageFailed;
     const categoryName = hero?.category?.name ?? "Featured";
 
     return (
@@ -25,6 +31,17 @@ export function Hero({ products }: HeroProps) {
             <div className="grid min-h-[calc(100vh-68px)] lg:grid-cols-2">
                 <div className="flex flex-col justify-center bg-ink px-6 py-14 sm:px-10 lg:px-16 lg:py-20 xl:pl-20 xl:pr-16">
                     <div className="animate-fade-up max-w-xl">
+                        <div className="mb-8">
+                            <Image
+                                src="/Artisan-logo.jpg"
+                                alt="Artisan Cookware"
+                                width={140}
+                                height={40}
+                                className="h-[40px] w-auto object-contain brightness-0 invert opacity-90"
+                                priority
+                            />
+                        </div>
+
                         <div className="eyebrow mb-8">
                             <span className="eyebrow-line" />
                             <span className="eyebrow-text text-gold">Since 1998 — Gujranwala, Pakistan</span>
@@ -43,8 +60,8 @@ export function Hero({ products }: HeroProps) {
                         </p>
 
                         <p className="mt-8 max-w-lg text-[15px] font-light leading-relaxed text-[rgba(255,255,255,0.65)]">
-                            Crafted for international wholesalers, retailers, and hospitality groups who demand manufacturing precision,
-                            consistent quality, and reliable lead times.
+                            Crafted for international wholesalers, retailers, and hospitality groups who demand manufacturing precision, consistent
+                            quality, and reliable lead times.
                         </p>
 
                         <div className="mt-10 flex flex-wrap gap-4">
@@ -68,9 +85,7 @@ export function Hero({ products }: HeroProps) {
                             ].map((s) => (
                                 <div key={s.l}>
                                     <p className="font-heading text-[36px] font-light leading-none text-gold-light">{s.n}</p>
-                                    <p className="mt-2 text-[11px] font-medium uppercase tracking-[0.08em] text-[rgba(255,255,255,0.45)]">
-                                        {s.l}
-                                    </p>
+                                    <p className="mt-2 text-[11px] font-medium uppercase tracking-[0.08em] text-[rgba(255,255,255,0.45)]">{s.l}</p>
                                 </div>
                             ))}
                         </div>
@@ -78,15 +93,19 @@ export function Hero({ products }: HeroProps) {
                 </div>
 
                 <div className="relative min-h-[420px] bg-parchment lg:min-h-0">
-                    <Image
-                        src={imageUrl}
-                        alt={hero?.name ?? "Artisan Cookware"}
-                        fill
-                        priority
-                        className="object-cover"
-                        sizes="(min-width: 1024px) 50vw, 100vw"
-                        unoptimized={imageUrl.startsWith("http")}
-                    />
+                    {showHeroPhoto ? (
+                        <Image
+                            src={rawHeroImage}
+                            alt={hero?.name ?? "Artisan Cookware"}
+                            fill
+                            priority
+                            className="object-cover"
+                            sizes="50vw"
+                            onError={() => setHeroImageFailed(true)}
+                        />
+                    ) : (
+                        <HeroImagePlaceholder />
+                    )}
                     <div
                         className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[rgba(247,244,239,0.95)] via-transparent to-transparent"
                         aria-hidden

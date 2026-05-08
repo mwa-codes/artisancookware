@@ -99,8 +99,7 @@ export function InquirySection({ productOptions = [], defaultProductLabel }: Inq
         });
     };
 
-    const inputClass =
-        "mt-1 w-full rounded-[2px] border border-ink-20 bg-white px-3 py-2.5 text-sm text-ink placeholder:text-ink-60 focus:border-ink focus:outline-none focus:ring-1 focus:ring-ink";
+    const inputClass = "admin-input mt-1";
 
     return (
         <section id="inquiry" className="bg-white py-20 sm:py-24">
@@ -148,7 +147,7 @@ export function InquirySection({ productOptions = [], defaultProductLabel }: Inq
 
                 <div>
                     <form onSubmit={handleSubmit} className="space-y-5">
-                        <div className="grid gap-5 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
                                 <label className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-60" htmlFor="inq-name">
                                     Full name
@@ -163,7 +162,7 @@ export function InquirySection({ productOptions = [], defaultProductLabel }: Inq
                             </div>
                         </div>
 
-                        <div className="grid gap-5 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
                                 <label className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-60" htmlFor="inq-email">
                                     Email
@@ -217,7 +216,7 @@ export function InquirySection({ productOptions = [], defaultProductLabel }: Inq
                             </select>
                         </div>
 
-                        <div className="grid gap-5 sm:grid-cols-2">
+                        <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
                                 <label className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-60" htmlFor="inq-qty">
                                     Quantity
@@ -265,7 +264,7 @@ export function InquirySection({ productOptions = [], defaultProductLabel }: Inq
                         {error ? <p className="text-sm text-red-600">{error}</p> : null}
                         {feedback ? <p className="text-sm text-ink">{feedback}</p> : null}
 
-                        <button type="submit" disabled={isPending} className="btn-primary disabled:opacity-60">
+                        <button type="submit" disabled={isPending} className="btn-primary w-full justify-center sm:w-auto disabled:opacity-60">
                             {isPending ? "Sending…" : "Send Inquiry →"}
                         </button>
                     </form>

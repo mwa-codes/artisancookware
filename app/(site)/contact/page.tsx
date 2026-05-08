@@ -11,7 +11,7 @@ export default async function ContactPage() {
     const productOptions = catalogue.map((p) => ({ id: p.id, label: p.name }));
 
     return (
-        <div className="bg-white">
+        <div className="bg-white pt-[68px]">
             <header className="border-b border-ink-20 bg-parchment">
                 <div className="container-site py-14 sm:py-16">
                     <h1 className="font-heading text-display font-light text-ink">Contact</h1>

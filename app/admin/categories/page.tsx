@@ -1,4 +1,5 @@
 import { CategoriesClient, type AdminCategory } from "@/components/admin/CategoriesClient";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 
 export default async function AdminCategoriesPage() {
@@ -9,5 +10,14 @@ export default async function AdminCategoriesPage() {
         .order("display_order", { ascending: true })
         .order("created_at", { ascending: false });
 
-    return <CategoriesClient categories={(data ?? []) as AdminCategory[]} />;
+    return (
+        <div>
+            <AdminPageHeader
+                title="Collections"
+                description="Manage product collections — add images, set display order, control homepage visibility."
+                crumbs={[{ label: "Collections" }]}
+            />
+            <CategoriesClient categories={(data ?? []) as AdminCategory[]} />
+        </div>
+    );
 }

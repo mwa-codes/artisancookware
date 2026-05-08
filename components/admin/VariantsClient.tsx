@@ -195,12 +195,11 @@ export function VariantsClient({ variants, products }: { variants: AdminVariant[
     }, [search]);
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-                <div>
-                    <h1 className="font-heading text-2xl font-light text-ink">Variants</h1>
-                    <p className="text-sm text-ink-60">Create colourways and imagery for each product.</p>
-                </div>
+        <div className="space-y-6 w-full">
+            <div className="flex items-center justify-between">
+                <p className="text-sm text-ink-60">
+                    {variants.length} variant{variants.length !== 1 ? "s" : ""} total
+                </p>
                 <button type="button" onClick={() => setShowCreate(true)} className="admin-btn-primary">
                     Add variant
                 </button>
@@ -220,7 +219,8 @@ export function VariantsClient({ variants, products }: { variants: AdminVariant[
             </div>
 
             <div className="overflow-hidden border border-ink-20 bg-white rounded-[2px] shadow-card">
-                <table className="min-w-full divide-y divide-ink-20 text-left text-sm text-ink-60">
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-ink-20 text-left text-sm text-ink-60">
                     <thead className="bg-parchment text-[10px] font-semibold uppercase tracking-[0.1em] text-ink-60">
                         <tr>
                             <th className="px-6 py-4">Variant</th>
@@ -289,6 +289,7 @@ export function VariantsClient({ variants, products }: { variants: AdminVariant[
                         )}
                     </tbody>
                 </table>
+                </div>
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-4">

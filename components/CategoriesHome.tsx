@@ -1,11 +1,25 @@
 import Image from "next/image";
 import Link from "next/link";
 import type { Category } from "@/lib/types";
-
-const FALLBACK =
-    "https://images.unsplash.com/photo-1589307004390-97eb644ed3f2?auto=format&fit=crop&w=1200&q=80";
+import { CategoryImagePlaceholder } from "@/components/MediaPlaceholder";
 
 export function CategoriesHome({ categories }: { categories: Category[] }) {
+    if (!categories || categories.length === 0) {
+        return (
+            <section className="bg-white py-20">
+                <div className="container-site text-center">
+                    <p className="text-sm text-ink-60">
+                        No collections yet. Add categories in{" "}
+                        <a href="/admin/categories" className="text-gold underline">
+                            Admin → Collections
+                        </a>
+                        .
+                    </p>
+                </div>
+            </section>
+        );
+    }
+
     const sorted = [...categories].sort((a, b) => a.displayOrder - b.displayOrder || a.name.localeCompare(b.name));
 
     return (
@@ -19,14 +33,17 @@ export function CategoriesHome({ categories }: { categories: Category[] }) {
                         </div>
                         <h2 className="font-heading text-section font-light text-ink">Four Signature Collections</h2>
                     </div>
-                    <Link href="/categories" className="text-[13px] font-semibold uppercase tracking-[0.12em] text-ink underline underline-offset-4 transition hover:text-gold md:mb-2">
+                    <Link
+                        href="/categories"
+                        className="text-[13px] font-semibold uppercase tracking-[0.12em] text-ink underline underline-offset-4 transition hover:text-gold md:mb-2"
+                    >
                         Browse All →
                     </Link>
                 </div>
 
                 <div className="mt-14 grid grid-cols-1 gap-6 sm:grid-cols-2 lg:grid-cols-4">
                     {sorted.slice(0, 4).map((category, index) => {
-                        const img = category.imageUrl?.trim() || FALLBACK;
+                        const remote = category.imageUrl?.trim();
                         const num = String(index + 1).padStart(2, "0");
                         return (
                             <Link
@@ -34,14 +51,17 @@ export function CategoriesHome({ categories }: { categories: Category[] }) {
                                 href={`/categories/${category.slug}`}
                                 className="group relative block aspect-[3/4] overflow-hidden bg-ink"
                             >
-                                <Image
-                                    src={img}
-                                    alt={category.name}
-                                    fill
-                                    className="object-cover transition-transform duration-500 group-hover:scale-[1.06]"
-                                    sizes="(min-width: 1024px) 25vw, 50vw"
-                                    unoptimized={img.startsWith("http")}
-                                />
+                                {remote ? (
+                                    <Image
+                                        src={remote}
+                                        alt={category.name}
+                                        fill
+                                        className="object-cover transition-transform duration-500 group-hover:scale-[1.06]"
+                                        sizes="(min-width: 1024px) 25vw, 50vw"
+                                    />
+                                ) : (
+                                    <CategoryImagePlaceholder name={category.name} />
+                                )}
                                 <div
                                     className="absolute inset-0 bg-gradient-to-t from-[rgba(13,13,13,0.85)] via-[rgba(13,13,13,0.35)] to-transparent"
                                     aria-hidden

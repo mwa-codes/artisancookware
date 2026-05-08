@@ -215,7 +215,7 @@ export function InquiriesClient({ rows }: { rows: unknown[] }) {
     const unreadCount = inquiries.filter((i) => i.status === "unread").length;
 
     return (
-        <div className="space-y-4">
+        <div className="space-y-6 w-full">
             <div className="grid grid-cols-4 gap-2">
                 {[
                     { label: "Total", value: inquiries.length },
@@ -264,8 +264,9 @@ export function InquiriesClient({ rows }: { rows: unknown[] }) {
                 </span>
             </div>
 
-            <div className="bg-white border border-ink-20 overflow-hidden rounded-[2px]">
-                <table className="min-w-full divide-y divide-ink-20 text-sm">
+            <div className="overflow-hidden border border-ink-20 bg-white rounded-[2px]">
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-ink-20 text-sm">
                     <thead className="bg-parchment">
                         <tr>
                             {["Date", "Name", "Company", "Country", "Buyer Type", "Qty", "Product", "Status", ""].map((h) => (
@@ -312,6 +313,7 @@ export function InquiriesClient({ rows }: { rows: unknown[] }) {
                         )}
                     </tbody>
                 </table>
+                </div>
             </div>
 
             {selectedInquiry && <InquiryDrawer inquiry={selectedInquiry} onClose={() => setSelectedInquiry(null)} />}

@@ -1,7 +1,4 @@
-import Image from "next/image";
-
-const FACTORY_IMG =
-    "https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1400&q=80";
+import { IconImagePlaceholder } from "@/components/MediaPlaceholder";
 
 const ITEMS = [
     {
@@ -26,15 +23,7 @@ export function AboutSnippet() {
     return (
         <section className="grid lg:grid-cols-2">
             <div className="relative min-h-[420px] lg:min-h-[640px]">
-                <Image
-                    src={FACTORY_IMG}
-                    alt="Artisan Cookware manufacturing"
-                    fill
-                    className="object-cover"
-                    sizes="(min-width: 1024px) 50vw, 100vw"
-                    unoptimized
-                    priority={false}
-                />
+                <IconImagePlaceholder />
             </div>
             <div className="flex flex-col justify-center bg-parchment px-6 py-14 sm:px-10 lg:px-16 lg:py-20">
                 <div className="eyebrow">

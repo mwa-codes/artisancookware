@@ -1,8 +1,5 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import { Header } from "@/components/Header";
-import { Footer } from "@/components/Footer";
-import { WhatsAppFloat } from "@/components/WhatsAppFloat";
 import { CurrencyProvider } from "@/context/CurrencyContext";
 
 export const metadata: Metadata = {
@@ -40,14 +37,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
     return (
         <html lang="en">
             <body className="min-h-screen bg-[#FEFEFE] font-body text-ink antialiased">
-                <CurrencyProvider>
-                    <div className="flex min-h-screen flex-col">
-                        <Header />
-                        <main className="flex-1">{children}</main>
-                        <Footer />
-                    </div>
-                    <WhatsAppFloat />
-                </CurrencyProvider>
+                <CurrencyProvider>{children}</CurrencyProvider>
             </body>
         </html>
     );

@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import { useEffect, useState } from "react";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
@@ -28,14 +29,14 @@ export function AdminTopbar() {
                     >
                         {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                     </button>
-                    <Link href="/admin" className="flex items-center gap-3">
-                        <span className="grid h-9 w-9 shrink-0 place-items-center bg-ink text-[10px] font-bold uppercase tracking-tight text-gold-light rounded-[2px]">
-                            AC
-                        </span>
-                        <div className="hidden flex-col sm:flex">
-                            <span className="text-[10px] font-bold uppercase tracking-[0.2em] text-gold">Admin Dashboard</span>
-                            <span className="font-heading text-base font-light text-ink">Control Panel</span>
-                        </div>
+                    <Link href="/admin" className="flex items-center gap-2">
+                        <Image
+                            src="/Artisan-logo.jpg"
+                            alt="Artisan Cookware"
+                            width={100}
+                            height={28}
+                            className="h-[28px] w-auto object-contain"
+                        />
                     </Link>
                 </div>
 

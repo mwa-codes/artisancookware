@@ -1,5 +1,5 @@
-import Image from "next/image";
 import Link from "next/link";
+import { IconImagePlaceholder } from "@/components/MediaPlaceholder";
 
 const TIMELINE = [
     { year: "1998", title: "Founding", body: "Artisan Cookware begins aluminium forming for local distribution." },
@@ -10,15 +10,15 @@ const TIMELINE = [
 
 export default function AboutPage() {
     return (
-        <div className="bg-white">
-            <section className="relative min-h-[420px] bg-ink">
-                <Image
-                    src="https://images.unsplash.com/photo-1581092160562-40aa08e78837?auto=format&fit=crop&w=1800&q=80"
-                    alt="Manufacturing"
-                    fill
-                    className="object-cover opacity-40"
-                    unoptimized
-                    priority
+        <div className="bg-white pt-[68px]">
+            <section className="relative min-h-[420px] overflow-hidden bg-ink">
+                <div
+                    className="pointer-events-none absolute inset-0 opacity-40"
+                    style={{
+                        background:
+                            "radial-gradient(ellipse 80% 60% at 80% 20%, rgba(196,163,90,0.35) 0%, transparent 55%), radial-gradient(ellipse 70% 50% at 10% 80%, rgba(255,255,255,0.08) 0%, transparent 50%)"
+                    }}
+                    aria-hidden
                 />
                 <div className="relative container-site flex min-h-[420px] flex-col justify-end py-16">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">About</p>
@@ -40,14 +40,8 @@ export default function AboutPage() {
                         Our factory couples traditional metalworking judgement with repeatable QC checkpoints — so every shipment matches the samples you approved.
                     </p>
                 </div>
-                <div className="relative aspect-[4/3] overflow-hidden rounded-[4px] border border-ink-20 bg-parchment">
-                    <Image
-                        src="https://images.unsplash.com/photo-1504917595217-d41dc5615666?auto=format&fit=crop&w=1200&q=80"
-                        alt="Team and production"
-                        fill
-                        className="object-cover"
-                        unoptimized
-                    />
+                <div className="relative aspect-[4/3] overflow-hidden rounded-[2px] border border-ink-20 bg-parchment">
+                    <IconImagePlaceholder />
                 </div>
             </section>
 

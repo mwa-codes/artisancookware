@@ -1,12 +1,10 @@
 import Link from "next/link";
 import Image from "next/image";
 import type { Category } from "@/lib/types";
-
-const FALLBACK =
-    "https://images.unsplash.com/photo-1589307004390-97eb644ed3f2?auto=format&fit=crop&w=1200&q=80";
+import { CategoryImagePlaceholder } from "@/components/MediaPlaceholder";
 
 export function CategoryCard({ category, productCount }: { category: Category; productCount?: number }) {
-    const img = category.imageUrl?.trim() || FALLBACK;
+    const remote = category.imageUrl?.trim();
 
     return (
         <Link
@@ -14,14 +12,17 @@ export function CategoryCard({ category, productCount }: { category: Category; p
             className="group relative block aspect-[3/4] overflow-hidden bg-ink"
             aria-label={`View ${category.name} collection`}
         >
-            <Image
-                src={img}
-                alt={category.name}
-                fill
-                className="object-cover transition-transform duration-500 group-hover:scale-[1.06]"
-                sizes="(min-width: 1280px) 25vw, 40vw"
-                unoptimized={img.startsWith("http")}
-            />
+            {remote ? (
+                <Image
+                    src={remote}
+                    alt={category.name}
+                    fill
+                    className="object-cover transition-transform duration-500 group-hover:scale-[1.06]"
+                    sizes="(min-width: 1280px) 25vw, 40vw"
+                />
+            ) : (
+                <CategoryImagePlaceholder name={category.name} />
+            )}
             <div className="absolute inset-0 bg-gradient-to-t from-[rgba(13,13,13,0.85)] via-[rgba(13,13,13,0.35)] to-transparent" />
 
             <div className="absolute inset-x-0 bottom-0 p-6">

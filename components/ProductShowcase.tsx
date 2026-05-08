@@ -4,6 +4,7 @@ import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import type { ProductSpecification, ProductVariant } from "@/lib/types";
 import { VariantSelector } from "@/components/VariantSelector";
+import { CardImagePlaceholder } from "@/components/MediaPlaceholder";
 
 export type ProductShowcaseProps = {
     productName: string;
@@ -24,26 +25,30 @@ export function ProductShowcase({ productName, description, sizes, imageUrl, var
     }, [initialVariant]);
 
     const activeImage = selectedVariant?.imageUrl ?? imageUrl;
-    const displayImage = !imageHasError && activeImage ? activeImage : "/logo-with-slogan.jpeg";
     const activeAlt = selectedVariant ? `${productName} — ${selectedVariant.colorName}` : productName;
 
     useEffect(() => {
         setImageHasError(false);
     }, [activeImage]);
 
+    const showPhoto = Boolean(activeImage?.trim()) && !imageHasError;
+
     return (
         <div className="space-y-6">
             <div className="relative aspect-[4/3] overflow-hidden rounded-[4px] border border-ink-20 bg-parchment">
-                <Image
-                    src={displayImage}
-                    alt={activeAlt}
-                    fill
-                    className="object-cover"
-                    sizes="(min-width: 1024px) 55vw, 100vw"
-                    unoptimized={displayImage.startsWith("http://") || displayImage.startsWith("https://")}
-                    onError={() => setImageHasError(true)}
-                    priority
-                />
+                {showPhoto ? (
+                    <Image
+                        src={activeImage!.trim()}
+                        alt={activeAlt}
+                        fill
+                        className="object-cover"
+                        sizes="(min-width: 1024px) 55vw, 100vw"
+                        onError={() => setImageHasError(true)}
+                        priority
+                    />
+                ) : (
+                    <CardImagePlaceholder title={productName} />
+                )}
             </div>
             <VariantSelector variants={variants} selectedVariantId={selectedVariant?.id} onSelect={(v) => setSelectedVariant(v)} />
 

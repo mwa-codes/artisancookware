@@ -459,19 +459,27 @@ export function ProductsClient({ products, categories }: { products: AdminProduc
     }, [search]);
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-                <div>
-                    <h1 className="font-heading text-2xl font-light text-ink">Products</h1>
-                    <p className="text-sm text-ink-60">Manage the Artisan Cookware product catalogue and pricing.</p>
+        <div className="space-y-6 w-full">
+            <div className="flex items-center justify-between">
+                <p className="text-sm text-ink-60">
+                    {products.length} product{products.length !== 1 ? "s" : ""} total
+                </p>
+                <div className="flex flex-wrap items-center gap-3">
+                    <div className="rounded-[2px] border border-ink-20 bg-parchment px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-ink">
+                        Featured {featuredCount}/4
+                    </div>
+                    <button
+                        type="button"
+                        onClick={() => {
+                            setModalProduct(null);
+                            setShowCreate(true);
+                        }}
+                        className="admin-btn-primary"
+                    >
+                        <Plus className="h-4 w-4" />
+                        Add Product
+                    </button>
                 </div>
-                <div className="rounded-[2px] border border-ink-20 bg-parchment px-4 py-2 text-xs font-semibold uppercase tracking-[0.12em] text-ink">
-                    Featured {featuredCount}/4
-                </div>
-                <button type="button" onClick={() => setShowCreate(true)} className="admin-btn-primary">
-                    <Plus className="h-4 w-4" />
-                    Add product
-                </button>
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-4 border border-ink-20 bg-white p-4 rounded-[2px] shadow-card">
@@ -488,7 +496,8 @@ export function ProductsClient({ products, categories }: { products: AdminProduc
             </div>
 
             <div className="overflow-hidden border border-ink-20 bg-white rounded-[2px] shadow-card">
-                <table className="min-w-full divide-y divide-ink-20 text-left text-sm text-ink-60">
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-ink-20 text-left text-sm text-ink-60">
                     <thead className="bg-parchment text-[10px] font-semibold uppercase tracking-[0.1em] text-ink-60">
                         <tr>
                             <th className="px-4 py-3">Image</th>
@@ -563,6 +572,7 @@ export function ProductsClient({ products, categories }: { products: AdminProduc
                         )}
                     </tbody>
                 </table>
+                </div>
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-4">

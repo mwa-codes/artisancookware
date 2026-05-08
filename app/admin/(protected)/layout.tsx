@@ -12,8 +12,8 @@ export default async function AdminProtectedLayout({ children }: { children: Rea
             <AdminSidebar />
             <div className="relative flex min-h-screen flex-1 flex-col bg-parchment">
                 <AdminTopbar />
-                <main className="flex-1 px-4 pb-16 pt-8 sm:px-6 lg:px-8">
-                    <div className="mx-auto w-full max-w-7xl space-y-8">{children}</div>
+                <main className="flex-1 px-4 pb-16 pt-6 sm:px-6 lg:px-10">
+                    <div className="mx-auto w-full max-w-7xl">{children}</div>
                 </main>
             </div>
         </div>

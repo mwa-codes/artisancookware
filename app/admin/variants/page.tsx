@@ -1,6 +1,7 @@
 import { redirect } from "next/navigation";
 
 import { VariantsClient } from "@/components/admin/VariantsClient";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { createSupabaseServerComponentClient } from "@/lib/supabaseServer";
 
 export const dynamic = "force-dynamic";
@@ -55,5 +56,14 @@ export default async function VariantsPage() {
         name: product.name
     }));
 
-    return <VariantsClient variants={variants} products={products} />;
+    return (
+        <div>
+            <AdminPageHeader
+                title="Product Variants"
+                description="Manage colour variants and images for each product."
+                crumbs={[{ label: "Variants" }]}
+            />
+            <VariantsClient variants={variants} products={products} />
+        </div>
+    );
 }

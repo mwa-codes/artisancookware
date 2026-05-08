@@ -1,5 +1,6 @@
 "use client";
 
+import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { Menu, X } from "lucide-react";
@@ -27,14 +28,19 @@ export function Header() {
             className="fixed left-0 right-0 top-0 z-[100] h-[68px] border-b border-[rgba(13,13,13,0.1)] bg-[rgba(254,254,254,0.96)] backdrop-blur-[12px]"
         >
             <div className="container-site flex h-full items-center justify-between gap-6">
-                <Link href="/" className="flex items-center gap-3 shrink-0">
-                    {/* If logo file exists, show it. Otherwise show text mark. */}
-                    {/* Uncomment when you add public/logo.png: */}
-                    {/* <Image src="/logo.png" alt="Artisan Cookware" width={140} height={36} priority /> */}
-                    <span className="grid h-8 w-8 shrink-0 place-items-center bg-ink text-[11px] font-bold uppercase tracking-tight text-gold-light">
-                        AC
+                <Link href="/" className="flex min-w-0 items-center gap-3 shrink-0">
+                    <Image
+                        src="/Artisan-logo.jpg"
+                        alt=""
+                        width={160}
+                        height={44}
+                        priority
+                        className="h-[40px] w-auto shrink-0 object-contain sm:h-[44px]"
+                        aria-hidden
+                    />
+                    <span className="font-heading max-w-[11rem] text-[17px] font-normal leading-tight text-ink sm:max-w-none sm:text-[20px]">
+                        Artisan Cookware
                     </span>
-                    <span className="font-heading text-[20px] font-normal leading-none text-ink">Artisan Cookware</span>
                 </Link>
 
                 <nav className="hidden md:flex flex-1 justify-center">

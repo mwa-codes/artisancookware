@@ -1,4 +1,5 @@
 import { InquiriesClient } from "@/components/admin/InquiriesClient";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { requireAdminSession } from "@/lib/adminAuth";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 
@@ -33,11 +34,12 @@ export default async function AdminInquiriesPage() {
     });
 
     return (
-        <div className="space-y-6">
-            <div>
-                <h1 className="font-heading text-3xl font-light text-ink">Inquiries</h1>
-                <p className="mt-2 text-sm text-ink-60">Wholesale enquiries submitted from the public site.</p>
-            </div>
+        <div>
+            <AdminPageHeader
+                title="Inquiries"
+                description="View and manage wholesale inquiries. Click any row to open the detail drawer."
+                crumbs={[{ label: "Inquiries" }]}
+            />
             <InquiriesClient rows={rows} />
         </div>
     );

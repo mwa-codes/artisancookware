@@ -10,16 +10,13 @@ function usdFromPkr(pkr: number | null | undefined): number | null {
     return Math.round((pkr / 278) * 100) / 100;
 }
 
-const unsplash = (id: string) =>
-    `https://images.unsplash.com/${id}?auto=format&fit=crop&w=1200&q=80`;
-
 export const categories: Category[] = [
     {
         id: "9ab4f474-3f19-4bf6-8465-63683bcab9d1",
         name: "Anodised/Dull",
         description: "Durable anodised cookware with a timeless matte finish, ideal for heavy duty kitchens.",
         slug: "anodised-dull",
-        imageUrl: unsplash("photo-1506368249639-73a05d6f6488"),
+        imageUrl: null,
         displayOrder: 1,
         isFeatured: true
     },
@@ -28,7 +25,7 @@ export const categories: Category[] = [
         name: "Metal Finish",
         description: "Polished metal cookware that shines in presentation and performance.",
         slug: "metal-finish",
-        imageUrl: unsplash("photo-1589307004390-97eb644ed3f2"),
+        imageUrl: null,
         displayOrder: 2,
         isFeatured: true
     },
@@ -37,7 +34,7 @@ export const categories: Category[] = [
         name: "Non-Stick",
         description: "Modern non-stick collections designed for low-fat, effortless cooking.",
         slug: "non-stick",
-        imageUrl: unsplash("photo-1516912481808-3406841bd33c"),
+        imageUrl: null,
         displayOrder: 3,
         isFeatured: true
     },
@@ -46,7 +43,7 @@ export const categories: Category[] = [
         name: "Soda Finish",
         description: "Classic soda-finish cookware celebrated for its distinctive texture.",
         slug: "soda-finish",
-        imageUrl: unsplash("photo-1556910096-6f5e72db6803"),
+        imageUrl: null,
         displayOrder: 4,
         isFeatured: true
     }
@@ -73,8 +70,7 @@ export const products: Product[] = [
             { label: "Finish", value: "High-gloss metal" },
             { label: "Weight", value: "11.5 kg (complete set)" }
         ],
-        imageUrl:
-            "https://images.unsplash.com/photo-1589307004390-97eb644ed3f2?auto=format&fit=crop&w=800&q=80",
+        imageUrl: null,
         priceType: "Factory",
         priceValue: 5400,
         factoryPriceValue: 5400,
@@ -107,8 +103,7 @@ export const products: Product[] = [
             { label: "Coating", value: "Triple-layer non-stick" },
             { label: "Weight", value: "12.2 kg (gross)" }
         ],
-        imageUrl:
-            "https://images.unsplash.com/photo-1516912481808-3406841bd33c?auto=format&fit=crop&w=800&q=80",
+        imageUrl: null,
         priceType: "Factory",
         priceValue: 6200,
         factoryPriceValue: 6200,
@@ -140,8 +135,7 @@ export const products: Product[] = [
             { label: "Finish", value: "Matte dull" },
             { label: "Weight", value: "14.0 kg (full set)" }
         ],
-        imageUrl:
-            "https://images.unsplash.com/photo-1506368249639-73a05d6f6488?auto=format&fit=crop&w=800&q=80",
+        imageUrl: null,
         priceType: "Factory",
         priceValue: 4800,
         factoryPriceValue: 4800,
@@ -172,8 +166,7 @@ export const products: Product[] = [
             { label: "Material", value: "Aluminium with metal finish" },
             { label: "Set Weight", value: "8.3 kg" }
         ],
-        imageUrl:
-            "https://images.unsplash.com/photo-1546069901-ba9599a7e63c?auto=format&fit=crop&w=800&q=80",
+        imageUrl: null,
         priceType: "Factory",
         priceValue: 5100,
         factoryPriceValue: 5100,
@@ -193,29 +186,25 @@ export const variants: ProductVariant[] = [
         id: "8b438b57-6d0b-4b78-b8ba-97ed9869965b",
         productId: products[1].id,
         colorName: "Antique Silver",
-        imageUrl:
-            "https://images.unsplash.com/photo-1522747776116-64ee0d07f6b6?auto=format&fit=crop&w=800&q=80"
+        imageUrl: null
     },
     {
         id: "86ad0dd8-3b71-4681-bad1-c116d0fb89e1",
         productId: products[1].id,
         colorName: "Black",
-        imageUrl:
-            "https://images.unsplash.com/photo-1528715471579-d1bcf0ba5e83?auto=format&fit=crop&w=800&q=80"
+        imageUrl: null
     },
     {
         id: "1e0dfc52-9728-4d90-bd02-1b047953afcf",
         productId: products[1].id,
         colorName: "Red",
-        imageUrl:
-            "https://images.unsplash.com/photo-1492144534655-ae79c964c9d7?auto=format&fit=crop&w=800&q=80"
+        imageUrl: null
     },
     {
         id: "2c17fed2-45d2-4f5a-8dd5-3ae675b89b75",
         productId: products[1].id,
         colorName: "Maroon",
-        imageUrl:
-            "https://images.unsplash.com/photo-1542718610-a1d656d189f4?auto=format&fit=crop&w=800&q=80"
+        imageUrl: null
     }
 ];
 

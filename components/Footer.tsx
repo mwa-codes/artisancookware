@@ -1,3 +1,4 @@
+import Image from "next/image";
 import Link from "next/link";
 
 function IconMail() {
@@ -29,138 +30,121 @@ const linkClass =
     "text-[color:rgba(255,255,255,0.5)] transition-colors hover:text-[color:rgba(255,255,255,0.9)]";
 
 export function Footer() {
-    const emailAddress = "m.waqar.ahmed@gmail.com";
+    const emailAddress = "info@artisancookware.co";
     const year = new Date().getFullYear();
 
     return (
         <footer className="bg-ink text-white">
-            <div className="container-site grid grid-cols-1 gap-12 py-16 md:grid-cols-2 lg:grid-cols-12 lg:gap-10">
-                <div className="lg:col-span-4 space-y-6">
-                    <p className="font-heading text-2xl">Artisan Cookware</p>
-                    <p className="max-w-md text-sm leading-relaxed text-[color:rgba(255,255,255,0.55)]">
-                        Premium aluminium cookware manufactured in Gujranwala since 1998. ISO-certified production for international wholesalers,
-                        retailers, and hospitality supply chains.
-                    </p>
-                    <div className="space-y-3 text-sm">
-                        <p className="flex items-start gap-3">
-                            <IconPin />
-                            <span className="text-[color:rgba(255,255,255,0.55)]">Industrial Estate, Gujranwala, Punjab, Pakistan</span>
+            <div className="container-site py-20 sm:py-24">
+                {/* Balanced grid: 2×2 on tablet, 4 cols on xl — avoids one lonely column */}
+                <div className="grid grid-cols-1 gap-14 md:grid-cols-2 xl:grid-cols-4 xl:gap-x-16 xl:gap-y-12">
+                    <div className="flex flex-col gap-6">
+                        <div className="space-y-4">
+                            {/* Light panel so the JPG logo stays visible (no invert filters) */}
+                            <div className="inline-flex w-fit rounded-[2px] bg-white px-5 py-3 shadow-sm">
+                                <Image
+                                    src="/Artisan-logo.jpg"
+                                    alt="Artisan Cookware"
+                                    width={160}
+                                    height={48}
+                                    className="h-10 w-auto max-w-[200px] object-contain object-left sm:h-11"
+                                />
+                            </div>
+                            <p className="font-heading text-2xl font-light tracking-tight text-white">Artisan Cookware</p>
+                        </div>
+                        <p className="max-w-md text-[15px] leading-relaxed text-[rgba(255,255,255,0.55)]">
+                            Premium aluminium cookware manufactured in Gujranwala since 1998. ISO-certified production for international wholesalers and
+                            hospitality supply chains.
                         </p>
-                        <p className="flex items-center gap-3">
-                            <IconPhone />
-                            <a href="tel:+923016636557" className={linkClass}>
-                                +92 301 6636557
-                            </a>
-                        </p>
-                        <p className="flex items-center gap-3">
-                            <IconMail />
-                            <a href={`mailto:${emailAddress}`} className={linkClass}>
-                                {emailAddress}
-                            </a>
-                        </p>
+                        <div className="space-y-4 text-sm">
+                            <p className="flex gap-3">
+                                <IconPin />
+                                <span className="text-[rgba(255,255,255,0.55)]">Industrial Estate, Gujranwala, Punjab, Pakistan</span>
+                            </p>
+                            <p className="flex items-center gap-3">
+                                <IconPhone />
+                                <a href="tel:+923016636557" className={linkClass}>
+                                    +92 301 6636557
+                                </a>
+                            </p>
+                            <p className="flex items-center gap-3">
+                                <IconMail />
+                                <a href={`mailto:${emailAddress}`} className={linkClass}>
+                                    {emailAddress}
+                                </a>
+                            </p>
+                        </div>
                     </div>
-                </div>
 
-                <div className="lg:col-span-2">
-                    <h3 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">Products</h3>
-                    <ul className="space-y-2 text-sm">
-                        <li>
-                            <Link href="/categories/non-stick" className={linkClass}>
-                                Non-Stick Collection
-                            </Link>
-                        </li>
-                        <li>
-                            <Link href="/categories/anodised-dull" className={linkClass}>
-                                Hard Anodised
-                            </Link>
-                        </li>
-                        <li>
-                            <Link href="/categories/metal-finish" className={linkClass}>
-                                Metal Finish
-                            </Link>
-                        </li>
-                        <li>
-                            <Link href="/categories/soda-finish" className={linkClass}>
-                                Prestige Range
-                            </Link>
-                        </li>
-                        <li>
-                            <Link href="/products" className={linkClass}>
-                                Full Catalogue
-                            </Link>
-                        </li>
-                    </ul>
-                </div>
+                    <div className="space-y-5">
+                        <h3 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">Products</h3>
+                        <ul className="space-y-3 text-sm">
+                            {[
+                                { href: "/categories/non-stick", label: "Non-Stick Collection" },
+                                { href: "/categories/anodised-dull", label: "Hard Anodised" },
+                                { href: "/categories/metal-finish", label: "Metal Finish" },
+                                { href: "/categories/soda-finish", label: "Prestige Range" },
+                                { href: "/products", label: "Full Catalogue" }
+                            ].map(({ href, label }) => (
+                                <li key={href}>
+                                    <Link href={href} className={linkClass}>
+                                        {label}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
 
-                <div className="lg:col-span-2">
-                    <h3 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">Company</h3>
-                    <ul className="space-y-2 text-sm">
-                        <li>
-                            <Link href="/about" className={linkClass}>
-                                About Us
-                            </Link>
-                        </li>
-                        <li>
-                            <Link href="/about#manufacturing" className={linkClass}>
-                                Manufacturing
-                            </Link>
-                        </li>
-                        <li>
-                            <Link href="/about#certifications" className={linkClass}>
-                                Certifications
-                            </Link>
-                        </li>
-                        <li>
-                            <Link href="/contact" className={linkClass}>
-                                Contact
-                            </Link>
-                        </li>
-                    </ul>
-                </div>
+                    <div className="space-y-5">
+                        <h3 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">Company</h3>
+                        <ul className="space-y-3 text-sm">
+                            {[
+                                { href: "/about", label: "About Us" },
+                                { href: "/about#manufacturing", label: "Manufacturing" },
+                                { href: "/about#certifications", label: "Certifications" },
+                                { href: "/contact", label: "Contact" }
+                            ].map(({ href, label }) => (
+                                <li key={href}>
+                                    <Link href={href} className={linkClass}>
+                                        {label}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
 
-                <div className="lg:col-span-2">
-                    <h3 className="mb-5 text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">Trade Info</h3>
-                    <ul className="space-y-2 text-sm">
-                        <li>
-                            <Link href="/contact#moq" className={linkClass}>
-                                MOQ &amp; Pricing
-                            </Link>
-                        </li>
-                        <li>
-                            <Link href="/contact#shipping" className={linkClass}>
-                                Shipping Terms
-                            </Link>
-                        </li>
-                        <li>
-                            <Link href="/contact#oem" className={linkClass}>
-                                OEM / Private Label
-                            </Link>
-                        </li>
-                        <li>
-                            <Link href="/contact#faq" className={linkClass}>
-                                B2B FAQ
-                            </Link>
-                        </li>
-                        <li>
-                            <Link href="/contact" className={linkClass}>
-                                Request Quote
-                            </Link>
-                        </li>
-                    </ul>
+                    <div className="space-y-5">
+                        <h3 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">Trade Info</h3>
+                        <ul className="space-y-3 text-sm">
+                            {[
+                                { href: "/contact#moq", label: "MOQ & Pricing" },
+                                { href: "/contact#shipping", label: "Shipping Terms" },
+                                { href: "/contact#oem", label: "OEM / Private Label" },
+                                { href: "/contact#faq", label: "B2B FAQ" },
+                                { href: "/contact", label: "Request Quote" }
+                            ].map(({ href, label }) => (
+                                <li key={href}>
+                                    <Link href={href} className={linkClass}>
+                                        {label}
+                                    </Link>
+                                </li>
+                            ))}
+                        </ul>
+                    </div>
                 </div>
             </div>
 
             <div className="border-t border-white/10">
-                <div className="container-site flex flex-col gap-4 py-6 text-[12px] text-[color:rgba(255,255,255,0.3)] md:flex-row md:items-center md:justify-between">
-                    <p>© {year} Artisan Cookware. All rights reserved.</p>
-                    <div className="flex flex-wrap gap-6">
-                        <Link href="/privacy" className="transition-colors hover:text-white/50">
+                <div className="container-site flex flex-col gap-5 pt-8 pb-[calc(3rem+env(safe-area-inset-bottom,0px))] text-[12px] text-[rgba(255,255,255,0.35)] sm:flex-row sm:items-center sm:justify-between sm:pb-[calc(3.5rem+env(safe-area-inset-bottom,0px))]">
+                    <p className="leading-relaxed">© {year} Artisan Cookware. All rights reserved. ISO 9001:2015 Certified.</p>
+                    <div className="flex flex-wrap gap-6 sm:gap-8">
+                        <Link href="/privacy" className="transition-colors hover:text-white/70">
                             Privacy Policy
                         </Link>
-                        <Link href="/terms" className="transition-colors hover:text-white/50">
+                        <Link href="/terms" className="transition-colors hover:text-white/70">
                             Terms of Trade
                         </Link>
-                        <Link href="/sitemap.xml" className="transition-colors hover:text-white/50">
+                        <Link href="/sitemap.xml" className="transition-colors hover:text-white/70">
                             Sitemap
                         </Link>
                     </div>

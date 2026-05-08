@@ -1,5 +1,6 @@
 import Link from "next/link";
 import { Package, FolderOpen, Layers, Mail } from "lucide-react";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 
 type RecentInquiry = {
@@ -69,14 +70,7 @@ export default async function AdminDashboardPage() {
 
     return (
         <div className="space-y-8">
-            <div className="border-b border-ink-20 pb-6">
-                <div className="eyebrow">
-                    <div className="eyebrow-line" />
-                    <span className="eyebrow-text">Overview</span>
-                </div>
-                <h1 className="font-heading text-3xl font-light text-ink">Dashboard</h1>
-                <p className="mt-1 text-sm text-ink-60">Monitor your catalogue and incoming inquiries.</p>
-            </div>
+            <AdminPageHeader title="Dashboard" description="Monitor your catalogue and incoming inquiries." />
 
             <div className="grid grid-cols-2 gap-2 xl:grid-cols-4">
                 {statCards.map(({ label, value, href, icon: Icon }) => (

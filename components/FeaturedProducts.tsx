@@ -16,9 +16,33 @@ export function FeaturedProducts({ products }: { products: ProductWithRelations[
     const [filter, setFilter] = useState<(typeof FILTERS)[number]["id"]>("all");
 
     const filtered = useMemo(() => {
+        if (!products?.length) return [];
         if (filter === "all") return products;
         return products.filter((p) => p.category?.slug === filter);
     }, [products, filter]);
+
+    if (!products || products.length === 0) {
+        return (
+            <section className="bg-parchment py-20 sm:py-24">
+                <div className="container-site">
+                    <div className="eyebrow">
+                        <span className="eyebrow-line" />
+                        <span className="eyebrow-text">Wholesale Catalogue</span>
+                    </div>
+                    <h2 className="font-heading text-section font-light text-ink">Featured Product Lines</h2>
+                    <div className="mt-14 border border-dashed border-ink-20 py-20 text-center">
+                        <p className="text-sm text-ink-60">
+                            No featured products yet. Go to{" "}
+                            <a href="/admin/products" className="text-gold underline">
+                                Admin → Products
+                            </a>{" "}
+                            and mark products as featured.
+                        </p>
+                    </div>
+                </div>
+            </section>
+        );
+    }
 
     const [featured, ...rest] = filtered.length ? filtered : products;
 
@@ -56,9 +80,7 @@ export function FeaturedProducts({ products }: { products: ProductWithRelations[
                 </div>
 
                 <div className="mt-14 grid grid-cols-1 gap-[2px] md:grid-cols-2 xl:grid-cols-3">
-                    {featured ? (
-                        <ProductCard key={featured.id} product={featured} layout="featured" />
-                    ) : null}
+                    {featured ? <ProductCard key={featured.id} product={featured} layout="featured" /> : null}
                     {rest.map((p) => (
                         <ProductCard key={p.id} product={p} />
                     ))}
@@ -69,7 +91,10 @@ export function FeaturedProducts({ products }: { products: ProductWithRelations[
                 ) : null}
 
                 <div className="mt-12 text-center">
-                    <Link href="/products" className="text-[13px] font-semibold uppercase tracking-[0.12em] text-ink underline underline-offset-4 transition hover:text-gold">
+                    <Link
+                        href="/products"
+                        className="text-[13px] font-semibold uppercase tracking-[0.12em] text-ink underline underline-offset-4 transition hover:text-gold"
+                    >
                         View Full Catalogue
                     </Link>
                 </div>

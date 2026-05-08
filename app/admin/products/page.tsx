@@ -1,4 +1,5 @@
 import { ProductsClient, type AdminCategoryOption, type AdminProduct } from "@/components/admin/ProductsClient";
+import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 
 function serialiseFeatures(features: unknown): string | null {
@@ -55,5 +56,14 @@ export default async function AdminProductsPage() {
         created_at: product.created_at
     }));
 
-    return <ProductsClient categories={categories} products={products} />;
+    return (
+        <div>
+            <AdminPageHeader
+                title="Products"
+                description="Manage your product catalogue — add, edit, or remove products."
+                crumbs={[{ label: "Products" }]}
+            />
+            <ProductsClient categories={categories} products={products} />
+        </div>
+    );
 }

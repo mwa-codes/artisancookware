@@ -3,15 +3,16 @@
 import Image from "next/image";
 import Link from "next/link";
 import { ArrowRight } from "lucide-react";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import type { ProductWithRelations } from "@/lib/types";
 import { PriceDisplay } from "@/components/PriceDisplay";
+import { CardImagePlaceholder } from "@/components/MediaPlaceholder";
 
-function initialCardImage(product: ProductWithRelations) {
-    const variantUrl = product.variants?.find((v) => v.imageUrl)?.imageUrl ?? null;
+function resolveProductImageUrl(product: ProductWithRelations): string | null {
     const main = product.imageUrl?.trim();
-    const variant = variantUrl?.trim();
-    return main || variant || "/logo-with-slogan.jpeg";
+    if (main) return main;
+    const variantUrl = product.variants?.find((v) => v.imageUrl?.trim())?.imageUrl?.trim();
+    return variantUrl || null;
 }
 
 function sizeTokens(sizes: string | null): string[] {
@@ -30,7 +31,14 @@ export function ProductCard({
     product: ProductWithRelations;
     layout?: "default" | "featured";
 }) {
-    const [imageSrc, setImageSrc] = useState(() => initialCardImage(product));
+    const remoteUrl = resolveProductImageUrl(product);
+    const [imageFailed, setImageFailed] = useState(false);
+
+    useEffect(() => {
+        setImageFailed(false);
+    }, [product.id, remoteUrl]);
+
+    const showRemoteImage = Boolean(remoteUrl) && !imageFailed;
 
     const badge = useMemo(() => {
         if (product.isFeatured) return "Featured";
@@ -39,27 +47,37 @@ export function ProductCard({
 
     const pills = sizeTokens(product.sizes);
 
-    const inner = (
+    const mediaSizes =
+        layout === "featured"
+            ? "(min-width: 1024px) 50vw, 100vw"
+            : "(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw";
+
+    const imageSlot = (
         <>
-            <div className="relative aspect-[4/3] w-full overflow-hidden bg-parchment">
+            {showRemoteImage ? (
                 <Image
-                    src={imageSrc}
+                    src={remoteUrl!}
                     alt={product.name}
                     fill
                     className="product-img object-cover"
-                    sizes={
-                        layout === "featured"
-                            ? "(min-width: 1280px) 66vw, 100vw"
-                            : "(min-width: 1280px) 33vw, (min-width: 768px) 50vw, 100vw"
-                    }
-                    unoptimized={imageSrc.startsWith("http://") || imageSrc.startsWith("https://")}
-                    onError={() => setImageSrc("/logo-with-slogan.jpeg")}
+                    sizes={mediaSizes}
+                    onError={() => setImageFailed(true)}
                 />
-                {badge ? (
-                    <span className="absolute left-4 top-4 bg-ink px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-light">
-                        {badge}
-                    </span>
-                ) : null}
+            ) : (
+                <CardImagePlaceholder title={product.name} />
+            )}
+            {badge ? (
+                <span className="absolute left-4 top-4 z-10 bg-ink px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-light">
+                    {badge}
+                </span>
+            ) : null}
+        </>
+    );
+
+    const inner = (
+        <>
+            <div className="relative aspect-[4/3] w-full overflow-hidden bg-parchment">
+                {imageSlot}
             </div>
 
             <div className="flex flex-1 flex-col px-7 pb-7 pt-6">
@@ -110,22 +128,7 @@ export function ProductCard({
     if (layout === "featured") {
         return (
             <article className="product-card shadow-card xl:col-span-2 xl:grid xl:grid-cols-2 xl:gap-0">
-                <div className="relative min-h-[280px] lg:min-h-full">
-                    <Image
-                        src={imageSrc}
-                        alt={product.name}
-                        fill
-                        className="product-img object-cover"
-                        sizes="(min-width: 1024px) 50vw, 100vw"
-                        unoptimized={imageSrc.startsWith("http")}
-                        onError={() => setImageSrc("/logo-with-slogan.jpeg")}
-                    />
-                    {badge ? (
-                        <span className="absolute left-4 top-4 bg-ink px-3 py-1.5 text-[10px] font-semibold uppercase tracking-[0.14em] text-gold-light">
-                            {badge}
-                        </span>
-                    ) : null}
-                </div>
+                <div className="relative min-h-[280px] lg:min-h-full">{imageSlot}</div>
                 <div className="flex flex-col justify-center bg-white px-7 pb-7 pt-6 lg:px-10 lg:py-10">
                     <p className="text-[10px] font-semibold uppercase tracking-[0.14em] text-gold">
                         {product.category?.name ?? "Cookware"}

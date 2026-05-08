@@ -259,14 +259,13 @@ export function CategoriesClient({ categories }: { categories: AdminCategory[] }
     }, [search]);
 
     return (
-        <div className="space-y-6">
-            <div className="flex flex-wrap items-center justify-between gap-4">
-                <div>
-                    <h1 className="font-heading text-2xl font-light text-ink">Categories</h1>
-                    <p className="text-sm text-ink-60">Organise the catalogue into curated cookware collections.</p>
-                </div>
+        <div className="space-y-6 w-full">
+            <div className="flex items-center justify-between">
+                <p className="text-sm text-ink-60">
+                    {categories.length} collection{categories.length !== 1 ? "s" : ""} total
+                </p>
                 <button type="button" onClick={() => setShowCreate(true)} className="admin-btn-primary">
-                    Add category
+                    Add Collection
                 </button>
             </div>
 
@@ -284,7 +283,8 @@ export function CategoriesClient({ categories }: { categories: AdminCategory[] }
             </div>
 
             <div className="overflow-hidden border border-ink-20 bg-white rounded-[2px] shadow-card">
-                <table className="min-w-full divide-y divide-ink-20 text-left text-sm">
+                <div className="overflow-x-auto">
+                    <table className="min-w-full divide-y divide-ink-20 text-left text-sm">
                     <thead className="bg-parchment text-[10px] font-semibold uppercase tracking-[0.1em] text-ink-60">
                         <tr>
                             <th className="px-4 py-3">Image</th>
@@ -351,6 +351,7 @@ export function CategoriesClient({ categories }: { categories: AdminCategory[] }
                         )}
                     </tbody>
                 </table>
+                </div>
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-4">

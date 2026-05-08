@@ -42,6 +42,11 @@ function isActiveRow(row: SupabaseProductRow): boolean {
     return false;
 }
 
+/** Homepage hero + featured: show everything except discontinued (includes draft for visibility while setting up). */
+function isHomepageFeaturedProduct(row: SupabaseProductRow): boolean {
+    return row.status !== "discontinued";
+}
+
 export const getFeaturedProducts = cache(async (limit: number = 3): Promise<ProductWithRelations[]> => {
     const take = Number.isFinite(limit) && limit > 0 ? Math.floor(limit) : 3;
     const allCategories = await getCategories();
@@ -60,7 +65,7 @@ export const getFeaturedProducts = cache(async (limit: number = 3): Promise<Prod
             .select("*")
             .order("is_featured", { ascending: false })
             .order("created_at", { ascending: false })
-            .limit(take * 2);
+            .limit(Math.max(take * 4, 48));
 
         if (error || !data?.length) {
             if (error) logSupabaseReadFailure("featuredProducts", error);
@@ -70,7 +75,7 @@ export const getFeaturedProducts = cache(async (limit: number = 3): Promise<Prod
             });
         }
 
-        const filtered = (data as SupabaseProductRow[]).filter(isActiveRow).slice(0, take);
+        const filtered = (data as SupabaseProductRow[]).filter(isHomepageFeaturedProduct).slice(0, take);
         const variantMap = await fetchVariantsForProductIds(filtered.map((p) => p.id));
 
         return filtered.map((row) => {
