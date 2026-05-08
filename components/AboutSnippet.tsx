@@ -1,4 +1,4 @@
-import { IconImagePlaceholder } from "@/components/MediaPlaceholder";
+import Image from "next/image";
 
 const ITEMS = [
     {
@@ -19,11 +19,34 @@ const ITEMS = [
     }
 ];
 
+const FACTORY_IMAGES = [
+    "/factoryImages/factory-image-1.png",
+    "/factoryImages/factory-image-2.jpeg",
+    "/factoryImages/factory-image-3.jpeg",
+    "/factoryImages/factory-image-4.jpeg",
+    "/factoryImages/factory-image-5.jpeg",
+    "/factoryImages/factory-image-6.jpeg",
+    "/factoryImages/factory-image-7.jpeg",
+    "/factoryImages/factory-image-8.jpeg"
+];
+
 export function AboutSnippet() {
     return (
         <section className="grid lg:grid-cols-2">
-            <div className="relative min-h-[420px] lg:min-h-[640px]">
-                <IconImagePlaceholder />
+            <div className="relative min-h-[420px] overflow-hidden bg-ink p-3 lg:min-h-[640px] lg:p-4">
+                <div className="grid h-full grid-cols-2 grid-rows-4 gap-2 lg:gap-3">
+                    {FACTORY_IMAGES.map((src, index) => (
+                        <div key={src} className="group relative overflow-hidden rounded-[2px]">
+                            <Image
+                                src={src}
+                                alt={`Artisan Cookware factory view ${index + 1}`}
+                                fill
+                                className="object-cover transition-transform duration-700 ease-out group-hover:scale-[1.05]"
+                                sizes="(min-width: 1024px) 25vw, 50vw"
+                            />
+                        </div>
+                    ))}
+                </div>
             </div>
             <div className="flex flex-col justify-center bg-parchment px-6 py-14 sm:px-10 lg:px-16 lg:py-20">
                 <div className="eyebrow">
