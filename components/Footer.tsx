@@ -31,6 +31,7 @@ const linkClass =
 
 export function Footer() {
     const emailAddress = "m.waqar.ahmed@gmail.com";
+    const googleProfileUrl = "https://share.google/M9iabBk3snLTJa7Lk";
     const year = new Date().getFullYear();
 
     return (
@@ -52,7 +53,17 @@ export function Footer() {
                         <div className="space-y-4 text-sm">
                             <p className="flex gap-3">
                                 <IconPin />
-                                <span className="text-[rgba(255,255,255,0.55)]">Industrial Estate, Gujranwala, Punjab, Pakistan</span>
+                                <span className="text-[rgba(255,255,255,0.55)]">
+                                    Artisan Cookware, Mian Sansi Rd Street Number 10, Muhala Islampura, Gujranwala, Punjab, Pakistan{" "}
+                                    <a
+                                        href={googleProfileUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="ml-1 underline underline-offset-2 transition-colors hover:text-[rgba(255,255,255,0.9)]"
+                                    >
+                                        (View on Google)
+                                    </a>
+                                </span>
                             </p>
                             <p className="flex items-center gap-3">
                                 <IconPhone />

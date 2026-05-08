@@ -9,6 +9,7 @@ export const metadata = {
 export default async function ContactPage() {
     const catalogue = await getAllProductsForListing();
     const productOptions = catalogue.map((p) => ({ id: p.id, label: p.name }));
+    const googleProfileUrl = "https://share.google/M9iabBk3snLTJa7Lk";
 
     return (
         <div className="bg-white pt-[68px]">
@@ -39,8 +40,16 @@ export default async function ContactPage() {
                         <div className="rounded-[4px] border border-ink-20 bg-white p-6">
                             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">Address</p>
                             <p className="mt-2 text-[15px] font-light leading-relaxed text-[color:rgba(13,13,13,0.65)]">
-                                Industrial Estate, Gujranwala, Punjab, Pakistan
+                                Artisan Cookware, Mian Sansi Rd Street Number 10, Muhala Islampura, Gujranwala, Punjab , Pakistan
                             </p>
+                            <a
+                                href={googleProfileUrl}
+                                target="_blank"
+                                rel="noopener noreferrer"
+                                className="mt-3 inline-flex text-[12px] font-semibold uppercase tracking-[0.1em] text-gold transition-colors hover:text-ink"
+                            >
+                                Open Google Business Profile →
+                            </a>
                         </div>
                         <div className="relative aspect-video overflow-hidden rounded-[4px] border border-ink-20">
                             <iframe
