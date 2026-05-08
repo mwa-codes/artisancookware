@@ -28,6 +28,9 @@ export function Header() {
         >
             <div className="container-site flex h-full items-center justify-between gap-6">
                 <Link href="/" className="flex items-center gap-3 shrink-0">
+                    {/* If logo file exists, show it. Otherwise show text mark. */}
+                    {/* Uncomment when you add public/logo.png: */}
+                    {/* <Image src="/logo.png" alt="Artisan Cookware" width={140} height={36} priority /> */}
                     <span className="grid h-8 w-8 shrink-0 place-items-center bg-ink text-[11px] font-bold uppercase tracking-tight text-gold-light">
                         AC
                     </span>

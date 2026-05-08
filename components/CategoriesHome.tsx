@@ -19,7 +19,7 @@ export function CategoriesHome({ categories }: { categories: Category[] }) {
                         </div>
                         <h2 className="font-heading text-section font-light text-ink">Four Signature Collections</h2>
                     </div>
-                    <Link href="/categories" className="text-[13px] font-semibold uppercase tracking-[0.12em] text-ink underline underline-offset-4 transition hover:text-brand-red md:mb-2">
+                    <Link href="/categories" className="text-[13px] font-semibold uppercase tracking-[0.12em] text-ink underline underline-offset-4 transition hover:text-gold md:mb-2">
                         Browse All →
                     </Link>
                 </div>

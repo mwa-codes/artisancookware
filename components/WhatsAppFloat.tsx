@@ -4,7 +4,7 @@ export function WhatsAppFloat() {
             href="https://wa.me/923016636557"
             target="_blank"
             rel="noopener noreferrer"
-            className="fixed bottom-7 right-7 z-[200] grid h-[52px] w-[52px] place-items-center bg-[#25D366] text-white shadow-card transition-transform hover:scale-[1.08]"
+            className="fixed bottom-7 right-7 z-[200] flex h-[52px] w-[52px] items-center justify-center bg-[#25D366] text-white shadow-lg hover:scale-105 transition-transform"
             aria-label="WhatsApp"
         >
             <svg viewBox="0 0 24 24" className="h-7 w-7 fill-current" aria-hidden>

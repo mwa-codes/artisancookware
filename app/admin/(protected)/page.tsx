@@ -1,12 +1,6 @@
 import Link from "next/link";
+import { Package, FolderOpen, Layers, Mail } from "lucide-react";
 import { getSupabaseServiceClient } from "@/lib/supabase";
-
-const metrics = [
-    { key: "categories", name: "Categories", href: "/admin/categories" },
-    { key: "products", name: "Products", href: "/admin/products" },
-    { key: "variants", name: "Variants", href: "/admin/variants" },
-    { key: "inquiries", name: "Inquiries", href: "/admin/inquiries" }
-] as const;
 
 type RecentInquiry = {
     id: string;
@@ -35,13 +29,13 @@ async function getDashboardData(): Promise<DashboardData> {
         supabase.from("inquiries").select("id", { count: "exact", head: true }),
         supabase
             .from("inquiries")
-            .select("id, customer_name, email, message, created_at, product:products!inquiries_product_id_fkey(id, name)")
+            .select("id, customer_name, email, message, created_at, products(id, name)")
             .order("created_at", { ascending: false })
             .limit(5)
     ]);
 
     const recentInquiriesData: RecentInquiry[] = (recentInquiries.data ?? []).map((item: any) => {
-        const productRelation = item.product;
+        const productRelation = item.products;
         const product = Array.isArray(productRelation) ? productRelation[0] ?? null : productRelation ?? null;
 
         return {
@@ -66,96 +60,96 @@ async function getDashboardData(): Promise<DashboardData> {
 export default async function AdminDashboardPage() {
     const data = await getDashboardData();
 
+    const statCards = [
+        { label: "Products", value: data.products, href: "/admin/products", icon: Package },
+        { label: "Categories", value: data.categories, href: "/admin/categories", icon: FolderOpen },
+        { label: "Variants", value: data.variants, href: "/admin/variants", icon: Layers },
+        { label: "Inquiries", value: data.inquiries, href: "/admin/inquiries", icon: Mail }
+    ];
+
     return (
         <div className="space-y-8">
-            {/* Welcome Section */}
-            <div className="rounded-4xl border border-brand-primary/10 bg-gradient-to-br from-white via-brand-surface/30 to-brand-light/20 p-8 shadow-premium">
-                <h1 className="font-heading text-3xl font-bold text-brand-slate">Dashboard Overview</h1>
-                <p className="mt-2 text-slate-600">Monitor your cookware catalogue and customer inquiries in real-time.</p>
+            <div className="border-b border-ink-20 pb-6">
+                <div className="eyebrow">
+                    <div className="eyebrow-line" />
+                    <span className="eyebrow-text">Overview</span>
+                </div>
+                <h1 className="font-heading text-3xl font-light text-ink">Dashboard</h1>
+                <p className="mt-1 text-sm text-ink-60">Monitor your catalogue and incoming inquiries.</p>
             </div>
 
-            {/* Stats Grid */}
-            <section className="grid gap-6 sm:grid-cols-2 xl:grid-cols-4">
-                {metrics.map((metric) => {
-                    const value = data[metric.key];
-                    return (
-                        <Link
-                            key={metric.name}
-                            href={metric.href}
-                            className="stat-card group"
-                        >
-                            <div className="flex items-center justify-between">
-                                <p className="text-xs font-semibold uppercase tracking-wider text-slate-500">{metric.name}</p>
-                                <div className="grid h-10 w-10 place-items-center rounded-xl bg-brand-surface transition-colors group-hover:bg-brand-primary/10">
-                                    <span className="text-brand-primary">→</span>
-                                </div>
-                            </div>
-                            <p className="mt-4 font-heading text-4xl font-bold text-brand-slate">{value}</p>
-                            <span className="mt-2 text-sm font-medium text-slate-500 transition-colors group-hover:text-brand-primary">
-                                View all {metric.name.toLowerCase()}
-                            </span>
-                        </Link>
-                    );
-                })}
-            </section>
+            <div className="grid grid-cols-2 gap-2 xl:grid-cols-4">
+                {statCards.map(({ label, value, href, icon: Icon }) => (
+                    <Link key={href} href={href} className="stat-card group">
+                        <div className="flex items-center justify-between mb-4">
+                            <span className="admin-label mb-0">{label}</span>
+                            <Icon className="h-4 w-4 text-gold" />
+                        </div>
+                        <div className="font-heading text-4xl font-light text-ink">{value}</div>
+                        <div className="mt-2 text-[11px] uppercase tracking-[0.08em] text-ink-60 group-hover:text-gold transition-colors">
+                            View all →
+                        </div>
+                    </Link>
+                ))}
+            </div>
 
-            {/* Recent Inquiries */}
-            <section className="rounded-4xl border border-brand-primary/10 bg-white p-8 shadow-card">
-                <div className="flex flex-wrap items-center justify-between gap-4 border-b border-slate-100 pb-6">
-                    <div>
-                        <h2 className="font-heading text-2xl font-bold text-brand-slate">Recent Inquiries</h2>
-                        <p className="mt-1 text-sm text-slate-600">Latest messages from potential partners and customers.</p>
-                    </div>
+            <div className="flex gap-3 flex-wrap">
+                <Link href="/admin/products?action=new" className="admin-btn-primary">
+                    + Add Product
+                </Link>
+                <Link href="/admin/categories?action=new" className="admin-btn-outline">
+                    + Add Category
+                </Link>
+                <Link href="/admin/inquiries" className="admin-btn-outline">
+                    View Inquiries
+                </Link>
+            </div>
+
+            <div className="bg-white border border-ink-20 rounded-[2px]">
+                <div className="flex items-center justify-between px-6 py-4 border-b border-ink-20">
+                    <h2 className="font-heading text-xl font-light text-ink">Recent Inquiries</h2>
                     <Link
                         href="/admin/inquiries"
-                        className="btn-secondary text-sm"
+                        className="text-[12px] font-semibold uppercase tracking-[0.08em] text-gold hover:text-ink transition-colors"
                     >
-                        View All
+                        View All →
                     </Link>
                 </div>
-
-                <div className="mt-6 space-y-4">
-                    {data.recentInquiries.length === 0 ? (
-                        <div className="rounded-3xl border border-dashed border-slate-200 bg-slate-50/50 p-12 text-center">
-                            <p className="text-sm text-slate-500">No inquiries received yet.</p>
-                        </div>
-                    ) : (
-                        data.recentInquiries.map((inquiry) => (
-                            <article
-                                key={inquiry.id}
-                                className="rounded-3xl border border-slate-100 bg-gradient-to-br from-white to-slate-50/30 p-6 shadow-sm transition-shadow hover:shadow-md"
-                            >
-                                <div className="flex flex-wrap items-start justify-between gap-3">
-                                    <div className="flex-1">
-                                        <div className="flex items-center gap-3">
-                                            <div className="grid h-10 w-10 place-items-center rounded-full bg-brand-primary/10 font-semibold text-brand-primary">
-                                                {inquiry.customer_name.charAt(0).toUpperCase()}
-                                            </div>
-                                            <div>
-                                                <p className="font-semibold text-brand-slate">{inquiry.customer_name}</p>
-                                                <p className="text-xs text-slate-500">{inquiry.email}</p>
-                                            </div>
+                {data.recentInquiries.length === 0 ? (
+                    <div className="px-6 py-12 text-center text-sm text-ink-60">No inquiries yet.</div>
+                ) : (
+                    <div className="divide-y divide-ink-20">
+                        {data.recentInquiries.map((inquiry) => (
+                            <div key={inquiry.id} className="px-6 py-4">
+                                <div className="flex items-start justify-between gap-4">
+                                    <div className="flex items-center gap-3">
+                                        <div className="grid h-9 w-9 shrink-0 place-items-center bg-parchment text-sm font-semibold text-ink rounded-[2px]">
+                                            {inquiry.customer_name.charAt(0).toUpperCase()}
                                         </div>
-                                        <p className="mt-4 text-sm leading-relaxed text-slate-700">{inquiry.message}</p>
-                                        {inquiry.product && (
-                                            <div className="mt-3 inline-flex items-center gap-2 rounded-full border border-brand-primary/20 bg-brand-surface px-3 py-1 text-xs font-medium text-brand-primary">
-                                                Product: {inquiry.product.name}
-                                            </div>
-                                        )}
+                                        <div>
+                                            <div className="text-sm font-medium text-ink">{inquiry.customer_name}</div>
+                                            <div className="text-xs text-ink-60">{inquiry.email}</div>
+                                        </div>
                                     </div>
-                                    <time className="text-xs font-medium text-slate-400">
-                                        {new Date(inquiry.created_at).toLocaleDateString("en-PK", {
-                                            month: "short",
+                                    <time className="shrink-0 text-xs text-ink-60">
+                                        {new Date(inquiry.created_at).toLocaleDateString("en-GB", {
                                             day: "numeric",
+                                            month: "short",
                                             year: "numeric"
                                         })}
                                     </time>
                                 </div>
-                            </article>
-                        ))
-                    )}
-                </div>
-            </section>
+                                <p className="mt-3 text-sm text-ink-60 line-clamp-2">{inquiry.message}</p>
+                                {inquiry.product && (
+                                    <div className="mt-2 inline-flex items-center gap-1.5 border border-gold/30 bg-gold-pale px-2 py-1 text-[11px] font-medium uppercase tracking-[0.06em] text-gold rounded-[2px]">
+                                        {inquiry.product.name}
+                                    </div>
+                                )}
+                            </div>
+                        ))}
+                    </div>
+                )}
+            </div>
         </div>
     );
 }

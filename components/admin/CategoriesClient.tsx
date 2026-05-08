@@ -1,8 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState } from "react";
+import Image from "next/image";
+import { useEffect, useMemo, useState, type ChangeEvent } from "react";
 import { useFormState } from "react-dom";
 import { clsx } from "clsx";
+import { ImageIcon, X, Trash2 } from "lucide-react";
 import {
     createCategoryAction,
     deleteCategoryAction,
@@ -10,10 +12,14 @@ import {
     updateCategoryAction
 } from "@/app/admin/categories/actions";
 
-type AdminCategory = {
+export type AdminCategory = {
     id: string;
     name: string;
+    slug: string;
     description: string | null;
+    image_url: string | null;
+    display_order: number;
+    is_featured: boolean;
     created_at: string;
 };
 
@@ -31,68 +37,163 @@ function CategoryModal({ open, onClose, category }: ModalProps) {
     const isEdit = Boolean(category);
     const action = isEdit ? updateCategoryAction : createCategoryAction;
     const [state, formAction] = useFormState(action, initialFormState);
+    const [slugTouched, setSlugTouched] = useState(false);
+    const [slugValue, setSlugValue] = useState(category?.slug ?? "");
+    const [previewImage, setPreviewImage] = useState<string | null>(category?.image_url ?? null);
 
     useEffect(() => {
-        if (state.success) {
-            onClose();
-        }
+        if (state.success) onClose();
     }, [state.success, onClose]);
+
+    useEffect(() => {
+        setSlugValue(category?.slug ?? "");
+        setSlugTouched(false);
+        setPreviewImage(category?.image_url ?? null);
+    }, [category?.id, category?.slug, category?.image_url]);
+
+    function handleNameChange(e: ChangeEvent<HTMLInputElement>) {
+        if (!slugTouched && !isEdit) {
+            const autoSlug = e.target.value
+                .toLowerCase()
+                .replace(/[^a-z0-9\s-]/g, "")
+                .replace(/\s+/g, "-")
+                .replace(/-+/g, "-")
+                .trim();
+            setSlugValue(autoSlug);
+        }
+    }
+
+    function handleImageChange(e: ChangeEvent<HTMLInputElement>) {
+        const file = e.target.files?.[0];
+        if (file) {
+            const reader = new FileReader();
+            reader.onload = (ev) => setPreviewImage(ev.target?.result as string);
+            reader.readAsDataURL(file);
+        }
+    }
 
     if (!open) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-4 py-6 backdrop-blur-sm">
-            <form
-                action={formAction}
-                className="w-full max-w-lg space-y-5 rounded-[2rem] border border-brand-primary/15 bg-white/90 p-8 shadow-2xl shadow-brand-primary/20"
-            >
-                <div className="space-y-1">
-                    <h2 className="font-heading text-2xl font-semibold text-slate-900">
-                        {isEdit ? "Edit category" : "Add category"}
-                    </h2>
-                    <p className="text-sm text-slate-600">
-                        {isEdit ? "Update the category information." : "Create a new product category for the catalogue."}
-                    </p>
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 px-4 py-6 backdrop-blur-sm">
+            <form action={formAction} encType="multipart/form-data" className="w-full max-w-lg bg-white shadow-xl rounded-[2px]">
+                <div className="flex items-center justify-between border-b border-ink-20 px-6 py-4">
+                    <h2 className="font-heading text-xl font-light text-ink">{isEdit ? "Edit Collection" : "Add Collection"}</h2>
+                    <button type="button" onClick={onClose} className="text-ink-60 hover:text-ink">
+                        <X className="h-5 w-5" />
+                    </button>
                 </div>
-                {isEdit ? <input type="hidden" name="id" defaultValue={category?.id} /> : null}
-                <div className="space-y-2">
-                    <label htmlFor="category-name" className="text-sm font-medium text-slate-700">
-                        Name
+
+                {isEdit && <input type="hidden" name="id" value={category?.id} />}
+
+                <div className="px-6 py-5 space-y-5 max-h-[70vh] overflow-y-auto">
+                    <div>
+                        <label className="admin-label">Collection Image</label>
+                        <div className="flex gap-4 items-start">
+                            {previewImage ? (
+                                <div className="h-20 w-20 shrink-0 overflow-hidden border border-ink-20 rounded-[2px]">
+                                    {/* eslint-disable-next-line @next/next/no-img-element */}
+                                    <img src={previewImage} alt="Preview" className="h-full w-full object-cover" />
+                                </div>
+                            ) : (
+                                <div className="h-20 w-20 shrink-0 bg-parchment border border-dashed border-ink-20 flex items-center justify-center text-ink-60 rounded-[2px]">
+                                    <ImageIcon className="h-5 w-5" />
+                                </div>
+                            )}
+                            <div className="flex-1">
+                                <input
+                                    type="file"
+                                    name="image"
+                                    accept="image/jpeg,image/png,image/webp"
+                                    onChange={handleImageChange}
+                                    className="block w-full text-sm text-ink-60 file:mr-3 file:border file:border-ink-20 file:bg-parchment file:px-3 file:py-1.5 file:text-xs file:font-medium file:uppercase file:tracking-wide file:text-ink file:cursor-pointer rounded-[2px]"
+                                />
+                                <p className="mt-1 text-xs text-ink-60">Recommended: portrait ratio (3:4), min 600×800px</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div>
+                        <label className="admin-label" htmlFor="cat-name">
+                            Name *
+                        </label>
+                        <input
+                            id="cat-name"
+                            name="name"
+                            required
+                            defaultValue={category?.name ?? ""}
+                            onChange={handleNameChange}
+                            className="admin-input"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="admin-label" htmlFor="cat-slug">
+                            URL Slug *
+                            <span className="ml-2 text-[10px] font-normal normal-case tracking-normal text-ink-60">
+                                artisancookware.co/categories/<span className="text-gold">{slugValue || "..."}</span>
+                            </span>
+                        </label>
+                        <input
+                            id="cat-slug"
+                            name="slug"
+                            required
+                            value={slugValue}
+                            onChange={(e) => {
+                                setSlugValue(e.target.value);
+                                setSlugTouched(true);
+                            }}
+                            className="admin-input font-mono text-sm"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="admin-label" htmlFor="cat-desc">
+                            Description
+                        </label>
+                        <textarea
+                            id="cat-desc"
+                            name="description"
+                            rows={3}
+                            defaultValue={category?.description ?? ""}
+                            className="admin-input"
+                        />
+                    </div>
+
+                    <div>
+                        <label className="admin-label" htmlFor="cat-order">
+                            Display Order
+                        </label>
+                        <input
+                            id="cat-order"
+                            name="displayOrder"
+                            type="number"
+                            min={0}
+                            defaultValue={category?.display_order ?? 0}
+                            className="admin-input"
+                        />
+                        <p className="mt-1 text-xs text-ink-60">Lower numbers appear first. 0 = default.</p>
+                    </div>
+
+                    <label className="flex items-center gap-3 cursor-pointer">
+                        <input
+                            type="checkbox"
+                            name="isFeatured"
+                            defaultChecked={category?.is_featured ?? false}
+                            className="h-4 w-4 border-ink-20 text-gold focus:ring-gold/30 rounded-[2px]"
+                        />
+                        <span className="text-sm text-ink">Show in homepage collections</span>
                     </label>
-                    <input
-                        id="category-name"
-                        name="name"
-                        required
-                        defaultValue={category?.name ?? ""}
-                        className="w-full rounded-2xl border border-brand-primary/20 bg-white px-4 py-3 text-sm shadow-sm focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/30"
-                    />
+
+                    {state.error && <p className="text-sm text-red-600">{state.error}</p>}
                 </div>
-                <div className="space-y-2">
-                    <label htmlFor="category-description" className="text-sm font-medium text-slate-700">
-                        Description
-                    </label>
-                    <textarea
-                        id="category-description"
-                        name="description"
-                        rows={4}
-                        defaultValue={category?.description ?? ""}
-                        className="w-full rounded-2xl border border-brand-primary/20 bg-white px-4 py-3 text-sm shadow-sm focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/30"
-                    />
-                </div>
-                {state.error ? <p className="text-sm text-rose-500">{state.error}</p> : null}
-                <div className="flex flex-wrap items-center justify-end gap-3">
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="rounded-full border border-brand-primary/20 px-4 py-2 text-sm font-semibold text-brand-dark transition hover:border-brand-primary hover:bg-brand-light/80"
-                    >
+
+                <div className="flex items-center justify-end gap-3 border-t border-ink-20 px-6 py-4">
+                    <button type="button" onClick={onClose} className="admin-btn-outline">
                         Cancel
                     </button>
-                    <button
-                        type="submit"
-                        className="rounded-full bg-brand-primary px-5 py-2 text-sm font-semibold text-white shadow-md shadow-brand-primary/30 transition hover:bg-brand-dark"
-                    >
-                        {isEdit ? "Save changes" : "Create category"}
+                    <button type="submit" className="admin-btn-primary">
+                        {isEdit ? "Save Changes" : "Create Collection"}
                     </button>
                 </div>
             </form>
@@ -104,39 +205,28 @@ function DeleteModal({ open, onClose, category }: ModalProps) {
     const [state, formAction] = useFormState(deleteCategoryAction, initialFormState);
 
     useEffect(() => {
-        if (state.success) {
-            onClose();
-        }
+        if (state.success) onClose();
     }, [state.success, onClose]);
 
     if (!open || !category) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-4 py-6 backdrop-blur-sm">
-            <form
-                action={formAction}
-                className="w-full max-w-md space-y-6 rounded-[2rem] border border-brand-primary/15 bg-white/90 p-8 shadow-2xl shadow-brand-primary/20"
-            >
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 px-4 py-6 backdrop-blur-sm">
+            <form action={formAction} className="w-full max-w-md bg-white shadow-xl rounded-[2px] border border-ink-20 p-8">
                 <input type="hidden" name="id" value={category.id} />
                 <div className="space-y-3 text-center">
-                    <h2 className="font-heading text-2xl font-semibold text-slate-900">Delete category?</h2>
-                    <p className="text-sm text-slate-600">
-                        This will remove <span className="font-semibold text-brand-dark">{category.name}</span> and any related data. This action cannot be undone.
+                    <h2 className="font-heading text-xl font-light text-ink">Delete category?</h2>
+                    <p className="text-sm text-ink-60">
+                        This will remove <span className="font-semibold text-ink">{category.name}</span> and any related data. This action cannot be undone.
                     </p>
                 </div>
-                {state.error ? <p className="text-sm text-rose-500">{state.error}</p> : null}
-                <div className="flex flex-wrap items-center justify-center gap-3">
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="rounded-full border border-brand-primary/20 px-4 py-2 text-sm font-semibold text-brand-dark transition hover:border-brand-primary hover:bg-brand-light/80"
-                    >
+                {state.error ? <p className="text-sm text-red-600 mt-4">{state.error}</p> : null}
+                <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
+                    <button type="button" onClick={onClose} className="admin-btn-outline">
                         Cancel
                     </button>
-                    <button
-                        type="submit"
-                        className="rounded-full bg-rose-500 px-5 py-2 text-sm font-semibold text-white shadow-md shadow-rose-500/30 transition hover:bg-rose-600"
-                    >
+                    <button type="submit" className="admin-btn-danger">
+                        <Trash2 className="h-3.5 w-3.5" />
                         Delete
                     </button>
                 </div>
@@ -156,7 +246,7 @@ export function CategoriesClient({ categories }: { categories: AdminCategory[] }
         const keyword = search.trim().toLowerCase();
         if (!keyword) return categories;
         return categories.filter((category) =>
-            [category.name, category.description ?? ""].some((field) => field.toLowerCase().includes(keyword))
+            [category.name, category.slug, category.description ?? ""].some((field) => field.toLowerCase().includes(keyword))
         );
     }, [categories, search]);
 
@@ -172,67 +262,79 @@ export function CategoriesClient({ categories }: { categories: AdminCategory[] }
         <div className="space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                    <h1 className="font-heading text-2xl font-semibold text-slate-900">Categories</h1>
-                    <p className="text-sm text-slate-600">Organise the catalogue into curated cookware collections.</p>
+                    <h1 className="font-heading text-2xl font-light text-ink">Categories</h1>
+                    <p className="text-sm text-ink-60">Organise the catalogue into curated cookware collections.</p>
                 </div>
-                <button
-                    type="button"
-                    onClick={() => setShowCreate(true)}
-                    className="rounded-full bg-brand-primary px-5 py-2 text-sm font-semibold text-white shadow-md shadow-brand-primary/30 transition hover:bg-brand-dark"
-                >
+                <button type="button" onClick={() => setShowCreate(true)} className="admin-btn-primary">
                     Add category
                 </button>
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-4 rounded-[2rem] border border-brand-primary/15 bg-white/80 p-4 shadow-lg shadow-brand-primary/10">
+            <div className="flex flex-wrap items-center justify-between gap-4 border border-ink-20 bg-white p-4 rounded-[2px] shadow-card">
                 <input
                     type="search"
                     placeholder="Search categories..."
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
-                    className="w-full rounded-2xl border border-brand-primary/20 bg-white px-4 py-2 text-sm shadow-sm focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/30 sm:w-72"
+                    className="admin-input sm:w-72"
                 />
-                <div className="text-sm text-slate-600">
-                    Showing <span className="font-semibold text-brand-dark">{paginated.length}</span> of {filtered.length} categories
+                <div className="text-sm text-ink-60">
+                    Showing <span className="font-semibold text-ink">{paginated.length}</span> of {filtered.length} categories
                 </div>
             </div>
 
-            <div className="overflow-hidden rounded-[2.5rem] border border-brand-primary/10 bg-white/90 shadow-card">
-                <table className="table-premium text-left text-sm text-slate-600">
-                    <thead>
+            <div className="overflow-hidden border border-ink-20 bg-white rounded-[2px] shadow-card">
+                <table className="min-w-full divide-y divide-ink-20 text-left text-sm">
+                    <thead className="bg-parchment text-[10px] font-semibold uppercase tracking-[0.1em] text-ink-60">
                         <tr>
-                            <th>Name</th>
-                            <th>Description</th>
-                            <th>Created</th>
-                            <th className="text-right">Actions</th>
+                            <th className="px-4 py-3">Image</th>
+                            <th className="px-4 py-3">Name</th>
+                            <th className="px-4 py-3">Slug</th>
+                            <th className="px-4 py-3">Order</th>
+                            <th className="px-4 py-3">Featured</th>
+                            <th className="px-4 py-3">Created</th>
+                            <th className="px-4 py-3 text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody>
+                    <tbody className="divide-y divide-ink-20 text-ink-60">
                         {paginated.length ? (
                             paginated.map((category) => (
                                 <tr key={category.id} className="group">
-                                    <td className="font-semibold text-slate-900">{category.name}</td>
-                                    <td className="text-sm text-slate-600">
-                                        {category.description ? category.description : <span className="text-slate-400">—</span>}
+                                    <td className="px-4 py-3">
+                                        {category.image_url ? (
+                                            <Image
+                                                src={category.image_url}
+                                                alt=""
+                                                width={40}
+                                                height={40}
+                                                className="h-10 w-10 object-cover border border-ink-20 rounded-[2px]"
+                                            />
+                                        ) : (
+                                            <span className="text-xs">—</span>
+                                        )}
                                     </td>
-                                    <td className="text-xs text-brand-dark/70">
+                                    <td className="px-4 py-3 font-medium text-ink">{category.name}</td>
+                                    <td className="px-4 py-3 font-mono text-xs">{category.slug}</td>
+                                    <td className="px-4 py-3">{category.display_order}</td>
+                                    <td className="px-4 py-3">{category.is_featured ? "Yes" : "—"}</td>
+                                    <td className="px-4 py-3 text-xs">
                                         {new Date(category.created_at).toLocaleDateString("en-PK", {
                                             dateStyle: "medium"
                                         })}
                                     </td>
-                                    <td>
+                                    <td className="px-4 py-3">
                                         <div className="flex justify-end gap-2">
                                             <button
                                                 type="button"
                                                 onClick={() => setEditingCategory(category)}
-                                                className="rounded-full border border-brand-primary/20 px-3 py-1 text-xs font-semibold text-brand-dark transition hover:border-brand-primary hover:bg-brand-light/80"
+                                                className="admin-btn-outline py-1.5 px-3 text-[11px]"
                                             >
                                                 Edit
                                             </button>
                                             <button
                                                 type="button"
                                                 onClick={() => setDeletingCategory(category)}
-                                                className="rounded-full border border-rose-400/40 px-3 py-1 text-xs font-semibold text-rose-500 transition hover:border-rose-500 hover:bg-rose-500/10"
+                                                className="admin-btn-danger py-1.5 px-3 text-[11px]"
                                             >
                                                 Delete
                                             </button>
@@ -242,7 +344,7 @@ export function CategoriesClient({ categories }: { categories: AdminCategory[] }
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={4} className="px-6 py-6 text-center text-sm text-slate-500">
+                                <td colSpan={7} className="px-6 py-6 text-center text-sm text-ink-60">
                                     No categories found.
                                 </td>
                             </tr>
@@ -252,8 +354,8 @@ export function CategoriesClient({ categories }: { categories: AdminCategory[] }
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-4">
-                <p className="text-sm text-slate-600">
-                    Page <span className="font-semibold text-brand-dark">{currentPage + 1}</span> of {pageCount}
+                <p className="text-sm text-ink-60">
+                    Page <span className="font-semibold text-ink">{currentPage + 1}</span> of {pageCount}
                 </p>
                 <div className="flex items-center gap-2">
                     <button
@@ -261,10 +363,8 @@ export function CategoriesClient({ categories }: { categories: AdminCategory[] }
                         onClick={() => setPage((prev) => Math.max(0, prev - 1))}
                         disabled={currentPage === 0}
                         className={clsx(
-                            "rounded-full border border-brand-primary/20 px-4 py-2 text-sm font-semibold transition",
-                            currentPage === 0
-                                ? "cursor-not-allowed opacity-50"
-                                : "text-brand-dark hover:border-brand-primary hover:bg-brand-light/80"
+                            "admin-btn-outline",
+                            currentPage === 0 && "cursor-not-allowed opacity-50 pointer-events-none"
                         )}
                     >
                         Previous
@@ -274,10 +374,8 @@ export function CategoriesClient({ categories }: { categories: AdminCategory[] }
                         onClick={() => setPage((prev) => Math.min(pageCount - 1, prev + 1))}
                         disabled={currentPage >= pageCount - 1}
                         className={clsx(
-                            "rounded-full border border-brand-primary/20 px-4 py-2 text-sm font-semibold transition",
-                            currentPage >= pageCount - 1
-                                ? "cursor-not-allowed opacity-50"
-                                : "text-brand-dark hover:border-brand-primary hover:bg-brand-light/80"
+                            "admin-btn-outline",
+                            currentPage >= pageCount - 1 && "cursor-not-allowed opacity-50 pointer-events-none"
                         )}
                     >
                         Next
@@ -286,16 +384,8 @@ export function CategoriesClient({ categories }: { categories: AdminCategory[] }
             </div>
 
             <CategoryModal open={showCreate} onClose={() => setShowCreate(false)} />
-            <CategoryModal
-                open={Boolean(editingCategory)}
-                onClose={() => setEditingCategory(null)}
-                category={editingCategory ?? undefined}
-            />
-            <DeleteModal
-                open={Boolean(deletingCategory)}
-                onClose={() => setDeletingCategory(null)}
-                category={deletingCategory ?? undefined}
-            />
+            <CategoryModal open={Boolean(editingCategory)} onClose={() => setEditingCategory(null)} category={editingCategory ?? undefined} />
+            <DeleteModal open={Boolean(deletingCategory)} onClose={() => setDeletingCategory(null)} category={deletingCategory ?? undefined} />
         </div>
     );
 }

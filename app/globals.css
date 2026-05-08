@@ -143,4 +143,39 @@ body {
     display: block;
 }
 
-/* Remove ALL old brand classes — we no longer use brand-red, brand-gold, brand-black */
+@layer components {
+    .shadow-card { box-shadow: 0 2px 16px rgba(13,13,13,0.06); }
+    .shadow-card-hover { box-shadow: 0 8px 32px rgba(13,13,13,0.12); }
+
+    .admin-input {
+        @apply w-full border border-ink-20 bg-white px-3 py-2.5 text-sm text-ink placeholder:text-ink-60
+               focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/30
+               rounded-[2px];
+    }
+    .admin-label {
+        @apply block text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-60 mb-1.5;
+    }
+    .admin-select {
+        @apply w-full border border-ink-20 bg-white px-3 py-2.5 text-sm text-ink
+               focus:border-gold focus:outline-none focus:ring-1 focus:ring-gold/30
+               rounded-[2px] cursor-pointer;
+    }
+    .admin-btn-primary {
+        @apply inline-flex items-center gap-2 bg-ink text-gold-light text-[12px] font-semibold
+               uppercase tracking-[0.1em] px-5 py-2.5 border-none cursor-pointer
+               hover:bg-[#9B1C1C] transition-colors rounded-[2px];
+    }
+    .admin-btn-outline {
+        @apply inline-flex items-center gap-2 border border-ink-20 text-ink-60 text-[12px] font-semibold
+               uppercase tracking-[0.1em] px-4 py-2.5 bg-transparent cursor-pointer
+               hover:border-ink hover:text-ink transition-colors rounded-[2px];
+    }
+    .admin-btn-danger {
+        @apply inline-flex items-center gap-2 border border-red-200 text-red-600 text-[12px] font-semibold
+               uppercase tracking-[0.1em] px-4 py-2.5 bg-transparent cursor-pointer
+               hover:bg-red-50 transition-colors rounded-[2px];
+    }
+    .stat-card {
+        @apply block bg-white border border-ink-20 p-6 hover:shadow-card-hover transition-shadow;
+    }
+}

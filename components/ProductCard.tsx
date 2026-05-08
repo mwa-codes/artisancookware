@@ -96,7 +96,7 @@ export function ProductCard({
                     />
                     <Link
                         href={`/products/${product.slug}`}
-                        className="group inline-flex items-center gap-1 text-[12px] font-semibold text-ink underline decoration-ink/30 underline-offset-4 transition hover:text-brand-red hover:decoration-brand-red"
+                        className="group inline-flex items-center gap-1 text-[12px] font-semibold text-ink underline decoration-ink/30 underline-offset-4 transition hover:text-gold hover:decoration-gold"
                         prefetch={false}
                     >
                         View Details
@@ -158,7 +158,7 @@ export function ProductCard({
                         />
                         <Link
                             href={`/products/${product.slug}`}
-                            className="group inline-flex items-center gap-1 text-[12px] font-semibold text-ink underline decoration-ink/30 underline-offset-4 transition hover:text-brand-red"
+                            className="group inline-flex items-center gap-1 text-[12px] font-semibold text-ink underline decoration-ink/30 underline-offset-4 transition hover:text-gold"
                             prefetch={false}
                         >
                             View Details

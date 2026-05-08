@@ -12,6 +12,7 @@ import {
     type SupabaseVariantRow
 } from "@/lib/data/mappers";
 import { getCategories, getCategoryBySlug } from "@/lib/data/categories";
+import { logSupabaseReadFailure } from "@/lib/supabaseDevLog";
 
 async function fetchVariantsForProductIds(ids: string[]): Promise<Map<string, SupabaseVariantRow[]>> {
     const map = new Map<string, SupabaseVariantRow[]>();
@@ -62,7 +63,7 @@ export const getFeaturedProducts = cache(async (limit: number = 3): Promise<Prod
             .limit(take * 2);
 
         if (error || !data?.length) {
-            if (error) console.error("Failed to fetch featured products", error);
+            if (error) logSupabaseReadFailure("featuredProducts", error);
             return sampleProducts.slice(0, take).map((product) => {
                 const category = allCategories.find((item) => item.id === product.categoryId) ?? undefined;
                 return attachVariants({ ...product, category }, sampleVariants);
@@ -81,7 +82,7 @@ export const getFeaturedProducts = cache(async (limit: number = 3): Promise<Prod
             return attachVariants({ ...base, category }, variants);
         });
     } catch (error) {
-        console.error("Supabase featured products fetch error", error);
+        logSupabaseReadFailure("featuredProducts.catch", error);
         return sampleProducts.slice(0, take).map((product) => {
             const category = allCategories.find((item) => item.id === product.categoryId) ?? undefined;
             return attachVariants({ ...product, category }, sampleVariants);
@@ -109,7 +110,7 @@ export const getProductsByCategorySlug = cache(async (slug: string): Promise<Pro
             .order("name");
 
         if (error || !data?.length) {
-            if (error) console.error("Failed to fetch products by category", error);
+            if (error) logSupabaseReadFailure("productsByCategory", error);
             return sampleProducts
                 .filter((product) => product.categoryId === category.id)
                 .map((product) => attachVariants({ ...product, category }, sampleVariants));
@@ -124,7 +125,7 @@ export const getProductsByCategorySlug = cache(async (slug: string): Promise<Pro
             return attachVariants({ ...base, category }, variants);
         });
     } catch (error) {
-        console.error("Supabase products by category fetch error", error);
+        logSupabaseReadFailure("productsByCategory.catch", error);
         return sampleProducts
             .filter((product) => product.categoryId === category.id)
             .map((product) => attachVariants({ ...product, category }, sampleVariants));
@@ -152,7 +153,7 @@ export const getProductById = cache(async (id: string): Promise<ProductWithRelat
         const { data, error } = await client.from("products").select("*").eq("id", id).maybeSingle();
 
         if (error || !data) {
-            if (error) console.error("Failed to fetch product", error);
+            if (error) logSupabaseReadFailure("productById", error);
             return null;
         }
 
@@ -169,7 +170,7 @@ export const getProductById = cache(async (id: string): Promise<ProductWithRelat
             .eq("product_id", row.id);
 
         if (variantError) {
-            console.error("Product variant fetch error", variantError);
+            logSupabaseReadFailure("productVariants", variantError);
         }
 
         const variantPool = (variantData ?? []).map((v) => mapVariantRow(v as SupabaseVariantRow));
@@ -177,7 +178,7 @@ export const getProductById = cache(async (id: string): Promise<ProductWithRelat
         const base = mapProductRow(row);
         return attachVariants({ ...base, category }, variantPool);
     } catch (error) {
-        console.error("Supabase product fetch error", error);
+        logSupabaseReadFailure("productById.catch", error);
         return null;
     }
 });
@@ -247,7 +248,7 @@ export async function getAllProductsForListing(): Promise<ProductWithRelations[]
             return attachVariants({ ...base, category }, variants);
         });
     } catch (e) {
-        console.error("getAllProductsForListing", e);
+        logSupabaseReadFailure("allProductsListing", e);
         return sampleProducts.map((product) => {
             const category = allCategories.find((c) => c.id === product.categoryId);
             return attachVariants({ ...product, category }, sampleVariants);

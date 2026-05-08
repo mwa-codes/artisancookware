@@ -20,7 +20,7 @@ export default async function AdminProductsPage() {
         supabase
             .from("products")
             .select(
-                "id, name, description, sizes, features, category_id, price_type, price_value, factory_price_value, fob_price_value, is_featured, image_url, created_at, category:categories(id, name)"
+                "id, name, slug, description, sizes, features, category_id, price_type, price_value, factory_price_value, fob_price_value, factory_price_usd, fob_price_usd, moq, oem_available, lead_time_weeks, status, is_featured, image_url, created_at, category:categories(id, name)"
             )
             .order("is_featured", { ascending: false })
             .order("created_at", { ascending: false })
@@ -34,6 +34,7 @@ export default async function AdminProductsPage() {
     const products: AdminProduct[] = (productsData ?? []).map((product: any) => ({
         id: product.id,
         name: product.name,
+        slug: product.slug ?? "",
         description: product.description,
         sizes: product.sizes,
         features: serialiseFeatures(product.features),
@@ -43,6 +44,12 @@ export default async function AdminProductsPage() {
         price_value: product.price_value,
         factory_price_value: product.factory_price_value,
         fob_price_value: product.fob_price_value,
+        factory_price_usd: product.factory_price_usd,
+        fob_price_usd: product.fob_price_usd,
+        moq: typeof product.moq === "number" ? product.moq : 50,
+        oem_available: Boolean(product.oem_available),
+        lead_time_weeks: typeof product.lead_time_weeks === "number" ? product.lead_time_weeks : 4,
+        status: (product.status as AdminProduct["status"]) ?? "active",
         is_featured: Boolean(product.is_featured),
         image_url: product.image_url,
         created_at: product.created_at

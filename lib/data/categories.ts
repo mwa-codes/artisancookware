@@ -2,6 +2,7 @@ import { cache } from "react";
 import { getSupabaseClient, isSupabaseConfigured } from "@/lib/supabase";
 import { categories as sampleCategories } from "@/lib/sampleData";
 import { slugify } from "@/lib/utils";
+import { logSupabaseReadFailure } from "@/lib/supabaseDevLog";
 import type { Category } from "@/lib/types";
 import { mapCategoryRow, type SupabaseCategoryRow } from "@/lib/data/mappers";
 
@@ -15,7 +16,7 @@ export const getCategories = cache(async (): Promise<Category[]> => {
         const { data, error } = await client.from("categories").select("*").order("name");
 
         if (error) {
-            console.error("Failed to load categories from Supabase", error);
+            logSupabaseReadFailure("categories", error);
             return sampleCategories;
         }
 
@@ -23,7 +24,7 @@ export const getCategories = cache(async (): Promise<Category[]> => {
             data?.map((row: SupabaseCategoryRow) => mapCategoryRow(row)) ?? sampleCategories
         );
     } catch (error) {
-        console.error("Supabase categories fetch error", error);
+        logSupabaseReadFailure("categories.catch", error);
         return sampleCategories;
     }
 });
@@ -46,7 +47,7 @@ export const getCategoryBySlug = cache(async (slug: string) => {
         const all = await getCategories();
         return all.find((c) => c.slug === slug || slugify(c.name) === slug) ?? null;
     } catch (e) {
-        console.error("getCategoryBySlug", e);
+        logSupabaseReadFailure("getCategoryBySlug", e);
         const all = await getCategories();
         return all.find((c) => c.slug === slug || slugify(c.name) === slug) ?? null;
     }

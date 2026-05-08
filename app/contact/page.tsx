@@ -26,13 +26,13 @@ export default async function ContactPage() {
                     <div className="space-y-6">
                         <div className="rounded-[4px] border border-ink-20 bg-white p-6">
                             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">WhatsApp</p>
-                            <a href="https://wa.me/923016636557" className="mt-2 block text-lg text-ink hover:text-brand-red">
+                            <a href="https://wa.me/923016636557" className="mt-2 block text-lg text-ink hover:text-gold">
                                 +92 301 6636557
                             </a>
                         </div>
                         <div className="rounded-[4px] border border-ink-20 bg-white p-6">
                             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">Email</p>
-                            <a href="mailto:m.waqar.ahmed@gmail.com" className="mt-2 block text-lg text-ink hover:text-brand-red">
+                            <a href="mailto:m.waqar.ahmed@gmail.com" className="mt-2 block text-lg text-ink hover:text-gold">
                                 m.waqar.ahmed@gmail.com
                             </a>
                         </div>

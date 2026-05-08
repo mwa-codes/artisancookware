@@ -2,13 +2,12 @@
 
 import { revalidatePath } from "next/cache";
 import { randomUUID } from "crypto";
-import { Buffer } from "node:buffer";
-import type { SupabaseClient } from "@supabase/supabase-js";
 
 import { ADMIN_EMAIL } from "@/lib/constants";
 import { slugify } from "@/lib/utils";
 import { getSupabaseSession } from "@/lib/supabaseServer";
 import { getSupabaseServiceClient } from "@/lib/supabase";
+import { uploadImage } from "@/lib/adminUpload";
 
 export type ProductActionState = {
     success: boolean;
@@ -35,62 +34,6 @@ function revalidateProductRoutes() {
     revalidatePath("/products");
 }
 
-async function uploadImage(file: File | null, bucket: string) {
-    if (!file || file.size === 0) return { publicUrl: null, path: null };
-
-    const supabase = getSupabaseServiceClient();
-    const ensureBucket = await ensureStorageBucket(supabase, bucket);
-    if (!ensureBucket.success) {
-        console.error("ensureStorageBucket", ensureBucket.error);
-        return { publicUrl: null, path: null, error: ensureBucket.error ?? "Storage bucket unavailable." };
-    }
-
-    const extension = file.name.split(".").pop();
-    const fileName = `${randomUUID()}${extension ? `.${extension}` : ""}`;
-    const arrayBuffer = await file.arrayBuffer();
-
-    const { error: uploadError } = await supabase.storage.from(bucket).upload(fileName, Buffer.from(arrayBuffer), {
-        upsert: true,
-        contentType: file.type
-    });
-
-    if (uploadError) {
-        console.error("uploadImage", uploadError);
-        const message = uploadError.message ?? "Unable to upload image.";
-        return { publicUrl: null, path: null, error: `Unable to upload image: ${message}` };
-    }
-
-    const {
-        data: { publicUrl }
-    } = supabase.storage.from(bucket).getPublicUrl(fileName);
-
-    return { publicUrl, path: fileName };
-}
-
-async function ensureStorageBucket(supabase: SupabaseClient, bucket: string) {
-    const { data, error } = await supabase.storage.getBucket(bucket);
-
-    if (data) {
-        return { success: true as const };
-    }
-
-    if (error && !error.message?.toLowerCase?.().includes("not found")) {
-        return { success: false as const, error: error.message };
-    }
-
-    const { error: createError } = await supabase.storage.createBucket(bucket, {
-        public: true,
-        fileSizeLimit: "10MB",
-        allowedMimeTypes: ["image/jpeg", "image/png", "image/webp", "image/avif"]
-    });
-
-    if (createError) {
-        return { success: false as const, error: createError.message };
-    }
-
-    return { success: true as const };
-}
-
 function serialiseFeatures(value: FormDataEntryValue | null) {
     if (!value) return null;
     const raw = String(value).trim();
@@ -114,11 +57,24 @@ export async function createProductAction(_: ProductActionState, formData: FormD
     const features = serialiseFeatures(formData.get("features"));
     const categoryId = String(formData.get("categoryId") ?? "").trim();
     const priceType = String(formData.get("priceType") ?? "").trim() || null;
-    const priceValue = parseNumber(formData.get("priceValue"));
     const factoryPriceValue = parseNumber(formData.get("factoryPriceValue"));
     const fobPriceValue = parseNumber(formData.get("fobPriceValue"));
+    const factoryPriceUsd = parseNumber(formData.get("factoryPriceUsd"));
+    const fobPriceUsd = parseNumber(formData.get("fobPriceUsd"));
+    const moq = parseNumber(formData.get("moq")) ?? 50;
+    const leadTimeWeeks = parseNumber(formData.get("leadTimeWeeks")) ?? 4;
+    const oemAvailable = String(formData.get("oemAvailable") ?? "") === "on";
+    const status = String(formData.get("status") ?? "active").trim();
     const isFeatured = String(formData.get("isFeatured") ?? "") === "on";
     const imageFile = formData.get("image") as File | null;
+    const customSlug = String(formData.get("slug") ?? "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "-");
+    const slug = customSlug || `${slugify(name)}-${randomUUID().slice(0, 6)}`;
+
+    const priceValue =
+        priceType === "Factory" ? factoryPriceValue : priceType === "FOB" ? fobPriceValue : null;
 
     if (!name || !categoryId) {
         return { success: false, error: "Name and category are required." };
@@ -135,8 +91,6 @@ export async function createProductAction(_: ProductActionState, formData: FormD
         imageUrl = uploadResult.publicUrl;
     }
 
-    const slug = `${slugify(name)}-${randomUUID().slice(0, 6)}`;
-
     const { error } = await supabase.from("products").insert({
         name,
         slug,
@@ -150,10 +104,12 @@ export async function createProductAction(_: ProductActionState, formData: FormD
         fob_price_value: fobPriceValue ?? (priceType === "FOB" ? priceValue : null),
         is_featured: isFeatured,
         image_url: imageUrl,
-        moq: 50,
-        lead_time_weeks: 4,
-        status: "active",
-        oem_available: false
+        factory_price_usd: factoryPriceUsd,
+        fob_price_usd: fobPriceUsd,
+        moq,
+        lead_time_weeks: leadTimeWeeks,
+        oem_available: oemAvailable,
+        status
     });
 
     if (error) {
@@ -183,6 +139,16 @@ export async function updateProductAction(_: ProductActionState, formData: FormD
     const fobPriceValue = parseNumber(formData.get("fobPriceValue"));
     const isFeatured = String(formData.get("isFeatured") ?? "") === "on";
     const imageFile = formData.get("image") as File | null;
+    const moq = parseNumber(formData.get("moq")) ?? 50;
+    const leadTimeWeeks = parseNumber(formData.get("leadTimeWeeks")) ?? 4;
+    const oemAvailable = String(formData.get("oemAvailable") ?? "") === "on";
+    const status = String(formData.get("status") ?? "active").trim();
+    const factoryPriceUsd = parseNumber(formData.get("factoryPriceUsd"));
+    const fobPriceUsd = parseNumber(formData.get("fobPriceUsd"));
+    const slug = String(formData.get("slug") ?? "")
+        .trim()
+        .toLowerCase()
+        .replace(/\s+/g, "-");
 
     if (!id || !name || !categoryId) {
         return { success: false, error: "Required fields are missing." };
@@ -199,6 +165,10 @@ export async function updateProductAction(_: ProductActionState, formData: FormD
         imageUrl = uploadResult.publicUrl ?? undefined;
     }
 
+    const derivedPriceValue =
+        priceValue ??
+        (priceType === "Factory" ? factoryPriceValue : priceType === "FOB" ? fobPriceValue : null);
+
     const updates: Record<string, unknown> = {
         name,
         description,
@@ -206,11 +176,21 @@ export async function updateProductAction(_: ProductActionState, formData: FormD
         features,
         category_id: categoryId,
         price_type: priceType,
-        price_value: priceValue,
-        factory_price_value: factoryPriceValue ?? (priceType === "Factory" ? priceValue : null),
-        fob_price_value: fobPriceValue ?? (priceType === "FOB" ? priceValue : null),
-        is_featured: isFeatured
+        price_value: derivedPriceValue,
+        factory_price_value: factoryPriceValue ?? (priceType === "Factory" ? derivedPriceValue : null),
+        fob_price_value: fobPriceValue ?? (priceType === "FOB" ? derivedPriceValue : null),
+        is_featured: isFeatured,
+        moq,
+        lead_time_weeks: leadTimeWeeks,
+        oem_available: oemAvailable,
+        status,
+        factory_price_usd: factoryPriceUsd,
+        fob_price_usd: fobPriceUsd
     };
+
+    if (slug) {
+        updates.slug = slug;
+    }
 
     if (typeof imageUrl !== "undefined") {
         updates.image_url = imageUrl;
@@ -225,6 +205,12 @@ export async function updateProductAction(_: ProductActionState, formData: FormD
 
     revalidateProductRoutes();
     revalidatePath(`/products`);
+
+    const { data: updated } = await supabase.from("products").select("slug").eq("id", id).single();
+    if (updated?.slug) {
+        revalidatePath(`/products/${updated.slug}`);
+    }
+
     return { success: true };
 }
 

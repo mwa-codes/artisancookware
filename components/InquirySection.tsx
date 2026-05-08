@@ -134,12 +134,12 @@ export function InquirySection({ productOptions = [], defaultProductLabel }: Inq
                             href="https://wa.me/923016636557"
                             target="_blank"
                             rel="noopener noreferrer"
-                            className="flex items-center gap-3 text-ink transition hover:text-brand-red"
+                            className="flex items-center gap-3 text-ink transition hover:text-gold"
                         >
                             <span className="text-gold">●</span>
                             WhatsApp: +92 301 6636557
                         </a>
-                        <a href="mailto:m.waqar.ahmed@gmail.com" className="flex items-center gap-3 text-ink transition hover:text-brand-red">
+                        <a href="mailto:m.waqar.ahmed@gmail.com" className="flex items-center gap-3 text-ink transition hover:text-gold">
                             <span className="text-gold">●</span>
                             m.waqar.ahmed@gmail.com
                         </a>
@@ -262,7 +262,7 @@ export function InquirySection({ productOptions = [], defaultProductLabel }: Inq
                             />
                         </div>
 
-                        {error ? <p className="text-sm text-brand-red">{error}</p> : null}
+                        {error ? <p className="text-sm text-red-600">{error}</p> : null}
                         {feedback ? <p className="text-sm text-ink">{feedback}</p> : null}
 
                         <button type="submit" disabled={isPending} className="btn-primary disabled:opacity-60">

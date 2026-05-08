@@ -69,7 +69,7 @@ export function FeaturedProducts({ products }: { products: ProductWithRelations[
                 ) : null}
 
                 <div className="mt-12 text-center">
-                    <Link href="/products" className="text-[13px] font-semibold uppercase tracking-[0.12em] text-ink underline underline-offset-4 transition hover:text-brand-red">
+                    <Link href="/products" className="text-[13px] font-semibold uppercase tracking-[0.12em] text-ink underline underline-offset-4 transition hover:text-gold">
                         View Full Catalogue
                     </Link>
                 </div>

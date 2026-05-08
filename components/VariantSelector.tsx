@@ -27,9 +27,9 @@ export function VariantSelector({ variants, selectedVariantId, onSelect }: Varia
                             onClick={() => onSelect(variant)}
                             aria-pressed={isActive}
                             className={cn(
-                                "group flex items-center gap-3 rounded-[2px] border px-3 py-2 text-sm font-medium transition focus:outline-none focus:ring-1 focus:ring-ink",
+                                "group flex items-center gap-3 rounded-[2px] border px-3 py-2 text-sm font-medium transition focus:outline-none focus:ring-1 focus:ring-gold/50",
                                 isActive
-                                    ? "border-ink bg-parchment text-ink shadow-card"
+                                    ? "border-ink bg-ink text-white"
                                     : "border-ink-20 text-ink-60 hover:border-ink hover:text-ink"
                             )}
                         >

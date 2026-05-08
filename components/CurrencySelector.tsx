@@ -3,6 +3,7 @@
 import { useEffect, useRef, useState } from "react";
 import { useCurrency } from "@/context/CurrencyContext";
 import { SUPPORTED_CURRENCIES, type CurrencyCode } from "@/lib/currency/constants";
+import { cn } from "@/lib/utils";
 
 export function CurrencySelector() {
     const { currency, setCurrency } = useCurrency();
@@ -35,26 +36,34 @@ export function CurrencySelector() {
             {open ? (
                 <ul
                     role="listbox"
-                    className="absolute right-0 z-50 mt-1 min-w-[220px] rounded-[4px] border border-ink-20 bg-white py-1 shadow-card"
+                    className="absolute right-0 z-50 mt-1 min-w-[220px] rounded-[2px] border border-ink-20 bg-white py-1 shadow-card"
                 >
-                    {SUPPORTED_CURRENCIES.map((item) => (
-                        <li key={item.code}>
-                            <button
-                                type="button"
-                                role="option"
-                                aria-selected={item.code === currency}
-                                className="flex w-full items-center gap-2 px-3 py-2 text-left text-[12px] font-medium text-ink-60 transition hover:bg-parchment hover:text-ink"
-                                onClick={() => {
-                                    setCurrency(item.code as CurrencyCode);
-                                    setOpen(false);
-                                }}
-                            >
-                                <span aria-hidden>{item.flag}</span>
-                                <span className="text-ink">{item.code}</span>
-                                <span className="truncate text-[11px] font-normal text-ink-60">{item.name}</span>
-                            </button>
-                        </li>
-                    ))}
+                    {SUPPORTED_CURRENCIES.map((item) => {
+                        const selected = item.code === currency;
+                        return (
+                            <li key={item.code}>
+                                <button
+                                    type="button"
+                                    role="option"
+                                    aria-selected={selected}
+                                    className={cn(
+                                        "flex w-full items-center gap-2 px-3 py-2 text-left text-[12px] font-medium transition",
+                                        selected
+                                            ? "bg-parchment text-ink"
+                                            : "text-ink-60 hover:bg-parchment hover:text-ink"
+                                    )}
+                                    onClick={() => {
+                                        setCurrency(item.code as CurrencyCode);
+                                        setOpen(false);
+                                    }}
+                                >
+                                    <span aria-hidden>{item.flag}</span>
+                                    <span className="text-ink">{item.code}</span>
+                                    <span className="truncate text-[11px] font-normal text-ink-60">{item.name}</span>
+                                </button>
+                            </li>
+                        );
+                    })}
                 </ul>
             ) : null}
         </div>

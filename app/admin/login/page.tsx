@@ -15,9 +15,5 @@ export default async function AdminLoginPage({ searchParams }: LoginPageProps) {
         redirect(redirectToParam ?? "/admin");
     }
 
-    return (
-        <div className="flex min-h-screen items-center justify-center bg-gradient-to-br from-brand-surface via-background-soft to-brand-light/70 px-6 py-16">
-            <LoginForm redirectTo={redirectToParam} />
-        </div>
-    );
+    return <LoginForm redirectTo={redirectToParam} />;
 }

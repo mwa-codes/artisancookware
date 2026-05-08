@@ -52,91 +52,78 @@ function VariantModal({ open, onClose, variant, products }: VariantModalProps) {
     if (!open) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-4 py-6 backdrop-blur-sm">
-            <form
-                action={formAction}
-                encType="multipart/form-data"
-                className="w-full max-w-xl space-y-6 rounded-[2rem] border border-brand-primary/15 bg-white/95 p-8 shadow-2xl shadow-brand-primary/20"
-            >
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 px-4 py-6 backdrop-blur-sm">
+            <form action={formAction} encType="multipart/form-data" className="w-full max-w-xl bg-white shadow-xl rounded-[2px] border border-ink-20 p-8">
                 {isEdit ? <input type="hidden" name="id" defaultValue={variant?.id} /> : null}
-                <header className="space-y-1">
-                    <h2 className="font-heading text-2xl font-semibold text-slate-900">
-                        {isEdit ? "Edit variant" : "Add variant"}
-                    </h2>
-                    <p className="text-sm text-slate-600">
-                        {isEdit ? "Update variant information." : "Create a new product variant."}
-                    </p>
+                <header className="space-y-1 mb-6">
+                    <h2 className="font-heading text-xl font-light text-ink">{isEdit ? "Edit variant" : "Add variant"}</h2>
+                    <p className="text-sm text-ink-60">{isEdit ? "Update variant information." : "Create a new product variant."}</p>
                 </header>
-                <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-700" htmlFor="variant-product">
-                        Product
-                    </label>
-                    <select
-                        id="variant-product"
-                        name="productId"
-                        required
-                        defaultValue={variant?.product_id ?? ""}
-                        className="w-full rounded-2xl border border-brand-primary/20 bg-white px-4 py-3 text-sm shadow-sm focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/30"
-                    >
-                        <option value="" disabled>
-                            Select a product
-                        </option>
-                        {products.map((product) => (
-                            <option key={product.id} value={product.id}>
-                                {product.name}
+                <div className="space-y-4">
+                    <div>
+                        <label className="admin-label" htmlFor="variant-product">
+                            Product
+                        </label>
+                        <select
+                            id="variant-product"
+                            name="productId"
+                            required
+                            defaultValue={variant?.product_id ?? ""}
+                            className="admin-select"
+                        >
+                            <option value="" disabled>
+                                Select a product
                             </option>
-                        ))}
-                    </select>
-                </div>
-                <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-700" htmlFor="variant-color">
-                        Color name
-                    </label>
-                    <input
-                        id="variant-color"
-                        name="colorName"
-                        required
-                        defaultValue={variant?.color_name ?? ""}
-                        className="w-full rounded-2xl border border-brand-primary/20 bg-white px-4 py-3 text-sm shadow-sm focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/30"
-                    />
-                </div>
-                <div className="space-y-2">
-                    <label className="text-sm font-medium text-slate-700" htmlFor="variant-image">
-                        Image
-                    </label>
-                    <div className="flex items-center gap-4">
-                        <input
-                            id="variant-image"
-                            name="image"
-                            type="file"
-                            accept="image/*"
-                            className="w-full rounded-2xl border border-dashed border-brand-primary/30 bg-white px-4 py-3 text-sm shadow-sm file:mr-4 file:rounded-full file:border-0 file:bg-brand-primary file:px-4 file:py-2 file:text-sm file:font-semibold file:text-white hover:border-brand-primary focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/30 sm:w-auto"
-                        />
-                        {variant?.image_url ? (
-                            <Image
-                                src={variant.image_url}
-                                alt={variant.color_name}
-                                width={56}
-                                height={56}
-                                className="h-14 w-14 rounded-2xl border border-brand-primary/20 object-cover"
-                            />
-                        ) : null}
+                            {products.map((product) => (
+                                <option key={product.id} value={product.id}>
+                                    {product.name}
+                                </option>
+                            ))}
+                        </select>
                     </div>
-                    <p className="text-xs text-slate-500">Optional. Uploading a new image will replace the current variant image.</p>
+                    <div>
+                        <label className="admin-label" htmlFor="variant-color">
+                            Color name
+                        </label>
+                        <input
+                            id="variant-color"
+                            name="colorName"
+                            required
+                            defaultValue={variant?.color_name ?? ""}
+                            className="admin-input"
+                        />
+                    </div>
+                    <div>
+                        <label className="admin-label" htmlFor="variant-image">
+                            Image
+                        </label>
+                        <div className="flex items-center gap-4 flex-wrap">
+                            <input
+                                id="variant-image"
+                                name="image"
+                                type="file"
+                                accept="image/jpeg,image/png,image/webp"
+                                className="block w-full text-sm text-ink-60 file:mr-3 file:border file:border-ink-20 file:bg-parchment file:px-3 file:py-1.5 file:text-xs file:font-medium file:uppercase file:text-ink file:cursor-pointer rounded-[2px] sm:flex-1"
+                            />
+                            {variant?.image_url ? (
+                                <Image
+                                    src={variant.image_url}
+                                    alt={variant.color_name}
+                                    width={56}
+                                    height={56}
+                                    className="h-14 w-14 object-cover border border-ink-20 rounded-[2px]"
+                                />
+                            ) : null}
+                        </div>
+                        <p className="text-xs text-ink-60 mt-1">Optional. Uploading a new image will replace the current variant image.</p>
+                    </div>
                 </div>
-                {state.error ? <p className="text-sm text-rose-500">{state.error}</p> : null}
-                <div className="flex flex-wrap items-center justify-end gap-3">
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="rounded-full border border-brand-primary/20 px-4 py-2 text-sm font-semibold text-brand-dark transition hover:border-brand-primary hover:bg-brand-light/80"
-                    >
+                {state.error ? <p className="text-sm text-red-600 mt-4">{state.error}</p> : null}
+                <div className="flex flex-wrap items-center justify-end gap-3 mt-8">
+                    <button type="button" onClick={onClose} className="admin-btn-outline">
                         Cancel
                     </button>
-                    <button
-                        type="submit"
-                        className="rounded-full bg-brand-primary px-5 py-2 text-sm font-semibold text-white shadow-md shadow-brand-primary/30 transition hover:bg-brand-dark"
-                    >
+                    <button type="submit" className="admin-btn-primary">
                         {isEdit ? "Save changes" : "Create variant"}
                     </button>
                 </div>
@@ -161,31 +148,21 @@ function DeleteVariantModal({ open, onClose, variant }: DeleteVariantModalProps)
     if (!open || !variant) return null;
 
     return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-slate-900/40 px-4 py-6 backdrop-blur-sm">
-            <form
-                action={formAction}
-                className="w-full max-w-md space-y-6 rounded-[2rem] border border-brand-primary/15 bg-white/95 p-8 shadow-2xl shadow-brand-primary/20"
-            >
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 px-4 py-6 backdrop-blur-sm">
+            <form action={formAction} className="w-full max-w-md bg-white shadow-xl rounded-[2px] border border-ink-20 p-8">
                 <input type="hidden" name="id" value={variant.id} />
                 <div className="space-y-3 text-center">
-                    <h2 className="font-heading text-2xl font-semibold text-slate-900">Delete variant?</h2>
-                    <p className="text-sm text-slate-600">
-                        This will remove <span className="font-semibold text-brand-dark">{variant.color_name}</span> for {variant.product_name}.
+                    <h2 className="font-heading text-xl font-light text-ink">Delete variant?</h2>
+                    <p className="text-sm text-ink-60">
+                        This will remove <span className="font-semibold text-ink">{variant.color_name}</span> for {variant.product_name}.
                     </p>
                 </div>
-                {state.error ? <p className="text-sm text-rose-500">{state.error}</p> : null}
-                <div className="flex flex-wrap items-center justify-center gap-3">
-                    <button
-                        type="button"
-                        onClick={onClose}
-                        className="rounded-full border border-brand-primary/20 px-4 py-2 text-sm font-semibold text-brand-dark transition hover:border-brand-primary hover:bg-brand-light/80"
-                    >
+                {state.error ? <p className="text-sm text-red-600 mt-4">{state.error}</p> : null}
+                <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
+                    <button type="button" onClick={onClose} className="admin-btn-outline">
                         Cancel
                     </button>
-                    <button
-                        type="submit"
-                        className="rounded-full bg-rose-500 px-5 py-2 text-sm font-semibold text-white shadow-md shadow-rose-500/30 transition hover:bg-rose-600"
-                    >
+                    <button type="submit" className="admin-btn-danger">
                         Delete
                     </button>
                 </div>
@@ -221,42 +198,38 @@ export function VariantsClient({ variants, products }: { variants: AdminVariant[
         <div className="space-y-6">
             <div className="flex flex-wrap items-center justify-between gap-4">
                 <div>
-                    <h1 className="font-heading text-2xl font-semibold text-slate-900">Variants</h1>
-                    <p className="text-sm text-slate-600">Create colourways and imagery for each product.</p>
+                    <h1 className="font-heading text-2xl font-light text-ink">Variants</h1>
+                    <p className="text-sm text-ink-60">Create colourways and imagery for each product.</p>
                 </div>
-                <button
-                    type="button"
-                    onClick={() => setShowCreate(true)}
-                    className="rounded-full bg-brand-primary px-5 py-2 text-sm font-semibold text-white shadow-md shadow-brand-primary/30 transition hover:bg-brand-dark"
-                >
+                <button type="button" onClick={() => setShowCreate(true)} className="admin-btn-primary">
                     Add variant
                 </button>
             </div>
 
-            <div className="flex flex-wrap items-center justify-between gap-4 rounded-[2rem] border border-brand-primary/15 bg-white/80 p-4 shadow-lg shadow-brand-primary/10">
+            <div className="flex flex-wrap items-center justify-between gap-4 border border-ink-20 bg-white p-4 rounded-[2px] shadow-card">
                 <input
                     type="search"
                     placeholder="Search variants..."
                     value={search}
                     onChange={(event) => setSearch(event.target.value)}
-                    className="w-full rounded-2xl border border-brand-primary/20 bg-white px-4 py-2 text-sm shadow-sm focus:border-brand-primary focus:outline-none focus:ring-2 focus:ring-brand-primary/30 sm:w-80"
+                    className="admin-input sm:w-80"
                 />
-                <div className="text-sm text-slate-600">
-                    Showing <span className="font-semibold text-brand-dark">{paginated.length}</span> of {filtered.length} variants
+                <div className="text-sm text-ink-60">
+                    Showing <span className="font-semibold text-ink">{paginated.length}</span> of {filtered.length} variants
                 </div>
             </div>
 
-            <div className="overflow-hidden rounded-[2rem] border border-brand-primary/15 bg-white/95 shadow-lg shadow-brand-primary/10">
-                <table className="min-w-full divide-y divide-brand-primary/15 text-left text-sm text-slate-600">
-                    <thead className="bg-brand-light/50 text-xs uppercase tracking-[0.3em] text-brand-dark">
+            <div className="overflow-hidden border border-ink-20 bg-white rounded-[2px] shadow-card">
+                <table className="min-w-full divide-y divide-ink-20 text-left text-sm text-ink-60">
+                    <thead className="bg-parchment text-[10px] font-semibold uppercase tracking-[0.1em] text-ink-60">
                         <tr>
-                            <th className="px-6 py-4 font-semibold">Variant</th>
-                            <th className="px-6 py-4 font-semibold">Product</th>
-                            <th className="px-6 py-4 font-semibold">Created</th>
-                            <th className="px-6 py-4 font-semibold text-right">Actions</th>
+                            <th className="px-6 py-4">Variant</th>
+                            <th className="px-6 py-4">Product</th>
+                            <th className="px-6 py-4">Created</th>
+                            <th className="px-6 py-4 text-right">Actions</th>
                         </tr>
                     </thead>
-                    <tbody className="divide-y divide-brand-primary/10">
+                    <tbody className="divide-y divide-ink-20">
                         {paginated.length ? (
                             paginated.map((variant) => (
                                 <tr key={variant.id} className="group">
@@ -268,21 +241,21 @@ export function VariantsClient({ variants, products }: { variants: AdminVariant[
                                                     alt={variant.color_name}
                                                     width={48}
                                                     height={48}
-                                                    className="h-12 w-12 rounded-2xl border border-brand-primary/20 object-cover"
+                                                    className="h-12 w-12 object-cover border border-ink-20 rounded-[2px]"
                                                 />
                                             ) : (
-                                                <div className="flex h-12 w-12 items-center justify-center rounded-2xl border border-dashed border-brand-primary/30 text-[10px] uppercase tracking-[0.3em] text-brand-dark">
+                                                <div className="flex h-12 w-12 items-center justify-center border border-dashed border-ink-20 text-[10px] uppercase tracking-[0.08em] text-ink-60 rounded-[2px]">
                                                     IMG
                                                 </div>
                                             )}
                                             <div>
-                                                <p className="font-semibold text-slate-900">{variant.color_name}</p>
-                                                <p className="text-xs text-slate-500">Variant ID: {variant.id.slice(0, 8)}…</p>
+                                                <p className="font-semibold text-ink">{variant.color_name}</p>
+                                                <p className="text-xs text-ink-60">Variant ID: {variant.id.slice(0, 8)}…</p>
                                             </div>
                                         </div>
                                     </td>
-                                    <td className="px-6 py-4 text-sm font-medium text-brand-dark">{variant.product_name}</td>
-                                    <td className="px-6 py-4 text-xs text-brand-dark/70">
+                                    <td className="px-6 py-4 text-sm font-medium text-ink">{variant.product_name}</td>
+                                    <td className="px-6 py-4 text-xs text-ink-60">
                                         {new Date(variant.created_at).toLocaleDateString("en-PK", {
                                             dateStyle: "medium"
                                         })}
@@ -292,14 +265,14 @@ export function VariantsClient({ variants, products }: { variants: AdminVariant[
                                             <button
                                                 type="button"
                                                 onClick={() => setEditingVariant(variant)}
-                                                className="rounded-full border border-brand-primary/20 px-3 py-1 text-xs font-semibold text-brand-dark transition hover:border-brand-primary hover:bg-brand-light/80"
+                                                className="admin-btn-outline py-1.5 px-3 text-[11px]"
                                             >
                                                 Edit
                                             </button>
                                             <button
                                                 type="button"
                                                 onClick={() => setDeletingVariant(variant)}
-                                                className="rounded-full border border-rose-400/40 px-3 py-1 text-xs font-semibold text-rose-500 transition hover:border-rose-500 hover:bg-rose-500/10"
+                                                className="admin-btn-danger py-1.5 px-3 text-[11px]"
                                             >
                                                 Delete
                                             </button>
@@ -309,7 +282,7 @@ export function VariantsClient({ variants, products }: { variants: AdminVariant[
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={4} className="px-6 py-6 text-center text-sm text-slate-500">
+                                <td colSpan={4} className="px-6 py-6 text-center text-sm text-ink-60">
                                     No variants found.
                                 </td>
                             </tr>
@@ -319,8 +292,8 @@ export function VariantsClient({ variants, products }: { variants: AdminVariant[
             </div>
 
             <div className="flex flex-wrap items-center justify-between gap-4">
-                <p className="text-sm text-slate-600">
-                    Page <span className="font-semibold text-brand-dark">{currentPage + 1}</span> of {pageCount}
+                <p className="text-sm text-ink-60">
+                    Page <span className="font-semibold text-ink">{currentPage + 1}</span> of {pageCount}
                 </p>
                 <div className="flex items-center gap-2">
                     <button
@@ -328,10 +301,8 @@ export function VariantsClient({ variants, products }: { variants: AdminVariant[
                         onClick={() => setPage((prev) => Math.max(0, prev - 1))}
                         disabled={currentPage === 0}
                         className={clsx(
-                            "rounded-full border border-brand-primary/20 px-4 py-2 text-sm font-semibold transition",
-                            currentPage === 0
-                                ? "cursor-not-allowed opacity-50"
-                                : "text-brand-dark hover:border-brand-primary hover:bg-brand-light/80"
+                            "admin-btn-outline",
+                            currentPage === 0 && "cursor-not-allowed opacity-50 pointer-events-none"
                         )}
                     >
                         Previous
@@ -341,10 +312,8 @@ export function VariantsClient({ variants, products }: { variants: AdminVariant[
                         onClick={() => setPage((prev) => Math.min(pageCount - 1, prev + 1))}
                         disabled={currentPage >= pageCount - 1}
                         className={clsx(
-                            "rounded-full border border-brand-primary/20 px-4 py-2 text-sm font-semibold transition",
-                            currentPage >= pageCount - 1
-                                ? "cursor-not-allowed opacity-50"
-                                : "text-brand-dark hover:border-brand-primary hover:bg-brand-light/80"
+                            "admin-btn-outline",
+                            currentPage >= pageCount - 1 && "cursor-not-allowed opacity-50 pointer-events-none"
                         )}
                     >
                         Next
