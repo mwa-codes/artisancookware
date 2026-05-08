@@ -40,7 +40,7 @@ export default async function AdminCurrencyPage() {
                         href="/api/currency?force=true"
                         target="_blank"
                         rel="noopener noreferrer"
-                        className="btn-outline"
+                        className="admin-btn-outline"
                     >
                         Force refresh rates
                     </a>
@@ -79,7 +79,10 @@ export default async function AdminCurrencyPage() {
             <section className="rounded-[4px] border border-ink-20 bg-white p-6">
                 <p className="text-sm text-ink-60">
                     Default visitor currency is controlled client-side (USD default) with optional geo hints. Update USD product pricing in{" "}
-                    <Link href="/admin/products" className="font-semibold text-ink underline underline-offset-4">
+                    <Link
+                        href="/admin/products"
+                        className="inline-flex items-center rounded-[2px] border border-ink-20 bg-parchment px-2 py-0.5 text-xs font-semibold uppercase tracking-[0.08em] text-ink transition-colors hover:border-gold"
+                    >
                         Products
                     </Link>
                     .

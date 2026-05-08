@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ChangeEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { clsx } from "clsx";
 import { ImageIcon, X, Pencil, Trash2, Plus } from "lucide-react";
+import { useRouter } from "next/navigation";
 import {
     createProductAction,
     deleteProductAction,
@@ -95,16 +96,22 @@ function ProductModal({ open, onClose, product, categories, onDeleteSuccess }: P
     const [slugValue, setSlugValue] = useState(product?.slug ?? "");
     const [previewImage, setPreviewImage] = useState<string | null>(product?.image_url ?? null);
     const [deleteState, deleteAction] = useFormState(deleteProductAction, initialState);
+    const wasSaved = useRef(false);
+    const wasDeleted = useRef(false);
 
     useEffect(() => {
-        if (state.success) onClose(true);
+        if (state.success && !wasSaved.current) {
+            onClose(true);
+        }
+        wasSaved.current = state.success;
     }, [state.success, onClose]);
 
     useEffect(() => {
-        if (deleteState.success) {
+        if (deleteState.success && !wasDeleted.current) {
             onDeleteSuccess?.();
             onClose(true);
         }
+        wasDeleted.current = deleteState.success;
     }, [deleteState.success, onClose, onDeleteSuccess]);
 
     useEffect(() => {
@@ -441,6 +448,7 @@ function ProductModal({ open, onClose, product, categories, onDeleteSuccess }: P
 }
 
 export function ProductsClient({ products, categories }: { products: AdminProduct[]; categories: AdminCategoryOption[] }) {
+    const router = useRouter();
     const { toast, showToast, dismissToast } = useToast();
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(0);
@@ -468,7 +476,10 @@ export function ProductsClient({ products, categories }: { products: AdminProduc
     function handleClose(success?: boolean) {
         setModalOpen(false);
         setEditingProduct(null);
-        if (success) showToast("Product saved successfully.");
+        if (success) {
+            router.refresh();
+            showToast("Product saved successfully.");
+        }
     }
 
     return (
@@ -620,7 +631,10 @@ export function ProductsClient({ products, categories }: { products: AdminProduc
                 onClose={handleClose}
                 product={editingProduct ?? undefined}
                 categories={categories}
-                onDeleteSuccess={() => showToast("Product deleted successfully.")}
+                onDeleteSuccess={() => {
+                    router.refresh();
+                    showToast("Product deleted successfully.");
+                }}
             />
             {toast ? <Toast message={toast.message} type={toast.type} onDismiss={dismissToast} /> : null}
         </div>

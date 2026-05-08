@@ -1,9 +1,10 @@
 "use client";
 
-import { useEffect, useMemo, useState, type ChangeEvent } from "react";
+import { useEffect, useMemo, useRef, useState, type ChangeEvent } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { clsx } from "clsx";
 import { ImageIcon, X, Trash2, Pencil } from "lucide-react";
+import { useRouter } from "next/navigation";
 import {
     createCategoryAction,
     deleteCategoryAction,
@@ -49,9 +50,13 @@ function CategoryModal({ open, onClose, category }: ModalProps) {
     const [slugTouched, setSlugTouched] = useState(false);
     const [slugValue, setSlugValue] = useState(category?.slug ?? "");
     const [previewImage, setPreviewImage] = useState<string | null>(category?.image_url ?? null);
+    const wasSuccessful = useRef(false);
 
     useEffect(() => {
-        if (state.success) onClose(true);
+        if (state.success && !wasSuccessful.current) {
+            onClose(true);
+        }
+        wasSuccessful.current = state.success;
     }, [state.success, onClose]);
 
     useEffect(() => {
@@ -210,9 +215,13 @@ function CategoryModal({ open, onClose, category }: ModalProps) {
 
 function DeleteModal({ open, onClose, category }: ModalProps) {
     const [state, formAction] = useFormState(deleteCategoryAction, initialFormState);
+    const wasSuccessful = useRef(false);
 
     useEffect(() => {
-        if (state.success) onClose();
+        if (state.success && !wasSuccessful.current) {
+            onClose(true);
+        }
+        wasSuccessful.current = state.success;
     }, [state.success, onClose]);
 
     if (!open || !category) return null;
@@ -243,6 +252,7 @@ function DeleteModal({ open, onClose, category }: ModalProps) {
 }
 
 export function CategoriesClient({ categories }: { categories: AdminCategory[] }) {
+    const router = useRouter();
     const { toast, showToast, dismissToast } = useToast();
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(0);
@@ -269,7 +279,10 @@ export function CategoriesClient({ categories }: { categories: AdminCategory[] }
     function handleClose(success?: boolean) {
         setShowCreate(false);
         setEditingCategory(null);
-        if (success) showToast("Category saved successfully.");
+        if (success) {
+            router.refresh();
+            showToast("Category saved successfully.");
+        }
     }
 
     return (
@@ -392,7 +405,17 @@ export function CategoriesClient({ categories }: { categories: AdminCategory[] }
 
             <CategoryModal open={showCreate} onClose={handleClose} />
             <CategoryModal open={Boolean(editingCategory)} onClose={handleClose} category={editingCategory ?? undefined} />
-            <DeleteModal open={Boolean(deletingCategory)} onClose={() => setDeletingCategory(null)} category={deletingCategory ?? undefined} />
+            <DeleteModal
+                open={Boolean(deletingCategory)}
+                onClose={(success) => {
+                    setDeletingCategory(null);
+                    if (success) {
+                        router.refresh();
+                        showToast("Category deleted successfully.");
+                    }
+                }}
+                category={deletingCategory ?? undefined}
+            />
             {toast ? <Toast message={toast.message} type={toast.type} onDismiss={dismissToast} /> : null}
         </div>
     );
