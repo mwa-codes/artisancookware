@@ -1,8 +1,7 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useMemo, useState, type ChangeEvent } from "react";
-import { useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 import { clsx } from "clsx";
 import { ImageIcon, X, Pencil, Trash2, Plus } from "lucide-react";
 import {
@@ -11,6 +10,7 @@ import {
     type ProductActionState,
     updateProductAction
 } from "@/app/admin/products/actions";
+import { Toast, useToast } from "@/components/admin/Toast";
 
 const ITEMS_PER_PAGE = 6;
 const initialState: ProductActionState = { success: false };
@@ -46,12 +46,13 @@ export type AdminCategoryOption = {
 
 type ModalBaseProps = {
     open: boolean;
-    onClose: () => void;
+    onClose: (success?: boolean) => void;
 };
 
 type ProductModalProps = ModalBaseProps & {
     product?: AdminProduct | null;
     categories: AdminCategoryOption[];
+    onDeleteSuccess?: () => void;
 };
 
 function formatUsd(value: number | null | undefined) {
@@ -65,17 +66,46 @@ const STATUS_CLASS: Record<string, string> = {
     discontinued: "bg-red-50 text-red-600 border border-red-200"
 };
 
-function ProductModal({ open, onClose, product, categories }: ProductModalProps) {
+function SubmitButton({ isEdit }: { isEdit: boolean }) {
+    const { pending } = useFormStatus();
+    return (
+        <button type="submit" disabled={pending} className="admin-btn-primary disabled:cursor-not-allowed disabled:opacity-60">
+            {pending ? (
+                <>
+                    <svg className="h-4 w-4 animate-spin" viewBox="0 0 24 24" fill="none">
+                        <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4" />
+                        <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4z" />
+                    </svg>
+                    Saving...
+                </>
+            ) : isEdit ? (
+                "Save Changes"
+            ) : (
+                "Create"
+            )}
+        </button>
+    );
+}
+
+function ProductModal({ open, onClose, product, categories, onDeleteSuccess }: ProductModalProps) {
     const isEdit = Boolean(product);
     const action = isEdit ? updateProductAction : createProductAction;
     const [state, formAction] = useFormState(action, initialState);
     const [slugTouched, setSlugTouched] = useState(false);
     const [slugValue, setSlugValue] = useState(product?.slug ?? "");
     const [previewImage, setPreviewImage] = useState<string | null>(product?.image_url ?? null);
+    const [deleteState, deleteAction] = useFormState(deleteProductAction, initialState);
 
     useEffect(() => {
-        if (state.success) onClose();
+        if (state.success) onClose(true);
     }, [state.success, onClose]);
+
+    useEffect(() => {
+        if (deleteState.success) {
+            onDeleteSuccess?.();
+            onClose(true);
+        }
+    }, [deleteState.success, onClose, onDeleteSuccess]);
 
     useEffect(() => {
         setSlugValue(product?.slug ?? "");
@@ -111,16 +141,17 @@ function ProductModal({ open, onClose, product, categories }: ProductModalProps)
             <form action={formAction} encType="multipart/form-data" className="w-full max-w-2xl bg-white shadow-xl my-auto rounded-[2px]">
                 <div className="flex items-center justify-between border-b border-ink-20 px-6 py-4">
                     <h2 className="font-heading text-xl font-light text-ink">{isEdit ? "Edit Product" : "Add Product"}</h2>
-                    <button type="button" onClick={onClose} className="text-ink-60 hover:text-ink">
+                    <button type="button" onClick={() => onClose()} className="text-ink-60 hover:text-ink">
                         <X className="h-5 w-5" />
                     </button>
                 </div>
 
                 {isEdit && <input type="hidden" name="id" value={product?.id} />}
 
-                <div className="px-6 py-6 space-y-5 max-h-[75vh] overflow-y-auto">
+                <div className="max-h-[75vh] overflow-y-auto px-6 py-6">
+                    <div className="space-y-6">
                     <div>
-                        <label className="admin-label">Product Image</label>
+                        <p className="admin-label mb-3 border-b border-ink-20 pb-2 text-ink">Product Image</p>
                         <div className="flex gap-4 items-start">
                             {previewImage ? (
                                 <div className="relative h-24 w-24 shrink-0 bg-parchment border border-ink-20 overflow-hidden rounded-[2px]">
@@ -145,7 +176,10 @@ function ProductModal({ open, onClose, product, categories }: ProductModalProps)
                         </div>
                     </div>
 
-                    <div className="grid grid-cols-2 gap-4">
+                    <div>
+                        <p className="admin-label mb-3 border-b border-ink-20 pb-2 text-ink">Basic Information</p>
+                        <div className="space-y-4">
+                    <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
                         <div>
                             <label className="admin-label" htmlFor="product-name">
                                 Name *
@@ -242,10 +276,14 @@ function ProductModal({ open, onClose, product, categories }: ProductModalProps)
                             className="admin-input"
                         />
                     </div>
+                    </div>
+                    </div>
 
-                    <div className="border-t border-ink-20 pt-5">
-                        <div className="admin-label mb-3">PKR Pricing (shown to local visitors)</div>
-                        <div className="grid grid-cols-3 gap-3">
+                    <div>
+                        <p className="admin-label mb-3 border-b border-ink-20 pb-2 text-ink">Pricing</p>
+                        <div className="grid grid-cols-1 gap-4 md:grid-cols-2">
+                            <div className="space-y-3 border border-ink-20 p-4">
+                                <p className="text-[11px] font-semibold uppercase tracking-wider text-ink-60">PKR (Local)</p>
                             <div>
                                 <label className="admin-label" htmlFor="factory-pkr">
                                     Factory Price (PKR)
@@ -272,22 +310,10 @@ function ProductModal({ open, onClose, product, categories }: ProductModalProps)
                                     className="admin-input"
                                 />
                             </div>
-                            <div>
-                                <label className="admin-label" htmlFor="price-type">
-                                    Price Type
-                                </label>
-                                <select id="price-type" name="priceType" defaultValue={product?.price_type ?? ""} className="admin-select">
-                                    <option value="">None</option>
-                                    <option value="Factory">Factory</option>
-                                    <option value="FOB">FOB</option>
-                                </select>
                             </div>
                         </div>
-                    </div>
-
-                    <div className="bg-gold-pale border border-gold/20 p-4 rounded-[2px]">
-                        <div className="admin-label mb-3 text-gold">USD Pricing (shown to international visitors via currency converter)</div>
-                        <div className="grid grid-cols-2 gap-3">
+                            <div className="space-y-3 border border-gold/30 bg-gold-pale p-4">
+                                <p className="text-[11px] font-semibold uppercase tracking-wider text-gold">USD (International) ★</p>
                             <div>
                                 <label className="admin-label" htmlFor="factory-usd">
                                     Factory Price (USD) *
@@ -318,8 +344,11 @@ function ProductModal({ open, onClose, product, categories }: ProductModalProps)
                             </div>
                         </div>
                     </div>
+                    </div>
 
-                    <div className="grid grid-cols-3 gap-3">
+                    <div>
+                        <p className="admin-label mb-3 border-b border-ink-20 pb-2 text-ink">B2B Settings</p>
+                    <div className="grid grid-cols-1 gap-3 md:grid-cols-3">
                         <div>
                             <label className="admin-label" htmlFor="product-moq">
                                 MOQ (Units)
@@ -358,7 +387,7 @@ function ProductModal({ open, onClose, product, categories }: ProductModalProps)
                         </div>
                     </div>
 
-                    <div className="flex gap-6 flex-wrap">
+                    <div className="mt-4 flex flex-wrap gap-6">
                         <label className="flex items-center gap-3 cursor-pointer">
                             <input
                                 type="checkbox"
@@ -380,65 +409,43 @@ function ProductModal({ open, onClose, product, categories }: ProductModalProps)
                     </div>
 
                     {state.error && <p className="text-sm text-red-600">{state.error}</p>}
+                    </div>
                 </div>
 
                 <div className="flex items-center justify-end gap-3 border-t border-ink-20 px-6 py-4">
-                    <button type="button" onClick={onClose} className="admin-btn-outline">
+                    <button type="button" onClick={() => onClose()} className="admin-btn-outline">
                         Cancel
                     </button>
-                    <button type="submit" className="admin-btn-primary">
-                        {isEdit ? "Save Changes" : "Create Product"}
-                    </button>
+                    <SubmitButton isEdit={isEdit} />
                 </div>
-            </form>
-        </div>
-    );
-}
-
-type DeleteProductModalProps = ModalBaseProps & {
-    product?: AdminProduct | null;
-};
-
-function DeleteProductModal({ open, onClose, product }: DeleteProductModalProps) {
-    const [state, formAction] = useFormState(deleteProductAction, initialState);
-
-    useEffect(() => {
-        if (state.success) onClose();
-    }, [state.success, onClose]);
-
-    if (!open || !product) return null;
-
-    return (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 px-4 py-6 backdrop-blur-sm">
-            <form action={formAction} className="w-full max-w-lg bg-white shadow-xl rounded-[2px] p-8 border border-ink-20">
-                <input type="hidden" name="id" value={product.id} />
-                <div className="space-y-3 text-center">
-                    <h2 className="font-heading text-xl font-light text-ink">Delete product?</h2>
-                    <p className="text-sm text-ink-60">
-                        This will permanently remove <span className="font-semibold text-ink">{product.name}</span>.
-                    </p>
-                </div>
-                {state.error ? <p className="text-sm text-red-600 mt-4">{state.error}</p> : null}
-                <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
-                    <button type="button" onClick={onClose} className="admin-btn-outline">
-                        Cancel
-                    </button>
-                    <button type="submit" className="admin-btn-danger">
-                        <Trash2 className="h-3.5 w-3.5" />
-                        Delete
-                    </button>
-                </div>
+                {isEdit ? (
+                    <div className="border-t border-ink-20 bg-parchment/40 px-6 py-4">
+                        <form
+                            action={deleteAction}
+                            onSubmit={(e) => {
+                                if (!confirm("Delete this product permanently?")) e.preventDefault();
+                            }}
+                        >
+                            <input type="hidden" name="id" value={product?.id} />
+                            <button type="submit" className="admin-btn-danger">
+                                <Trash2 className="h-3.5 w-3.5" />
+                                Delete Product
+                            </button>
+                            {deleteState.error ? <p className="mt-2 text-sm text-red-600">{deleteState.error}</p> : null}
+                        </form>
+                    </div>
+                ) : null}
             </form>
         </div>
     );
 }
 
 export function ProductsClient({ products, categories }: { products: AdminProduct[]; categories: AdminCategoryOption[] }) {
+    const { toast, showToast, dismissToast } = useToast();
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(0);
-    const [modalProduct, setModalProduct] = useState<AdminProduct | null>(null);
-    const [deleteProduct, setDeleteProduct] = useState<AdminProduct | null>(null);
-    const [showCreate, setShowCreate] = useState(false);
+    const [modalOpen, setModalOpen] = useState(false);
+    const [editingProduct, setEditingProduct] = useState<AdminProduct | null>(null);
     const featuredCount = products.filter((product) => product.is_featured).length;
 
     const filtered = useMemo(() => {
@@ -458,6 +465,12 @@ export function ProductsClient({ products, categories }: { products: AdminProduc
         setPage(0);
     }, [search]);
 
+    function handleClose(success?: boolean) {
+        setModalOpen(false);
+        setEditingProduct(null);
+        if (success) showToast("Product saved successfully.");
+    }
+
     return (
         <div className="space-y-6 w-full">
             <div className="flex items-center justify-between">
@@ -471,8 +484,8 @@ export function ProductsClient({ products, categories }: { products: AdminProduc
                     <button
                         type="button"
                         onClick={() => {
-                            setModalProduct(null);
-                            setShowCreate(true);
+                            setEditingProduct(null);
+                            setModalOpen(true);
                         }}
                         className="admin-btn-primary"
                     >
@@ -497,67 +510,64 @@ export function ProductsClient({ products, categories }: { products: AdminProduc
 
             <div className="overflow-hidden border border-ink-20 bg-white rounded-[2px] shadow-card">
                 <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-ink-20 text-left text-sm text-ink-60">
+                    <table className="min-w-full divide-y divide-ink-20 text-sm">
                     <thead className="bg-parchment text-[10px] font-semibold uppercase tracking-[0.1em] text-ink-60">
                         <tr>
-                            <th className="px-4 py-3">Image</th>
-                            <th className="px-4 py-3">Name</th>
-                            <th className="px-4 py-3">Category</th>
-                            <th className="px-4 py-3">USD Price</th>
-                            <th className="px-4 py-3">MOQ</th>
-                            <th className="px-4 py-3">Status</th>
-                            <th className="px-4 py-3">Featured</th>
+                            <th className="w-16 px-4 py-3 text-left">Image</th>
+                            <th className="px-4 py-3 text-left">Product</th>
+                            <th className="hidden px-4 py-3 text-left lg:table-cell">USD Price</th>
+                            <th className="hidden px-4 py-3 text-left md:table-cell">Status</th>
+                            <th className="hidden px-4 py-3 text-left md:table-cell">Featured</th>
                             <th className="px-4 py-3 text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-ink-20">
                         {paginated.length ? (
                             paginated.map((product) => (
-                                <tr key={product.id} className="group">
-                                    <td className="px-4 py-3 align-middle">
+                                <tr key={product.id} className="transition-colors hover:bg-parchment/50">
+                                    <td className="px-4 py-3">
                                         {product.image_url ? (
-                                            <Image
-                                                src={product.image_url}
-                                                alt={product.name}
-                                                width={48}
-                                                height={48}
-                                                className="h-12 w-12 object-cover border border-ink-20 rounded-[2px]"
-                                            />
+                                            <div className="h-12 w-12 shrink-0 overflow-hidden border border-ink-20 bg-parchment">
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img src={product.image_url} alt={product.name} className="h-full w-full object-cover" />
+                                            </div>
                                         ) : (
-                                            <div className="flex h-12 w-12 items-center justify-center border border-dashed border-ink-20 text-[10px] uppercase tracking-[0.08em] text-ink-60 rounded-[2px]">
-                                                —
+                                            <div className="flex h-12 w-12 items-center justify-center border border-dashed border-ink-20 bg-parchment text-ink-60">
+                                                <ImageIcon className="h-4 w-4" />
                                             </div>
                                         )}
                                     </td>
-                                    <td className="px-4 py-3 font-medium text-ink">{product.name}</td>
-                                    <td className="px-4 py-3 text-ink">{product.category_name}</td>
-                                    <td className="px-4 py-3 font-mono text-sm text-ink">{formatUsd(product.factory_price_usd)}</td>
-                                    <td className="px-4 py-3 text-ink">{product.moq}</td>
                                     <td className="px-4 py-3">
+                                        <p className="font-medium text-ink">{product.name}</p>
+                                        <p className="mt-0.5 text-xs text-ink-60">{product.category_name}</p>
+                                    </td>
+                                    <td className="hidden px-4 py-3 lg:table-cell">
+                                        <span className="font-mono text-sm text-ink">{product.factory_price_usd ? `$${product.factory_price_usd}` : "—"}</span>
+                                    </td>
+                                    <td className="hidden px-4 py-3 md:table-cell">
                                         <span
                                             className={`inline-flex px-2 py-0.5 text-[10px] font-semibold uppercase tracking-[0.06em] rounded-[2px] ${STATUS_CLASS[product.status] ?? STATUS_CLASS.draft}`}
                                         >
                                             {product.status}
                                         </span>
                                     </td>
-                                    <td className="px-4 py-3 text-ink">{product.is_featured ? "Yes" : "—"}</td>
-                                    <td className="px-4 py-3">
-                                        <div className="flex justify-end gap-2">
+                                    <td className="hidden px-4 py-3 md:table-cell">
+                                        <span className={product.is_featured ? "text-[10px] font-semibold uppercase text-gold" : "text-[10px] text-ink-60"}>
+                                            {product.is_featured ? "★ Featured" : "—"}
+                                        </span>
+                                    </td>
+                                    <td className="px-4 py-3 text-right">
+                                        <div className="flex items-center justify-end gap-2">
                                             <button
                                                 type="button"
-                                                onClick={() => setModalProduct(product)}
+                                                onClick={() => {
+                                                    setEditingProduct(product);
+                                                    setModalOpen(true);
+                                                }}
                                                 className="admin-btn-outline py-1.5 px-3 text-[11px]"
                                             >
                                                 <Pencil className="h-3.5 w-3.5" />
                                                 Edit
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => setDeleteProduct(product)}
-                                                className="admin-btn-danger py-1.5 px-3 text-[11px]"
-                                            >
-                                                <Trash2 className="h-3.5 w-3.5" />
-                                                Delete
                                             </button>
                                         </div>
                                     </td>
@@ -565,7 +575,7 @@ export function ProductsClient({ products, categories }: { products: AdminProduc
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={8} className="px-6 py-6 text-center text-sm text-ink-60">
+                                <td colSpan={6} className="px-6 py-6 text-center text-sm text-ink-60">
                                     No products found.
                                 </td>
                             </tr>
@@ -605,9 +615,14 @@ export function ProductsClient({ products, categories }: { products: AdminProduc
                 </div>
             </div>
 
-            <ProductModal open={showCreate} onClose={() => setShowCreate(false)} categories={categories} />
-            <ProductModal open={Boolean(modalProduct)} onClose={() => setModalProduct(null)} product={modalProduct ?? undefined} categories={categories} />
-            <DeleteProductModal open={Boolean(deleteProduct)} onClose={() => setDeleteProduct(null)} product={deleteProduct ?? undefined} />
+            <ProductModal
+                open={modalOpen}
+                onClose={handleClose}
+                product={editingProduct ?? undefined}
+                categories={categories}
+                onDeleteSuccess={() => showToast("Product deleted successfully.")}
+            />
+            {toast ? <Toast message={toast.message} type={toast.type} onDismiss={dismissToast} /> : null}
         </div>
     );
 }

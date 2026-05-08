@@ -67,12 +67,13 @@ export const getFeaturedProducts = cache(async (limit: number = 3): Promise<Prod
             .order("created_at", { ascending: false })
             .limit(Math.max(take * 4, 48));
 
-        if (error || !data?.length) {
-            if (error) logSupabaseReadFailure("featuredProducts", error);
-            return sampleProducts.slice(0, take).map((product) => {
-                const category = allCategories.find((item) => item.id === product.categoryId) ?? undefined;
-                return attachVariants({ ...product, category }, sampleVariants);
-            });
+        if (error) {
+            logSupabaseReadFailure("featuredProducts", error);
+            console.error("[getFeaturedProducts] DB error - did you run the SQL migration?", error.message);
+            return [];
+        }
+        if (!data?.length) {
+            return [];
         }
 
         const filtered = (data as SupabaseProductRow[]).filter(isHomepageFeaturedProduct).slice(0, take);
@@ -88,10 +89,7 @@ export const getFeaturedProducts = cache(async (limit: number = 3): Promise<Prod
         });
     } catch (error) {
         logSupabaseReadFailure("featuredProducts.catch", error);
-        return sampleProducts.slice(0, take).map((product) => {
-            const category = allCategories.find((item) => item.id === product.categoryId) ?? undefined;
-            return attachVariants({ ...product, category }, sampleVariants);
-        });
+        return [];
     }
 });
 

@@ -31,16 +31,12 @@ export function Header() {
                 <Link href="/" className="flex min-w-0 items-center gap-3 shrink-0">
                     <Image
                         src="/Artisan-logo.jpg"
-                        alt=""
+                        alt="Artisan Cookware"
                         width={160}
                         height={44}
                         priority
-                        className="h-[40px] w-auto shrink-0 object-contain sm:h-[44px]"
-                        aria-hidden
+                        className="h-[30px] w-auto shrink-0 rounded-sm object-contain sm:h-[36px]"
                     />
-                    <span className="font-heading max-w-[11rem] text-[17px] font-normal leading-tight text-ink sm:max-w-none sm:text-[20px]">
-                        Artisan Cookware
-                    </span>
                 </Link>
 
                 <nav className="hidden md:flex flex-1 justify-center">

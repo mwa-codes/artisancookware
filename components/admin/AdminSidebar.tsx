@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { clsx } from "clsx";
@@ -15,13 +14,14 @@ export function AdminSidebar() {
         <aside className="hidden w-[240px] shrink-0 flex-col border-r border-white/10 bg-ink text-white lg:flex">
             <div className="border-b border-white/10 px-6 py-8">
                 <Link href="/admin" className="flex items-center gap-3">
-                    <Image
-                        src="/Artisan-logo.jpg"
-                        alt="Artisan Cookware"
-                        width={120}
-                        height={34}
-                        className="h-[34px] w-auto object-contain brightness-0 invert"
-                    />
+                    <div className="flex items-center gap-3">
+                        <span className="grid h-8 w-8 place-items-center bg-gold text-[11px] font-bold uppercase tracking-tight text-ink">
+                            AC
+                        </span>
+                        <span className="font-heading text-[15px] font-normal tracking-[0.04em] text-white">
+                            Artisan Cookware
+                        </span>
+                    </div>
                 </Link>
                 <p className="mt-4 text-[10px] font-semibold uppercase tracking-[0.2em] text-gold">Admin Panel</p>
             </div>

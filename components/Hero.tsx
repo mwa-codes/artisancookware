@@ -6,7 +6,6 @@ import { ArrowRight } from "lucide-react";
 import { useEffect, useState } from "react";
 import type { ProductWithRelations } from "@/lib/types";
 import { HeroOverlayPrice } from "@/components/HeroOverlayPrice";
-import { HeroImagePlaceholder } from "@/components/MediaPlaceholder";
 
 type HeroProps = {
     products: ProductWithRelations[];
@@ -31,15 +30,13 @@ export function Hero({ products }: HeroProps) {
             <div className="grid min-h-[calc(100vh-68px)] lg:grid-cols-2">
                 <div className="flex flex-col justify-center bg-ink px-6 py-14 sm:px-10 lg:px-16 lg:py-20 xl:pl-20 xl:pr-16">
                     <div className="animate-fade-up max-w-xl">
-                        <div className="mb-8">
-                            <Image
-                                src="/Artisan-logo.jpg"
-                                alt="Artisan Cookware"
-                                width={140}
-                                height={40}
-                                className="h-[40px] w-auto object-contain brightness-0 invert opacity-90"
-                                priority
-                            />
+                        <div className="mb-8 flex items-center gap-3">
+                            <span className="grid h-8 w-8 place-items-center bg-gold text-[11px] font-bold uppercase tracking-tight text-ink">
+                                AC
+                            </span>
+                            <span className="font-heading text-[16px] font-normal uppercase tracking-[0.06em] text-white/80">
+                                Artisan Cookware
+                            </span>
                         </div>
 
                         <div className="eyebrow mb-8">
@@ -104,14 +101,22 @@ export function Hero({ products }: HeroProps) {
                             onError={() => setHeroImageFailed(true)}
                         />
                     ) : (
-                        <HeroImagePlaceholder />
+                        <div className="absolute inset-0 flex items-center justify-center bg-parchment">
+                            <div className="px-8 text-center">
+                                <div className="font-heading mb-4 text-5xl font-light text-ink-20">AC</div>
+                                <p className="text-sm text-ink-60">
+                                    Add a product with an image
+                                    <br />
+                                    to show here
+                                </p>
+                                <a href="/admin/products" className="mt-4 inline-block text-xs text-gold underline">
+                                    Go to Admin →
+                                </a>
+                            </div>
+                        </div>
                     )}
-                    <div
-                        className="pointer-events-none absolute inset-0 bg-gradient-to-t from-[rgba(247,244,239,0.95)] via-transparent to-transparent"
-                        aria-hidden
-                    />
                     {hero ? (
-                        <div className="absolute bottom-0 left-0 right-0 p-8 md:p-10">
+                        <div className="absolute inset-x-0 bottom-0 bg-gradient-to-t from-parchment via-parchment/60 to-transparent p-6 sm:p-8">
                             <HeroOverlayPrice product={hero} categoryLabel={categoryName} />
                         </div>
                     ) : null}

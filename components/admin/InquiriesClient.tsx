@@ -1,7 +1,7 @@
 "use client";
 
-import { useState, useMemo } from "react";
-import { useFormState } from "react-dom";
+import { useState, useMemo, useEffect } from "react";
+import { useFormState, useFormStatus } from "react-dom";
 import { X, Mail, MessageSquare, Trash2 } from "lucide-react";
 import {
     updateInquiryStatusAction,
@@ -9,6 +9,7 @@ import {
     deleteInquiryAction,
     type InquiryActionState
 } from "@/app/admin/inquiries/actions";
+import { Toast, useToast } from "@/components/admin/Toast";
 
 type Inquiry = {
     id: string;
@@ -48,6 +49,22 @@ function InquiryDrawer({ inquiry, onClose }: { inquiry: Inquiry; onClose: () => 
     const [statusState, statusAction] = useFormState(updateInquiryStatusAction, initState);
     const [notesState, notesAction] = useFormState(updateInquiryNotesAction, initState);
     const [deleteState, deleteAction] = useFormState(deleteInquiryAction, initState);
+    const { toast, showToast, dismissToast } = useToast();
+
+    useEffect(() => {
+        if (statusState.success) showToast("Inquiry status updated.");
+    }, [statusState.success, showToast]);
+
+    useEffect(() => {
+        if (notesState.success) showToast("Inquiry notes saved.");
+    }, [notesState.success, showToast]);
+
+    useEffect(() => {
+        if (deleteState.success) {
+            showToast("Inquiry deleted.");
+            onClose();
+        }
+    }, [deleteState.success, onClose, showToast]);
 
     const waMessage = encodeURIComponent(
         `Hi ${inquiry.customer_name}, thank you for your inquiry about ${inquiry.product_name ?? "our products"}. We'd be happy to discuss your requirements. Please let us know a convenient time to connect.`
@@ -168,9 +185,7 @@ function InquiryDrawer({ inquiry, onClose }: { inquiry: Inquiry; onClose: () => 
                             placeholder="Add private notes about this inquiry..."
                             className="admin-input"
                         />
-                        <button type="submit" className="admin-btn-outline">
-                            Save Notes
-                        </button>
+                        <NotesSubmitButton />
                         {notesState.error && <p className="text-xs text-red-600">{notesState.error}</p>}
                     </form>
 
@@ -189,7 +204,17 @@ function InquiryDrawer({ inquiry, onClose }: { inquiry: Inquiry; onClose: () => 
                     </form>
                 </div>
             </div>
+            {toast ? <Toast message={toast.message} type={toast.type} onDismiss={dismissToast} /> : null}
         </div>
+    );
+}
+
+function NotesSubmitButton() {
+    const { pending } = useFormStatus();
+    return (
+        <button type="submit" disabled={pending} className="admin-btn-outline disabled:cursor-not-allowed disabled:opacity-60">
+            {pending ? "Saving..." : "Save Notes"}
+        </button>
     );
 }
 

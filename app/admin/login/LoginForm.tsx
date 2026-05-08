@@ -1,6 +1,5 @@
 "use client";
 
-import Image from "next/image";
 import { useFormState } from "react-dom";
 import { loginAction } from "./actions";
 
@@ -13,14 +12,14 @@ export function LoginForm({ redirectTo }: { redirectTo?: string }) {
         <div className="flex min-h-screen items-center justify-center bg-ink px-4">
             <div className="w-full max-w-sm">
                 <div className="mb-10 flex justify-center">
-                    <Image
-                        src="/Artisan-logo.jpg"
-                        alt="Artisan Cookware"
-                        width={160}
-                        height={46}
-                        className="h-[46px] w-auto object-contain brightness-0 invert"
-                        priority
-                    />
+                    <div className="flex items-center gap-3">
+                        <span className="grid h-8 w-8 place-items-center bg-gold text-[11px] font-bold uppercase tracking-tight text-ink">
+                            AC
+                        </span>
+                        <span className="font-heading text-[16px] font-normal uppercase tracking-[0.06em] text-white/80">
+                            Artisan Cookware
+                        </span>
+                    </div>
                 </div>
 
                 <div className="bg-white p-8">

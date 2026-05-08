@@ -29,15 +29,12 @@ export function FeaturedProducts({ products }: { products: ProductWithRelations[
                         <span className="eyebrow-line" />
                         <span className="eyebrow-text">Wholesale Catalogue</span>
                     </div>
-                    <h2 className="font-heading text-section font-light text-ink">Featured Product Lines</h2>
-                    <div className="mt-14 border border-dashed border-ink-20 py-20 text-center">
-                        <p className="text-sm text-ink-60">
-                            No featured products yet. Go to{" "}
-                            <a href="/admin/products" className="text-gold underline">
-                                Admin → Products
-                            </a>{" "}
-                            and mark products as featured.
-                        </p>
+                    <h2 className="mb-12 font-heading text-section font-light text-ink">Featured Product Lines</h2>
+                    <div className="border border-dashed border-ink-20 py-20 text-center">
+                        <p className="mb-4 text-sm text-ink-60">No active products yet.</p>
+                        <a href="/admin/products" className="admin-btn-primary inline-flex">
+                            Add Products in Admin →
+                        </a>
                     </div>
                 </div>
             </section>

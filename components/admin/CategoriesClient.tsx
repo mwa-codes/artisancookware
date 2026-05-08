@@ -1,16 +1,16 @@
 "use client";
 
-import Image from "next/image";
 import { useEffect, useMemo, useState, type ChangeEvent } from "react";
-import { useFormState } from "react-dom";
+import { useFormState, useFormStatus } from "react-dom";
 import { clsx } from "clsx";
-import { ImageIcon, X, Trash2 } from "lucide-react";
+import { ImageIcon, X, Trash2, Pencil } from "lucide-react";
 import {
     createCategoryAction,
     deleteCategoryAction,
     type CategoryActionState,
     updateCategoryAction
 } from "@/app/admin/categories/actions";
+import { Toast, useToast } from "@/components/admin/Toast";
 
 export type AdminCategory = {
     id: string;
@@ -29,9 +29,18 @@ const initialFormState: CategoryActionState = { success: false };
 
 type ModalProps = {
     open: boolean;
-    onClose: () => void;
+    onClose: (success?: boolean) => void;
     category?: AdminCategory | null;
 };
+
+function SubmitButton({ isEdit }: { isEdit: boolean }) {
+    const { pending } = useFormStatus();
+    return (
+        <button type="submit" disabled={pending} className="admin-btn-primary disabled:cursor-not-allowed disabled:opacity-60">
+            {pending ? "Saving..." : isEdit ? "Save Changes" : "Create Collection"}
+        </button>
+    );
+}
 
 function CategoryModal({ open, onClose, category }: ModalProps) {
     const isEdit = Boolean(category);
@@ -42,7 +51,7 @@ function CategoryModal({ open, onClose, category }: ModalProps) {
     const [previewImage, setPreviewImage] = useState<string | null>(category?.image_url ?? null);
 
     useEffect(() => {
-        if (state.success) onClose();
+        if (state.success) onClose(true);
     }, [state.success, onClose]);
 
     useEffect(() => {
@@ -79,7 +88,7 @@ function CategoryModal({ open, onClose, category }: ModalProps) {
             <form action={formAction} encType="multipart/form-data" className="w-full max-w-lg bg-white shadow-xl rounded-[2px]">
                 <div className="flex items-center justify-between border-b border-ink-20 px-6 py-4">
                     <h2 className="font-heading text-xl font-light text-ink">{isEdit ? "Edit Collection" : "Add Collection"}</h2>
-                    <button type="button" onClick={onClose} className="text-ink-60 hover:text-ink">
+                    <button type="button" onClick={() => onClose()} className="text-ink-60 hover:text-ink">
                         <X className="h-5 w-5" />
                     </button>
                 </div>
@@ -189,12 +198,10 @@ function CategoryModal({ open, onClose, category }: ModalProps) {
                 </div>
 
                 <div className="flex items-center justify-end gap-3 border-t border-ink-20 px-6 py-4">
-                    <button type="button" onClick={onClose} className="admin-btn-outline">
+                    <button type="button" onClick={() => onClose()} className="admin-btn-outline">
                         Cancel
                     </button>
-                    <button type="submit" className="admin-btn-primary">
-                        {isEdit ? "Save Changes" : "Create Collection"}
-                    </button>
+                    <SubmitButton isEdit={isEdit} />
                 </div>
             </form>
         </div>
@@ -222,7 +229,7 @@ function DeleteModal({ open, onClose, category }: ModalProps) {
                 </div>
                 {state.error ? <p className="text-sm text-red-600 mt-4">{state.error}</p> : null}
                 <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
-                    <button type="button" onClick={onClose} className="admin-btn-outline">
+                    <button type="button" onClick={() => onClose()} className="admin-btn-outline">
                         Cancel
                     </button>
                     <button type="submit" className="admin-btn-danger">
@@ -236,6 +243,7 @@ function DeleteModal({ open, onClose, category }: ModalProps) {
 }
 
 export function CategoriesClient({ categories }: { categories: AdminCategory[] }) {
+    const { toast, showToast, dismissToast } = useToast();
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(0);
     const [showCreate, setShowCreate] = useState(false);
@@ -257,6 +265,12 @@ export function CategoriesClient({ categories }: { categories: AdminCategory[] }
     useEffect(() => {
         setPage(0);
     }, [search]);
+
+    function handleClose(success?: boolean) {
+        setShowCreate(false);
+        setEditingCategory(null);
+        if (success) showToast("Category saved successfully.");
+    }
 
     return (
         <div className="space-y-6 w-full">
@@ -284,59 +298,51 @@ export function CategoriesClient({ categories }: { categories: AdminCategory[] }
 
             <div className="overflow-hidden border border-ink-20 bg-white rounded-[2px] shadow-card">
                 <div className="overflow-x-auto">
-                    <table className="min-w-full divide-y divide-ink-20 text-left text-sm">
+                    <table className="min-w-full divide-y divide-ink-20 text-sm">
                     <thead className="bg-parchment text-[10px] font-semibold uppercase tracking-[0.1em] text-ink-60">
                         <tr>
-                            <th className="px-4 py-3">Image</th>
-                            <th className="px-4 py-3">Name</th>
-                            <th className="px-4 py-3">Slug</th>
-                            <th className="px-4 py-3">Order</th>
-                            <th className="px-4 py-3">Featured</th>
-                            <th className="px-4 py-3">Created</th>
+                            <th className="w-16 px-4 py-3 text-left">Image</th>
+                            <th className="px-4 py-3 text-left">Collection</th>
+                            <th className="hidden px-4 py-3 text-left md:table-cell">Order</th>
+                            <th className="hidden px-4 py-3 text-left md:table-cell">Homepage</th>
                             <th className="px-4 py-3 text-right">Actions</th>
                         </tr>
                     </thead>
                     <tbody className="divide-y divide-ink-20 text-ink-60">
                         {paginated.length ? (
                             paginated.map((category) => (
-                                <tr key={category.id} className="group">
+                                <tr key={category.id} className="transition-colors hover:bg-parchment/50">
                                     <td className="px-4 py-3">
                                         {category.image_url ? (
-                                            <Image
-                                                src={category.image_url}
-                                                alt=""
-                                                width={40}
-                                                height={40}
-                                                className="h-10 w-10 object-cover border border-ink-20 rounded-[2px]"
-                                            />
+                                            <div className="h-12 w-12 overflow-hidden border border-ink-20 bg-parchment">
+                                                {/* eslint-disable-next-line @next/next/no-img-element */}
+                                                <img src={category.image_url} alt={category.name} className="h-full w-full object-cover" />
+                                            </div>
                                         ) : (
-                                            <span className="text-xs">—</span>
+                                            <div className="flex h-12 w-12 items-center justify-center border border-dashed border-ink-20 bg-parchment text-ink-60">
+                                                <ImageIcon className="h-4 w-4" />
+                                            </div>
                                         )}
                                     </td>
-                                    <td className="px-4 py-3 font-medium text-ink">{category.name}</td>
-                                    <td className="px-4 py-3 font-mono text-xs">{category.slug}</td>
-                                    <td className="px-4 py-3">{category.display_order}</td>
-                                    <td className="px-4 py-3">{category.is_featured ? "Yes" : "—"}</td>
-                                    <td className="px-4 py-3 text-xs">
-                                        {new Date(category.created_at).toLocaleDateString("en-PK", {
-                                            dateStyle: "medium"
-                                        })}
-                                    </td>
                                     <td className="px-4 py-3">
+                                        <p className="font-medium text-ink">{category.name}</p>
+                                        <p className="mt-0.5 font-mono text-xs text-ink-60">/categories/{category.slug}</p>
+                                    </td>
+                                    <td className="hidden px-4 py-3 text-sm text-ink-60 md:table-cell">{category.display_order}</td>
+                                    <td className="hidden px-4 py-3 md:table-cell">
+                                        <span className={category.is_featured ? "text-[10px] font-semibold uppercase text-gold" : "text-[10px] text-ink-60"}>
+                                            {category.is_featured ? "★ Shown" : "Hidden"}
+                                        </span>
+                                    </td>
+                                    <td className="px-4 py-3 text-right">
                                         <div className="flex justify-end gap-2">
                                             <button
                                                 type="button"
                                                 onClick={() => setEditingCategory(category)}
                                                 className="admin-btn-outline py-1.5 px-3 text-[11px]"
                                             >
+                                                <Pencil className="h-3.5 w-3.5" />
                                                 Edit
-                                            </button>
-                                            <button
-                                                type="button"
-                                                onClick={() => setDeletingCategory(category)}
-                                                className="admin-btn-danger py-1.5 px-3 text-[11px]"
-                                            >
-                                                Delete
                                             </button>
                                         </div>
                                     </td>
@@ -344,7 +350,7 @@ export function CategoriesClient({ categories }: { categories: AdminCategory[] }
                             ))
                         ) : (
                             <tr>
-                                <td colSpan={7} className="px-6 py-6 text-center text-sm text-ink-60">
+                                <td colSpan={5} className="px-6 py-6 text-center text-sm text-ink-60">
                                     No categories found.
                                 </td>
                             </tr>
@@ -384,9 +390,10 @@ export function CategoriesClient({ categories }: { categories: AdminCategory[] }
                 </div>
             </div>
 
-            <CategoryModal open={showCreate} onClose={() => setShowCreate(false)} />
-            <CategoryModal open={Boolean(editingCategory)} onClose={() => setEditingCategory(null)} category={editingCategory ?? undefined} />
+            <CategoryModal open={showCreate} onClose={handleClose} />
+            <CategoryModal open={Boolean(editingCategory)} onClose={handleClose} category={editingCategory ?? undefined} />
             <DeleteModal open={Boolean(deletingCategory)} onClose={() => setDeletingCategory(null)} category={deletingCategory ?? undefined} />
+            {toast ? <Toast message={toast.message} type={toast.type} onDismiss={dismissToast} /> : null}
         </div>
     );
 }

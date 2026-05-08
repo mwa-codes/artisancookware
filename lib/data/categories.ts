@@ -54,15 +54,28 @@ export const getCategoryBySlug = cache(async (slug: string) => {
 });
 
 export const getFeaturedCategories = cache(async (limit = 4) => {
-    const list = await getCategories();
-    const sorted = [...list].sort(
-        (a, b) => (a.displayOrder - b.displayOrder) || a.name.localeCompare(b.name)
-    );
-    const featured = sorted.filter((c) => c.isFeatured);
-    if (featured.length >= limit) {
-        return featured.slice(0, limit);
+    if (!isSupabaseConfigured()) {
+        return [];
     }
-    return sorted.slice(0, limit);
+
+    try {
+        const client = getSupabaseClient();
+        const { data, error } = await client
+            .from("categories")
+            .select("*")
+            .eq("is_featured", true)
+            .order("display_order", { ascending: true })
+            .order("name", { ascending: true })
+            .limit(limit);
+
+        if (error || !data?.length) {
+            return [];
+        }
+
+        return (data as SupabaseCategoryRow[]).map(mapCategoryRow);
+    } catch {
+        return [];
+    }
 });
 
 export async function getCategoryProductCounts(): Promise<Record<string, number>> {

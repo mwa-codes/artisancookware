@@ -1,4 +1,3 @@
-import Image from "next/image";
 import Link from "next/link";
 
 function IconMail() {
@@ -39,18 +38,13 @@ export function Footer() {
                 {/* Balanced grid: 2×2 on tablet, 4 cols on xl — avoids one lonely column */}
                 <div className="grid grid-cols-1 gap-14 md:grid-cols-2 xl:grid-cols-4 xl:gap-x-16 xl:gap-y-12">
                     <div className="flex flex-col gap-6">
-                        <div className="space-y-4">
-                            {/* Light panel so the JPG logo stays visible (no invert filters) */}
-                            <div className="inline-flex w-fit rounded-[2px] bg-white px-5 py-3 shadow-sm">
-                                <Image
-                                    src="/Artisan-logo.jpg"
-                                    alt="Artisan Cookware"
-                                    width={160}
-                                    height={48}
-                                    className="h-10 w-auto max-w-[200px] object-contain object-left sm:h-11"
-                                />
-                            </div>
-                            <p className="font-heading text-2xl font-light tracking-tight text-white">Artisan Cookware</p>
+                        <div className="mb-5 flex items-center gap-3">
+                            <span className="grid h-8 w-8 shrink-0 place-items-center bg-gold text-[11px] font-bold uppercase tracking-tight text-ink">
+                                AC
+                            </span>
+                            <span className="font-heading text-[20px] font-normal tracking-[0.02em] text-white">
+                                Artisan Cookware
+                            </span>
                         </div>
                         <p className="max-w-md text-[15px] leading-relaxed text-[rgba(255,255,255,0.55)]">
                             Premium aluminium cookware manufactured in Gujranwala since 1998. ISO-certified production for international wholesalers and
