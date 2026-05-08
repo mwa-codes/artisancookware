@@ -29,7 +29,7 @@ export function Header() {
         >
             <div className="container-site flex h-full items-center justify-between gap-6">
                 <Link href="/" className="flex items-center gap-3 shrink-0">
-                    <div className="h-[38px] w-[38px] shrink-0 overflow-hidden rounded-[3px]">
+                    <div className="h-[38px] w-[38px] shrink-0 overflow-hidden rounded-[3px] bg-black">
                         <Image
                             src="/Artisan-logo.jpg"
                             alt="Artisan Cookware"
@@ -39,7 +39,7 @@ export function Header() {
                             className="h-full w-full object-cover"
                         />
                     </div>
-                    <span className="hidden font-heading text-[19px] font-normal leading-none text-ink sm:block">
+                    <span className="font-heading text-[19px] font-normal leading-none text-ink hidden sm:block">
                         Artisan Cookware
                     </span>
                 </Link>
