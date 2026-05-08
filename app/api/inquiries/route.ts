@@ -3,6 +3,7 @@ import { Resend } from "resend";
 import { getSupabaseClient, getSupabaseServiceClient, isSupabaseConfigured } from "@/lib/supabase";
 
 type InquiryNotification = {
+    idempotencyKey: string;
     name: string;
     email: string;
     message: string;
@@ -30,7 +31,7 @@ function formatField(label: string, value?: string | null) {
 async function sendInquiryNotification(inquiry: InquiryNotification) {
     const apiKey = process.env.RESEND_API_KEY;
     const notifyTo = process.env.INQUIRY_NOTIFY_TO ?? "info@artisancookware.co";
-    const notifyFrom = process.env.INQUIRY_NOTIFY_FROM ?? "Artisan Cookware <onboarding@resend.dev>";
+    const notifyFrom = process.env.INQUIRY_NOTIFY_FROM ?? "Artisan Cookware <no-reply@artisancookware.co>";
 
     if (!apiKey) {
         console.info("Skipping inquiry email notification: RESEND_API_KEY is not configured.");
@@ -50,7 +51,7 @@ async function sendInquiryNotification(inquiry: InquiryNotification) {
         formatField("Submitted at", inquiry.submittedAt)
     ];
 
-    const { error } = await resend.emails.send({
+    const { data, error } = await resend.emails.send({
         from: notifyFrom,
         to: notifyTo,
         replyTo: inquiry.email,
@@ -64,11 +65,16 @@ async function sendInquiryNotification(inquiry: InquiryNotification) {
             <h3>Message</h3>
             <p>${escapeHtml(inquiry.message).replace(/\n/g, "<br />")}</p>
         `
+    }, {
+        idempotencyKey: inquiry.idempotencyKey
     });
 
     if (error) {
-        throw error;
+        console.error("Resend inquiry email failed", error);
+        return;
     }
+
+    console.info("Resend inquiry email sent", data);
 }
 
 export async function POST(request: Request) {
@@ -99,6 +105,7 @@ export async function POST(request: Request) {
         const client = hasServiceKey ? getSupabaseServiceClient() : getSupabaseClient();
 
         const submittedAt = new Date().toISOString();
+        const inquiryRequestId = crypto.randomUUID();
 
         const row: Record<string, unknown> = {
             customer_name: name,
@@ -121,6 +128,7 @@ export async function POST(request: Request) {
         row.message = enrichedMessage;
 
         const notification: InquiryNotification = {
+            idempotencyKey: `inquiry-notification/${inquiryRequestId}`,
             name,
             email,
             message,
