@@ -17,7 +17,7 @@ export function Toast({ message, type = "success", onDismiss }: ToastProps) {
 
     return (
         <div
-            className={`fixed bottom-6 right-6 z-[200] flex max-w-sm items-start gap-3 rounded-[2px] border px-4 py-3 shadow-card-hover ${
+            className={`fixed top-6 right-6 z-[200] flex max-w-sm items-start gap-3 rounded-[2px] border px-4 py-3 shadow-card-hover ${
                 type === "success" ? "border-green-200 bg-white text-green-800" : "border-red-200 bg-white text-red-700"
             }`}
         >

@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useMemo, useEffect, useRef } from "react";
 import { useFormState, useFormStatus } from "react-dom";
 import { X, Mail, MessageSquare, Trash2 } from "lucide-react";
 import {
@@ -50,20 +50,26 @@ function InquiryDrawer({ inquiry, onClose }: { inquiry: Inquiry; onClose: () => 
     const [notesState, notesAction] = useFormState(updateInquiryNotesAction, initState);
     const [deleteState, deleteAction] = useFormState(deleteInquiryAction, initState);
     const { toast, showToast, dismissToast } = useToast();
+    const wasStatusSuccessful = useRef(false);
+    const wasNotesSuccessful = useRef(false);
+    const wasDeleteSuccessful = useRef(false);
 
     useEffect(() => {
-        if (statusState.success) showToast("Inquiry status updated.");
+        if (statusState.success && !wasStatusSuccessful.current) showToast("Inquiry status updated.");
+        wasStatusSuccessful.current = statusState.success;
     }, [statusState.success, showToast]);
 
     useEffect(() => {
-        if (notesState.success) showToast("Inquiry notes saved.");
+        if (notesState.success && !wasNotesSuccessful.current) showToast("Inquiry notes saved.");
+        wasNotesSuccessful.current = notesState.success;
     }, [notesState.success, showToast]);
 
     useEffect(() => {
-        if (deleteState.success) {
+        if (deleteState.success && !wasDeleteSuccessful.current) {
             showToast("Inquiry deleted.");
             onClose();
         }
+        wasDeleteSuccessful.current = deleteState.success;
     }, [deleteState.success, onClose, showToast]);
 
     const waMessage = encodeURIComponent(

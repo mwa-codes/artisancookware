@@ -1,7 +1,7 @@
 "use client";
 
 import Image from "next/image";
-import { useEffect, useMemo, useState } from "react";
+import { useEffect, useMemo, useRef, useState } from "react";
 import { useFormState } from "react-dom";
 import { clsx } from "clsx";
 import { useRouter } from "next/navigation";
@@ -44,11 +44,13 @@ function VariantModal({ open, onClose, variant, products }: VariantModalProps) {
     const isEdit = Boolean(variant);
     const action = isEdit ? updateVariantAction : createVariantAction;
     const [state, formAction] = useFormState(action, initialState);
+    const wasSuccessful = useRef(false);
 
     useEffect(() => {
-        if (state.success) {
+        if (state.success && !wasSuccessful.current) {
             onClose(true);
         }
+        wasSuccessful.current = state.success;
     }, [state.success, onClose]);
 
     if (!open) return null;
@@ -140,11 +142,13 @@ type DeleteVariantModalProps = ModalBaseProps & {
 
 function DeleteVariantModal({ open, onClose, variant }: DeleteVariantModalProps) {
     const [state, formAction] = useFormState(deleteVariantAction, initialState);
+    const wasSuccessful = useRef(false);
 
     useEffect(() => {
-        if (state.success) {
+        if (state.success && !wasSuccessful.current) {
             onClose(true);
         }
+        wasSuccessful.current = state.success;
     }, [state.success, onClose]);
 
     if (!open || !variant) return null;
