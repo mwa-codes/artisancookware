@@ -1,5 +1,75 @@
 import { NextResponse } from "next/server";
+import { Resend } from "resend";
 import { getSupabaseClient, getSupabaseServiceClient, isSupabaseConfigured } from "@/lib/supabase";
+
+type InquiryNotification = {
+    name: string;
+    email: string;
+    message: string;
+    company?: string | null;
+    country?: string | null;
+    buyerType?: string | null;
+    quantityRequested?: string | null;
+    productInterest?: string | null;
+    submittedAt: string;
+};
+
+function escapeHtml(value: string) {
+    return value
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/"/g, "&quot;")
+        .replace(/'/g, "&#039;");
+}
+
+function formatField(label: string, value?: string | null) {
+    return value ? `${label}: ${value}` : `${label}: -`;
+}
+
+async function sendInquiryNotification(inquiry: InquiryNotification) {
+    const apiKey = process.env.RESEND_API_KEY;
+    const notifyTo = process.env.INQUIRY_NOTIFY_TO ?? "info@artisancookware.co";
+    const notifyFrom = process.env.INQUIRY_NOTIFY_FROM ?? "Artisan Cookware <onboarding@resend.dev>";
+
+    if (!apiKey) {
+        console.info("Skipping inquiry email notification: RESEND_API_KEY is not configured.");
+        return;
+    }
+
+    const resend = new Resend(apiKey);
+    const subject = `New inquiry from ${inquiry.name}`;
+    const details = [
+        formatField("Name", inquiry.name),
+        formatField("Email", inquiry.email),
+        formatField("Company", inquiry.company),
+        formatField("Country", inquiry.country),
+        formatField("Buyer type", inquiry.buyerType),
+        formatField("Quantity", inquiry.quantityRequested),
+        formatField("Product interest", inquiry.productInterest),
+        formatField("Submitted at", inquiry.submittedAt)
+    ];
+
+    const { error } = await resend.emails.send({
+        from: notifyFrom,
+        to: notifyTo,
+        replyTo: inquiry.email,
+        subject,
+        text: `${details.join("\n")}\n\nMessage:\n${inquiry.message}`,
+        html: `
+            <h2>New wholesale inquiry</h2>
+            <ul>
+                ${details.map((detail) => `<li>${escapeHtml(detail)}</li>`).join("")}
+            </ul>
+            <h3>Message</h3>
+            <p>${escapeHtml(inquiry.message).replace(/\n/g, "<br />")}</p>
+        `
+    });
+
+    if (error) {
+        throw error;
+    }
+}
 
 export async function POST(request: Request) {
     try {
@@ -50,6 +120,18 @@ export async function POST(request: Request) {
 
         row.message = enrichedMessage;
 
+        const notification: InquiryNotification = {
+            name,
+            email,
+            message,
+            company,
+            country,
+            buyerType: buyer_type,
+            quantityRequested: quantity_requested,
+            productInterest,
+            submittedAt
+        };
+
         const { error } = await client.from("inquiries").insert(row);
 
         if (error) {
@@ -66,8 +148,15 @@ export async function POST(request: Request) {
                 console.error("Legacy inquiry insert failed", retry.error);
                 return NextResponse.json({ message: "Unable to submit inquiry at this time." }, { status: 500 });
             }
+            await sendInquiryNotification(notification).catch((emailError) => {
+                console.error("Failed to send inquiry email notification", emailError);
+            });
             return NextResponse.json({ success: true, stored: true, submittedAt }, { status: 201 });
         }
+
+        await sendInquiryNotification(notification).catch((emailError) => {
+            console.error("Failed to send inquiry email notification", emailError);
+        });
 
         return NextResponse.json({ success: true, stored: true, submittedAt }, { status: 201 });
     } catch (error) {
