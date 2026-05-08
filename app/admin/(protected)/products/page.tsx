@@ -2,6 +2,8 @@ import { ProductsClient, type AdminCategoryOption, type AdminProduct } from "@/c
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 
+export const dynamic = "force-dynamic";
+
 function serialiseFeatures(features: unknown): string | null {
     if (!features) return null;
     if (Array.isArray(features)) {

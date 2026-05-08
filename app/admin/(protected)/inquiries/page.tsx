@@ -3,6 +3,8 @@ import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { requireAdminSession } from "@/lib/adminAuth";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminInquiriesPage() {
     await requireAdminSession();
 

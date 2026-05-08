@@ -411,9 +411,19 @@ export function CategoriesClient({ categories }: { categories: AdminCategory[] }
                 </div>
             </div>
 
-            <CategoryModal open={showCreate} onClose={handleClose} />
-            <CategoryModal open={Boolean(editingCategory)} onClose={handleClose} category={editingCategory ?? undefined} />
+            <CategoryModal
+                key={showCreate ? "create-open" : "create-closed"}
+                open={showCreate}
+                onClose={handleClose}
+            />
+            <CategoryModal
+                key={editingCategory?.id ?? "edit-none"}
+                open={Boolean(editingCategory)}
+                onClose={handleClose}
+                category={editingCategory ?? undefined}
+            />
             <DeleteModal
+                key={deletingCategory?.id ?? "delete-none"}
                 open={Boolean(deletingCategory)}
                 onClose={(success) => {
                     setDeletingCategory(null);

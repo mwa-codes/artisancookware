@@ -180,19 +180,24 @@ function DeleteVariantModal({ open, onClose, variant }: DeleteVariantModalProps)
 export function VariantsClient({ variants, products }: { variants: AdminVariant[]; products: AdminProductOption[] }) {
     const router = useRouter();
     const { toast, showToast, dismissToast } = useToast();
+    const [rows, setRows] = useState(variants);
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(0);
     const [showCreate, setShowCreate] = useState(false);
     const [editingVariant, setEditingVariant] = useState<AdminVariant | null>(null);
     const [deletingVariant, setDeletingVariant] = useState<AdminVariant | null>(null);
 
+    useEffect(() => {
+        setRows(variants);
+    }, [variants]);
+
     const filtered = useMemo(() => {
         const keyword = search.trim().toLowerCase();
-        if (!keyword) return variants;
-        return variants.filter((variant) =>
+        if (!keyword) return rows;
+        return rows.filter((variant) =>
             [variant.color_name, variant.product_name].some((field) => field.toLowerCase().includes(keyword))
         );
-    }, [variants, search]);
+    }, [rows, search]);
 
     const pageCount = Math.max(1, Math.ceil(filtered.length / ITEMS_PER_PAGE));
     const currentPage = Math.min(page, pageCount - 1);
@@ -206,7 +211,7 @@ export function VariantsClient({ variants, products }: { variants: AdminVariant[
         <div className="space-y-6 w-full">
             <div className="flex items-center justify-between">
                 <p className="text-sm text-ink-60">
-                    {variants.length} variant{variants.length !== 1 ? "s" : ""} total
+                    {rows.length} variant{rows.length !== 1 ? "s" : ""} total
                 </p>
                 <button type="button" onClick={() => setShowCreate(true)} className="admin-btn-primary">
                     Add variant
@@ -331,6 +336,7 @@ export function VariantsClient({ variants, products }: { variants: AdminVariant[
             </div>
 
             <VariantModal
+                key={showCreate ? "create-open" : "create-closed"}
                 open={showCreate}
                 onClose={(success) => {
                     setShowCreate(false);
@@ -342,6 +348,7 @@ export function VariantsClient({ variants, products }: { variants: AdminVariant[
                 products={products}
             />
             <VariantModal
+                key={editingVariant?.id ?? "edit-none"}
                 open={Boolean(editingVariant)}
                 onClose={(success) => {
                     setEditingVariant(null);
@@ -354,10 +361,13 @@ export function VariantsClient({ variants, products }: { variants: AdminVariant[
                 products={products}
             />
             <DeleteVariantModal
+                key={deletingVariant?.id ?? "delete-none"}
                 open={Boolean(deletingVariant)}
                 onClose={(success) => {
+                    const deletedId = deletingVariant?.id;
                     setDeletingVariant(null);
-                    if (success) {
+                    if (success && deletedId) {
+                        setRows((prev) => prev.filter((variant) => variant.id !== deletedId));
                         router.refresh();
                         showToast("Variant deleted successfully.");
                     }

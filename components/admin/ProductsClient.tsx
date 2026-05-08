@@ -627,6 +627,7 @@ export function ProductsClient({ products, categories }: { products: AdminProduc
             </div>
 
             <ProductModal
+                key={editingProduct?.id ?? (modalOpen ? "create-open" : "closed")}
                 open={modalOpen}
                 onClose={handleClose}
                 product={editingProduct ?? undefined}

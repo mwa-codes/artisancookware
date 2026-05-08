@@ -2,6 +2,8 @@ import { CategoriesClient, type AdminCategory } from "@/components/admin/Categor
 import { AdminPageHeader } from "@/components/admin/AdminPageHeader";
 import { getSupabaseServiceClient } from "@/lib/supabase";
 
+export const dynamic = "force-dynamic";
+
 export default async function AdminCategoriesPage() {
     const supabase = getSupabaseServiceClient();
     const { data } = await supabase
