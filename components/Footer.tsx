@@ -141,7 +141,7 @@ export function Footer() {
             <div className="border-t border-white/10">
                 <div className="container-site flex flex-col gap-5 pt-8 pb-[calc(3rem+env(safe-area-inset-bottom,0px))] text-[12px] text-[rgba(255,255,255,0.35)] sm:flex-row sm:items-center sm:justify-between sm:pb-[calc(3.5rem+env(safe-area-inset-bottom,0px))]">
                     <p className="leading-relaxed">
-                        © {year} Artisan Cookware. All rights reserved. ISO 9001:2015 Certified.{" "}
+                        © {year} Artisan Cookware. All rights reserved.{" "}
                         <a
                             href="https://mwadev.me"
                             target="_blank"
