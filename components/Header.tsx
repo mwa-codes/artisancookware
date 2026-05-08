@@ -28,15 +28,20 @@ export function Header() {
             className="fixed left-0 right-0 top-0 z-[100] h-[68px] border-b border-[rgba(13,13,13,0.1)] bg-[rgba(254,254,254,0.96)] backdrop-blur-[12px]"
         >
             <div className="container-site flex h-full items-center justify-between gap-6">
-                <Link href="/" className="flex min-w-0 items-center gap-3 shrink-0">
-                    <Image
-                        src="/Artisan-logo.jpg"
-                        alt="Artisan Cookware"
-                        width={160}
-                        height={44}
-                        priority
-                        className="h-[30px] w-auto shrink-0 rounded-sm object-contain sm:h-[36px]"
-                    />
+                <Link href="/" className="flex items-center gap-3 shrink-0">
+                    <div className="h-[38px] w-[38px] shrink-0 overflow-hidden rounded-[3px]">
+                        <Image
+                            src="/Artisan-logo.jpg"
+                            alt="Artisan Cookware"
+                            width={38}
+                            height={38}
+                            priority
+                            className="h-full w-full object-cover"
+                        />
+                    </div>
+                    <span className="hidden font-heading text-[19px] font-normal leading-none text-ink sm:block">
+                        Artisan Cookware
+                    </span>
                 </Link>
 
                 <nav className="hidden md:flex flex-1 justify-center">

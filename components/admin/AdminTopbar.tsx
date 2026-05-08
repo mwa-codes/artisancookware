@@ -29,14 +29,20 @@ export function AdminTopbar() {
                     >
                         {mobileOpen ? <X className="h-5 w-5" /> : <Menu className="h-5 w-5" />}
                     </button>
-                    <Link href="/admin" className="flex items-center gap-2">
-                        <Image
-                            src="/Artisan-logo.jpg"
-                            alt="Artisan Cookware"
-                            width={100}
-                            height={28}
-                            className="h-[28px] w-auto object-contain"
-                        />
+                    <Link href="/admin" className="flex items-center gap-3">
+                        <div className="h-[32px] w-[32px] shrink-0 overflow-hidden rounded-[3px]">
+                            <Image
+                                src="/Artisan-logo.jpg"
+                                alt=""
+                                width={32}
+                                height={32}
+                                className="h-full w-full object-cover"
+                            />
+                        </div>
+                        <div className="leading-tight">
+                            <p className="font-heading text-[14px] font-normal text-ink">Artisan Cookware</p>
+                            <p className="text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-60">Admin Panel</p>
+                        </div>
                     </Link>
                 </div>
 
@@ -47,13 +53,7 @@ export function AdminTopbar() {
                             Logout
                         </button>
                     </form>
-                    <div className="flex items-center gap-3 rounded-[2px] border border-ink-20 bg-parchment px-3 py-1.5">
-                        <div className="grid h-8 w-8 place-items-center rounded-[2px] bg-ink text-xs font-bold text-gold-light">AC</div>
-                        <div className="hidden text-left leading-tight sm:block">
-                            <p className="text-[10px] font-bold uppercase tracking-[0.2em] text-ink-60">Admin</p>
-                            <p className="text-sm font-semibold text-ink">Artisan Cookware</p>
-                        </div>
-                    </div>
+                    <p className="hidden text-[10px] font-semibold uppercase tracking-[0.18em] text-ink-60 sm:block">Admin Panel</p>
                 </div>
             </div>
             {mobileOpen ? (

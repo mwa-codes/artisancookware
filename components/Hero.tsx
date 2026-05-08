@@ -30,15 +30,6 @@ export function Hero({ products }: HeroProps) {
             <div className="grid min-h-[calc(100vh-68px)] lg:grid-cols-2">
                 <div className="flex flex-col justify-center bg-ink px-6 py-14 sm:px-10 lg:px-16 lg:py-20 xl:pl-20 xl:pr-16">
                     <div className="animate-fade-up max-w-xl">
-                        <div className="mb-8 flex items-center gap-3">
-                            <span className="grid h-8 w-8 place-items-center bg-gold text-[11px] font-bold uppercase tracking-tight text-ink">
-                                AC
-                            </span>
-                            <span className="font-heading text-[16px] font-normal uppercase tracking-[0.06em] text-white/80">
-                                Artisan Cookware
-                            </span>
-                        </div>
-
                         <div className="eyebrow mb-8">
                             <span className="eyebrow-line" />
                             <span className="eyebrow-text text-gold">Since 1998 — Gujranwala, Pakistan</span>
@@ -103,7 +94,7 @@ export function Hero({ products }: HeroProps) {
                     ) : (
                         <div className="absolute inset-0 flex items-center justify-center bg-parchment">
                             <div className="px-8 text-center">
-                                <div className="font-heading mb-4 text-5xl font-light text-ink-20">AC</div>
+                                <div className="font-heading mb-4 text-3xl font-light text-ink-30">Artisan Cookware</div>
                                 <p className="text-sm text-ink-60">
                                     Add a product with an image
                                     <br />
