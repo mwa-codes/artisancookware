@@ -5,7 +5,7 @@ const TIMELINE = [
     { year: "1998", title: "Founding", body: "Artisan Cookware begins aluminium forming for local distribution." },
     { year: "2005", title: "Export readiness", body: "Production scales with finishing lines aligned to export packing standards." },
     { year: "2015", title: "ISO certification", body: "ISO 9001:2015 quality systems formalised across inspection and batch traceability." },
-    { year: "2024", title: "Global partnerships", body: "Serving wholesalers and hospitality supply chains across 40+ countries." }
+    { year: "2024", title: "Wholesale focus", body: "Catalogue and packing standards refined for international wholesale buyers." }
 ];
 
 export default function AboutPage() {
@@ -85,9 +85,9 @@ export default function AboutPage() {
                         </p>
                     </div>
                     <div>
-                        <h2 className="font-heading text-section font-light text-ink">Global reach</h2>
+                        <h2 className="font-heading text-section font-light text-ink">Export capability</h2>
                         <p className="mt-6 text-[15px] font-light leading-relaxed text-[color:rgba(13,13,13,0.6)]">
-                            Exported across Middle East, Europe, North America, Africa, and Oceania — FOB Karachi and CIF where needed.
+                            Packing, documentation, and finishing lines prepared for international shipment — FOB Karachi and CIF where needed.
                         </p>
                     </div>
                 </div>
