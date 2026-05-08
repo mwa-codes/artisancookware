@@ -138,9 +138,9 @@ export function InquirySection({ productOptions = [], defaultProductLabel }: Inq
                             <span className="text-gold">●</span>
                             WhatsApp: +92 301 6636557
                         </a>
-                        <a href="mailto:m.waqar.ahmed@gmail.com" className="flex items-center gap-3 text-ink transition hover:text-gold">
+                        <a href="mailto:info@artisancookware.co" className="flex items-center gap-3 text-ink transition hover:text-gold">
                             <span className="text-gold">●</span>
-                            m.waqar.ahmed@gmail.com
+                            info@artisancookware.co
                         </a>
                     </div>
                 </div>

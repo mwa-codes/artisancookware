@@ -33,8 +33,8 @@ export default async function ContactPage() {
                         </div>
                         <div className="rounded-[4px] border border-ink-20 bg-white p-6">
                             <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">Email</p>
-                            <a href="mailto:m.waqar.ahmed@gmail.com" className="mt-2 block text-lg text-ink hover:text-gold">
-                                m.waqar.ahmed@gmail.com
+                            <a href="mailto:info@artisancookware.co" className="mt-2 block text-lg text-ink hover:text-gold">
+                                info@artisancookware.co
                             </a>
                         </div>
                         <div className="rounded-[4px] border border-ink-20 bg-white p-6">

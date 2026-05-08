@@ -1,4 +1,4 @@
-export const ADMIN_EMAIL = "m.waqar.ahmed@gmail.com";
+export const ADMIN_EMAIL = "info@artisancookware.co";
 export const ADMIN_PASSWORD = "gmjh4654";
 
 export const ADMIN_ALLOWED_DOMAIN = new Set([ADMIN_EMAIL]);

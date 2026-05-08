@@ -30,7 +30,7 @@ const linkClass =
     "text-[color:rgba(255,255,255,0.5)] transition-colors hover:text-[color:rgba(255,255,255,0.9)]";
 
 export function Footer() {
-    const emailAddress = "m.waqar.ahmed@gmail.com";
+    const emailAddress = "info@artisancookware.co";
     const googleProfileUrl = "https://share.google/M9iabBk3snLTJa7Lk";
     const year = new Date().getFullYear();
 
