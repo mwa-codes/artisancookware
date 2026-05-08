@@ -35,17 +35,18 @@ export function Hero({ products }: HeroProps) {
                             <span className="eyebrow-text text-gold">Since 1998 — Gujranwala, Pakistan</span>
                         </div>
 
+                        <p className="mb-4 text-sm font-semibold uppercase tracking-[0.14em] text-[rgba(255,255,255,0.62)] md:text-base">
+                            Premium Aluminium Cookware
+                        </p>
+
                         <h1 className="font-heading text-hero font-light leading-none text-white">
-                            <span className="block">Premium</span>
+                            <span className="block">Artisan</span>
                             <span className="block">
-                                <em className="font-heading text-gold-light not-italic">Aluminium</em>
+                                <em className="font-heading text-gold-light not-italic">Cookware</em>
                             </span>
-                            <span className="block">Cookware</span>
                         </h1>
 
-                        <p className="font-heading mt-5 text-xl font-light text-[rgba(255,255,255,0.4)] md:text-2xl">
-                            For the World&apos;s Kitchens
-                        </p>
+                        <p className="font-heading mt-5 text-2xl font-normal text-white md:text-3xl">Your Kitchen Needs</p>
 
                         <p className="mt-8 max-w-lg text-[15px] font-light leading-relaxed text-[rgba(255,255,255,0.65)]">
                             Crafted for international wholesalers, retailers, and hospitality groups who demand manufacturing precision, consistent
@@ -68,7 +69,7 @@ export function Hero({ products }: HeroProps) {
                         <div className="mt-14 grid grid-cols-3 gap-6 border-t border-[rgba(255,255,255,0.1)] pt-10">
                             {[
                                 { n: "25+", l: "Years Manufacturing" },
-                                { n: "40+", l: "Countries Served" },
+                                { n: "B2B", l: "Export Focused" },
                                 { n: "ISO", l: "Certified Factory" }
                             ].map((s) => (
                                 <div key={s.l}>

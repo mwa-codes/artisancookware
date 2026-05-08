@@ -4,12 +4,14 @@ import Image from "next/image";
 import { useEffect, useMemo, useState } from "react";
 import { useFormState } from "react-dom";
 import { clsx } from "clsx";
+import { useRouter } from "next/navigation";
 import {
     createVariantAction,
     deleteVariantAction,
     type VariantActionState,
     updateVariantAction
 } from "@/app/admin/variants/actions";
+import { Toast, useToast } from "@/components/admin/Toast";
 
 const ITEMS_PER_PAGE = 8;
 const initialState: VariantActionState = { success: false };
@@ -30,7 +32,7 @@ export type AdminProductOption = {
 
 type ModalBaseProps = {
     open: boolean;
-    onClose: () => void;
+    onClose: (success?: boolean) => void;
 };
 
 type VariantModalProps = ModalBaseProps & {
@@ -45,7 +47,7 @@ function VariantModal({ open, onClose, variant, products }: VariantModalProps) {
 
     useEffect(() => {
         if (state.success) {
-            onClose();
+            onClose(true);
         }
     }, [state.success, onClose]);
 
@@ -120,7 +122,7 @@ function VariantModal({ open, onClose, variant, products }: VariantModalProps) {
                 </div>
                 {state.error ? <p className="text-sm text-red-600 mt-4">{state.error}</p> : null}
                 <div className="flex flex-wrap items-center justify-end gap-3 mt-8">
-                    <button type="button" onClick={onClose} className="admin-btn-outline">
+                    <button type="button" onClick={() => onClose()} className="admin-btn-outline">
                         Cancel
                     </button>
                     <button type="submit" className="admin-btn-primary">
@@ -141,7 +143,7 @@ function DeleteVariantModal({ open, onClose, variant }: DeleteVariantModalProps)
 
     useEffect(() => {
         if (state.success) {
-            onClose();
+            onClose(true);
         }
     }, [state.success, onClose]);
 
@@ -159,7 +161,7 @@ function DeleteVariantModal({ open, onClose, variant }: DeleteVariantModalProps)
                 </div>
                 {state.error ? <p className="text-sm text-red-600 mt-4">{state.error}</p> : null}
                 <div className="flex flex-wrap items-center justify-center gap-3 mt-6">
-                    <button type="button" onClick={onClose} className="admin-btn-outline">
+                    <button type="button" onClick={() => onClose()} className="admin-btn-outline">
                         Cancel
                     </button>
                     <button type="submit" className="admin-btn-danger">
@@ -172,6 +174,8 @@ function DeleteVariantModal({ open, onClose, variant }: DeleteVariantModalProps)
 }
 
 export function VariantsClient({ variants, products }: { variants: AdminVariant[]; products: AdminProductOption[] }) {
+    const router = useRouter();
+    const { toast, showToast, dismissToast } = useToast();
     const [search, setSearch] = useState("");
     const [page, setPage] = useState(0);
     const [showCreate, setShowCreate] = useState(false);
@@ -322,9 +326,41 @@ export function VariantsClient({ variants, products }: { variants: AdminVariant[
                 </div>
             </div>
 
-            <VariantModal open={showCreate} onClose={() => setShowCreate(false)} products={products} />
-            <VariantModal open={Boolean(editingVariant)} onClose={() => setEditingVariant(null)} variant={editingVariant ?? undefined} products={products} />
-            <DeleteVariantModal open={Boolean(deletingVariant)} onClose={() => setDeletingVariant(null)} variant={deletingVariant ?? undefined} />
+            <VariantModal
+                open={showCreate}
+                onClose={(success) => {
+                    setShowCreate(false);
+                    if (success) {
+                        router.refresh();
+                        showToast("Variant created successfully.");
+                    }
+                }}
+                products={products}
+            />
+            <VariantModal
+                open={Boolean(editingVariant)}
+                onClose={(success) => {
+                    setEditingVariant(null);
+                    if (success) {
+                        router.refresh();
+                        showToast("Variant updated successfully.");
+                    }
+                }}
+                variant={editingVariant ?? undefined}
+                products={products}
+            />
+            <DeleteVariantModal
+                open={Boolean(deletingVariant)}
+                onClose={(success) => {
+                    setDeletingVariant(null);
+                    if (success) {
+                        router.refresh();
+                        showToast("Variant deleted successfully.");
+                    }
+                }}
+                variant={deletingVariant ?? undefined}
+            />
+            {toast ? <Toast message={toast.message} type={toast.type} onDismiss={dismissToast} /> : null}
         </div>
     );
 }

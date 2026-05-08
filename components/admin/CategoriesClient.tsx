@@ -357,6 +357,14 @@ export function CategoriesClient({ categories }: { categories: AdminCategory[] }
                                                 <Pencil className="h-3.5 w-3.5" />
                                                 Edit
                                             </button>
+                                            <button
+                                                type="button"
+                                                onClick={() => setDeletingCategory(category)}
+                                                className="admin-btn-danger py-1.5 px-3 text-[11px]"
+                                            >
+                                                <Trash2 className="h-3.5 w-3.5" />
+                                                Delete
+                                            </button>
                                         </div>
                                     </td>
                                 </tr>
