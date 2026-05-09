@@ -6,12 +6,13 @@ import { ProcessSection } from "@/components/ProcessSection";
 import { AboutSnippet } from "@/components/AboutSnippet";
 import { CertificationsStrip } from "@/components/CertificationsStrip";
 import { InquirySection } from "@/components/InquirySection";
-import { getFeaturedCategories, getFeaturedProducts } from "@/lib/repository";
+import { getCategoryProductCounts, getFeaturedCategories, getFeaturedProducts } from "@/lib/repository";
 
 export default async function HomePage() {
-    const [categories, allProducts] = await Promise.all([
+    const [categories, allProducts, productCounts] = await Promise.all([
         getFeaturedCategories(4),
-        getFeaturedProducts(9)
+        getFeaturedProducts(9),
+        getCategoryProductCounts(),
     ]);
 
     const heroProduct = allProducts[0] ?? null;
@@ -41,7 +42,7 @@ export default async function HomePage() {
             <Hero products={heroProduct ? [heroProduct] : []} />
             <TrustBar />
             <FeaturedProducts products={gridProducts} />
-            <CategoriesHome categories={categories} />
+            <CategoriesHome categories={categories} productCounts={productCounts} />
             <ProcessSection />
             <AboutSnippet />
             <CertificationsStrip />

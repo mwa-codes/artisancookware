@@ -2,7 +2,14 @@ import Image from "next/image";
 import Link from "next/link";
 import type { Category } from "@/lib/types";
 
-export function CategoriesHome({ categories }: { categories: Category[] }) {
+export function CategoriesHome({
+    categories,
+    productCounts,
+}: {
+    categories: Category[];
+    /** Same counts as /categories listing (excludes discontinued). */
+    productCounts?: Record<string, number>;
+}) {
     const sorted = [...categories].sort((a, b) => a.displayOrder - b.displayOrder || a.name.localeCompare(b.name));
 
     if (!sorted.length) {
@@ -67,6 +74,12 @@ export function CategoriesHome({ categories }: { categories: Category[] }) {
                                         {num} / {category.name}
                                     </p>
                                     <p className="font-heading mt-2 text-[22px] text-white">{category.name}</p>
+                                    {productCounts ? (
+                                        <p className="mt-2 inline-block rounded-[2px] bg-white/10 px-2 py-1 font-mono text-[11px] text-white/90 backdrop-blur-sm">
+                                            {productCounts[category.id] ?? 0}{" "}
+                                            {(productCounts[category.id] ?? 0) === 1 ? "product" : "products"}
+                                        </p>
+                                    ) : null}
                                     <span className="mt-3 inline-block text-[13px] text-[rgba(255,255,255,0.5)] transition-colors group-hover:text-gold">
                                         Explore →
                                     </span>
