@@ -23,19 +23,28 @@ export async function generateStaticParams() {
 export async function generateMetadata({ params }: ProductPageProps): Promise<Metadata> {
     const product = await resolveProduct(params.slug);
     if (!product) {
-        return { title: "Product Not Found | Artisan Cookware" };
+        return { title: "Product Not Found" };
     }
 
-    const ogImage = product.imageUrl?.startsWith("http") ? product.imageUrl : undefined;
+    const ogImage = product.imageUrl?.startsWith("http") ? product.imageUrl : "/Artisan-logo.jpg";
+
+    const title = `${product.name} — Wholesale Aluminium Cookware`;
+    const description = product.description
+        ? `${product.description.slice(0, 140)}. MOQ ${product.moq ?? 50} units. Factory-direct from Gujranwala, Pakistan.`
+        : `${product.name} — premium aluminium cookware available wholesale. MOQ ${product.moq ?? 50} units. Aluminium utensils manufacturer, Gujranwala Pakistan.`;
 
     return {
-        title: product.name,
-        description: product.description ?? "Premium aluminium cookware engineered for wholesale buyers.",
-        openGraph: ogImage
-            ? {
-                  images: [{ url: ogImage, alt: product.name }]
-              }
-            : undefined
+        title,
+        description,
+        openGraph: {
+            title: `${title} | Artisan Cookware`,
+            description,
+            images: [{ url: ogImage, alt: product.name }],
+            type: "website",
+        },
+        alternates: {
+            canonical: `https://www.artisancookware.co/products/${params.slug}`,
+        },
     };
 }
 
@@ -68,9 +77,9 @@ export default async function ProductPage({ params }: ProductPageProps) {
 
     const breadcrumbCategory = product.category
         ? {
-              label: product.category.name,
-              href: `/categories/${product.category.slug}`
-          }
+            label: product.category.name,
+            href: `/categories/${product.category.slug}`
+        }
         : null;
 
     const highlights = product.features ?? [];
@@ -78,24 +87,69 @@ export default async function ProductPage({ params }: ProductPageProps) {
     const factoryPkr = product.factoryPriceValue ?? null;
     const fobPkr = product.fobPriceValue ?? null;
 
-    const jsonLd = {
+    const productSchema = {
         "@context": "https://schema.org",
         "@type": "Product",
         name: product.name,
-        description: product.description ?? undefined,
-        image: product.imageUrl ?? undefined,
-        brand: { "@type": "Brand", name: "Artisan Cookware" },
-        offers: {
-            "@type": "Offer",
-            priceCurrency: "USD",
-            price: product.factoryPriceUsd ?? undefined,
-            availability: "https://schema.org/InStock"
-        }
+        description: product.description ?? "",
+        image: product.imageUrl ?? "https://www.artisancookware.co/Artisan-logo.jpg",
+        brand: {
+            "@type": "Brand",
+            name: "Artisan Cookware",
+        },
+        manufacturer: {
+            "@type": "Organization",
+            name: "Artisan Cookware",
+            address: {
+                "@type": "PostalAddress",
+                addressLocality: "Gujranwala",
+                addressCountry: "PK",
+            },
+        },
+        material: "Aluminium",
+        countryOfOrigin: "PK",
+        ...(product.factoryPriceUsd && {
+            offers: {
+                "@type": "Offer",
+                priceCurrency: "USD",
+                price: product.factoryPriceUsd.toString(),
+                availability: "https://schema.org/InStock",
+                seller: {
+                    "@type": "Organization",
+                    name: "Artisan Cookware",
+                },
+            },
+        }),
+    };
+    const breadcrumbSchema = {
+        "@context": "https://schema.org",
+        "@type": "BreadcrumbList",
+        itemListElement: [
+            {
+                "@type": "ListItem",
+                position: 1,
+                name: "Home",
+                item: "https://www.artisancookware.co",
+            },
+            {
+                "@type": "ListItem",
+                position: 2,
+                name: "Products",
+                item: "https://www.artisancookware.co/products",
+            },
+            {
+                "@type": "ListItem",
+                position: 3,
+                name: product.name,
+                item: `https://www.artisancookware.co/products/${slug}`,
+            },
+        ],
     };
 
     return (
         <>
-            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(jsonLd) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(productSchema) }} />
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(breadcrumbSchema) }} />
 
             <div className="bg-white">
                 <div className="container-site py-10 sm:py-14">

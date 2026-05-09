@@ -1,5 +1,20 @@
+import type { Metadata } from "next";
 import { getAllProductsForListing, getCategories } from "@/lib/repository";
 import { ProductsListing } from "@/components/ProductsListing";
+
+export const metadata: Metadata = {
+    title: "Products — Aluminium Cookware Sets Wholesale",
+    description:
+        "Browse our full range of aluminium cookware sets for wholesale buyers. Non-stick, anodised, metal finish, and Soda Finish collections. MOQ 50 units. Factory-direct pricing.",
+    openGraph: {
+        title: "Products — Aluminium Cookware Sets Wholesale | Artisan Cookware",
+        description:
+            "Full catalogue of premium aluminium cookware sets. Non-stick, anodised, metal finish. Direct from manufacturer in Gujranwala, Pakistan.",
+    },
+    alternates: {
+        canonical: "https://www.artisancookware.co/products",
+    },
+};
 
 export default async function ProductsIndexPage() {
     const [products, categories] = await Promise.all([getAllProductsForListing(), getCategories()]);

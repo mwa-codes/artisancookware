@@ -1,5 +1,20 @@
+import type { Metadata } from "next";
 import Link from "next/link";
 import { IconImagePlaceholder } from "@/components/MediaPlaceholder";
+
+export const metadata: Metadata = {
+    title: "About — Aluminium Cookware Manufacturer Since 1998",
+    description:
+        "Learn about Artisan Cookware, an aluminium cookware manufacturer in Gujranwala, Pakistan, serving wholesale buyers with export-ready production since 1998.",
+    openGraph: {
+        title: "About — Aluminium Cookware Manufacturer Since 1998 | Artisan Cookware",
+        description:
+            "Discover our manufacturing story, quality systems, and export capability for wholesale aluminium cookware from Gujranwala, Pakistan.",
+    },
+    alternates: {
+        canonical: "https://www.artisancookware.co/about",
+    },
+};
 
 const TIMELINE = [
     { year: "1998", title: "Founding", body: "Artisan Cookware begins aluminium forming for local distribution." },

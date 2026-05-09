@@ -1,9 +1,19 @@
+import type { Metadata } from "next";
 import { InquirySection } from "@/components/InquirySection";
 import { getAllProductsForListing } from "@/lib/repository";
 
-export const metadata = {
-    title: "Contact | Artisan Cookware",
-    description: "Reach our export desk for wholesale pricing, sampling, and shipping terms."
+export const metadata: Metadata = {
+    title: "Contact — Wholesale Inquiry & Sampling Request",
+    description:
+        "Submit a wholesale inquiry, request samples, or ask about pricing. We respond within 24 hours. WhatsApp: +92 301 6636557. Email: info@artisancookware.co.",
+    openGraph: {
+        title: "Contact Artisan Cookware | Wholesale Inquiries",
+        description:
+            "Get in touch for wholesale pricing, sampling, and export terms. Response within 24 hours.",
+    },
+    alternates: {
+        canonical: "https://www.artisancookware.co/contact",
+    },
 };
 
 export default async function ContactPage() {

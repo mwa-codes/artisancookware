@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { notFound } from "next/navigation";
 import { CategoryProducts } from "@/components/CategoryProducts";
 import { getCategoryBySlug, getProductsByCategorySlug } from "@/lib/repository";
@@ -6,18 +7,25 @@ interface CategoryPageProps {
     params: { slug: string };
 }
 
-export async function generateMetadata({ params }: CategoryPageProps) {
-    const { slug } = params;
-    const category = await getCategoryBySlug(slug);
-    if (!category) {
-        return {
-            title: "Category Not Found | Artisan Cookware"
-        };
-    }
+export async function generateMetadata({ params }: CategoryPageProps): Promise<Metadata> {
+    const category = await getCategoryBySlug(params.slug);
+    if (!category) return { title: "Collection Not Found" };
+
+    const title = `${category.name} Cookware — Wholesale Sets`;
+    const description = category.description
+        ? `${category.description.slice(0, 150)}. Direct from manufacturer in Gujranwala, Pakistan. MOQ 50 units.`
+        : `${category.name} aluminium cookware sets for wholesale buyers. Manufacturer in Gujranwala, Pakistan. MOQ 50 units.`;
 
     return {
-        title: `${category.name} | Artisan Cookware`,
-        description: category.description ?? `${category.name} cookware collections from Artisan Cookware.`
+        title,
+        description,
+        openGraph: {
+            title: `${title} | Artisan Cookware`,
+            description,
+        },
+        alternates: {
+            canonical: `https://www.artisancookware.co/categories/${params.slug}`,
+        },
     };
 }
 

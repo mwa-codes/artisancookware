@@ -17,9 +17,27 @@ export default async function HomePage() {
     const heroProduct = allProducts[0] ?? null;
     const gridProducts = allProducts.slice(0, 6);
     const productOptions = allProducts.map((p) => ({ id: p.id, label: p.name }));
+    const websiteSchema = {
+        "@context": "https://schema.org",
+        "@type": "WebSite",
+        name: "Artisan Cookware",
+        url: "https://www.artisancookware.co",
+        description:
+            "Premium aluminium cookware manufacturer in Gujranwala, Pakistan, serving wholesale buyers with export-ready production.",
+        potentialAction: {
+            "@type": "SearchAction",
+            target: {
+                "@type": "EntryPoint",
+                urlTemplate:
+                    "https://www.artisancookware.co/products?search={search_term_string}",
+            },
+            "query-input": "required name=search_term_string",
+        },
+    };
 
     return (
         <div>
+            <script type="application/ld+json" dangerouslySetInnerHTML={{ __html: JSON.stringify(websiteSchema) }} />
             <Hero products={heroProduct ? [heroProduct] : []} />
             <TrustBar />
             <FeaturedProducts products={gridProducts} />

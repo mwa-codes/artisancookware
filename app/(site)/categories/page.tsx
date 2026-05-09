@@ -1,9 +1,19 @@
+import type { Metadata } from "next";
 import { CategoryCard } from "@/components/CategoryCard";
 import { getCategories, getCategoryProductCounts } from "@/lib/repository";
 
-export const metadata = {
-    title: "Collections | Artisan Cookware",
-    description: "Browse anodised, metal finish, non-stick, and soda finish cookware crafted for wholesale buyers."
+export const metadata: Metadata = {
+    title: "Collections — Aluminium Cookware Ranges",
+    description:
+        "Four signature aluminium cookware collections: Non-Stick, Hard Anodised, Metal Finish, and Soda Finish. Wholesale pricing direct from our Gujranwala factory.",
+    openGraph: {
+        title: "Collections — Aluminium Cookware Ranges | Artisan Cookware",
+        description:
+            "Four premium cookware collections for wholesale buyers. Factory-direct from Gujranwala, Pakistan.",
+    },
+    alternates: {
+        canonical: "https://www.artisancookware.co/categories",
+    },
 };
 
 export default async function CategoriesPage() {
