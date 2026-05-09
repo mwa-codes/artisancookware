@@ -38,7 +38,7 @@ function SubmitButton({ isEdit }: { isEdit: boolean }) {
     const { pending } = useFormStatus();
     return (
         <button type="submit" disabled={pending} className="admin-btn-primary disabled:cursor-not-allowed disabled:opacity-60">
-            {pending ? "Saving..." : isEdit ? "Save Changes" : "Create Collection"}
+            {pending ? "Saving..." : isEdit ? "Save Changes" : "Create Category"}
         </button>
     );
 }
@@ -92,17 +92,18 @@ function CategoryModal({ open, onClose, category }: ModalProps) {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 px-4 py-6 backdrop-blur-sm">
             <form action={formAction} encType="multipart/form-data" className="w-full max-w-lg bg-white shadow-xl rounded-[2px]">
                 <div className="flex items-center justify-between border-b border-ink-20 px-6 py-4">
-                    <h2 className="font-heading text-xl font-light text-ink">{isEdit ? "Edit Collection" : "Add Collection"}</h2>
+                    <h2 className="font-heading text-xl font-light text-ink">{isEdit ? "Edit Category" : "Add Category"}</h2>
                     <button type="button" onClick={() => onClose()} className="text-ink-60 hover:text-ink">
                         <X className="h-5 w-5" />
                     </button>
                 </div>
 
                 {isEdit && <input type="hidden" name="id" value={category?.id} />}
+                {isEdit && category?.slug ? <input type="hidden" name="previousSlug" value={category.slug} /> : null}
 
                 <div className="px-6 py-5 space-y-5 max-h-[70vh] overflow-y-auto">
                     <div>
-                        <label className="admin-label">Collection Image</label>
+                        <label className="admin-label">Category Image</label>
                         <div className="flex gap-4 items-start">
                             {previewImage ? (
                                 <div className="h-20 w-20 shrink-0 overflow-hidden border border-ink-20 rounded-[2px]">
@@ -196,7 +197,7 @@ function CategoryModal({ open, onClose, category }: ModalProps) {
                             defaultChecked={category?.is_featured ?? false}
                             className="h-4 w-4 border-ink-20 text-gold focus:ring-gold/30 rounded-[2px]"
                         />
-                        <span className="text-sm text-ink">Show in homepage collections</span>
+                        <span className="text-sm text-ink">Show in homepage categories</span>
                     </label>
 
                     {state.error && <p className="text-sm text-red-600">{state.error}</p>}
@@ -230,6 +231,7 @@ function DeleteModal({ open, onClose, category }: ModalProps) {
         <div className="fixed inset-0 z-50 flex items-center justify-center bg-ink/50 px-4 py-6 backdrop-blur-sm">
             <form action={formAction} className="w-full max-w-md bg-white shadow-xl rounded-[2px] border border-ink-20 p-8">
                 <input type="hidden" name="id" value={category.id} />
+                <input type="hidden" name="slug" value={category.slug} />
                 <div className="space-y-3 text-center">
                     <h2 className="font-heading text-xl font-light text-ink">Delete category?</h2>
                     <p className="text-sm text-ink-60">
@@ -289,10 +291,10 @@ export function CategoriesClient({ categories }: { categories: AdminCategory[] }
         <div className="space-y-6 w-full">
             <div className="flex items-center justify-between">
                 <p className="text-sm text-ink-60">
-                    {categories.length} collection{categories.length !== 1 ? "s" : ""} total
+                    {categories.length} categor{categories.length !== 1 ? "ies" : "y"} total
                 </p>
                 <button type="button" onClick={() => setShowCreate(true)} className="admin-btn-primary">
-                    Add Collection
+                    Add Category
                 </button>
             </div>
 
@@ -315,7 +317,7 @@ export function CategoriesClient({ categories }: { categories: AdminCategory[] }
                     <thead className="bg-parchment text-[10px] font-semibold uppercase tracking-[0.1em] text-ink-60">
                         <tr>
                             <th className="w-16 px-4 py-3 text-left">Image</th>
-                            <th className="px-4 py-3 text-left">Collection</th>
+                            <th className="px-4 py-3 text-left">Category</th>
                             <th className="hidden px-4 py-3 text-left md:table-cell">Order</th>
                             <th className="hidden px-4 py-3 text-left md:table-cell">Homepage</th>
                             <th className="px-4 py-3 text-right">Actions</th>

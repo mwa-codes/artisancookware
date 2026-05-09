@@ -126,11 +126,15 @@ export function mapCategoryRow(row: SupabaseCategoryRow): Category {
     const slug =
         (typeof row.slug === "string" && row.slug.trim()) ? row.slug.trim() : slugify(row.name);
 
+    const rawDesc = row.description;
+    const description =
+        typeof rawDesc === "string" && rawDesc.trim() ? rawDesc.trim() : null;
+
     return {
         id: row.id,
         name: row.name,
         slug,
-        description: row.description ?? null,
+        description,
         imageUrl: typeof row.image_url === "string" ? row.image_url : null,
         displayOrder: typeof row.display_order === "number" ? row.display_order : 0,
         isFeatured: Boolean(row.is_featured)

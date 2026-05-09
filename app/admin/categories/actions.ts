@@ -18,10 +18,13 @@ function isAuthorized(sessionEmail?: string | null) {
     return sessionEmail === ADMIN_EMAIL;
 }
 
-function revalidateCategoryRoutes() {
+function revalidateCategoryRoutes(slug?: string) {
     revalidatePath("/admin/categories");
     revalidatePath("/");
     revalidatePath("/categories");
+    if (slug) {
+        revalidatePath(`/categories/${slug}`);
+    }
 }
 
 export async function createCategoryAction(_: CategoryActionState, formData: FormData): Promise<CategoryActionState> {
@@ -67,7 +70,7 @@ export async function createCategoryAction(_: CategoryActionState, formData: For
         return { success: false, error: "Unable to create category." };
     }
 
-    revalidateCategoryRoutes();
+    revalidateCategoryRoutes(slug);
     return { success: true };
 }
 
@@ -80,6 +83,9 @@ export async function updateCategoryAction(_: CategoryActionState, formData: For
     const id = String(formData.get("id") ?? "").trim();
     const name = String(formData.get("name") ?? "").trim();
     const description = String(formData.get("description") ?? "").trim() || null;
+    const previousSlug = String(formData.get("previousSlug") ?? "")
+        .trim()
+        .toLowerCase();
     const customSlug = String(formData.get("slug") ?? "")
         .trim()
         .toLowerCase()
@@ -120,7 +126,10 @@ export async function updateCategoryAction(_: CategoryActionState, formData: For
         return { success: false, error: "Unable to update category." };
     }
 
-    revalidateCategoryRoutes();
+    revalidateCategoryRoutes(customSlug);
+    if (previousSlug && previousSlug !== customSlug) {
+        revalidatePath(`/categories/${previousSlug}`);
+    }
     return { success: true };
 }
 
@@ -131,6 +140,7 @@ export async function deleteCategoryAction(_: CategoryActionState, formData: For
     }
 
     const id = String(formData.get("id") ?? "").trim();
+    const slug = String(formData.get("slug") ?? "").trim();
 
     if (!id) {
         return { success: false, error: "Category not found." };
@@ -144,6 +154,6 @@ export async function deleteCategoryAction(_: CategoryActionState, formData: For
         return { success: false, error: "Unable to delete category." };
     }
 
-    revalidateCategoryRoutes();
+    revalidateCategoryRoutes(slug || undefined);
     return { success: true };
 }

@@ -5,7 +5,7 @@ import { ProductsListing } from "@/components/ProductsListing";
 export const metadata: Metadata = {
     title: "Products — Aluminium Cookware Sets Wholesale",
     description:
-        "Browse our full range of aluminium cookware sets for wholesale buyers. Non-stick, anodised, metal finish, and Soda Finish collections. MOQ 50 units. Factory-direct pricing.",
+        "Browse our full range of aluminium cookware sets for wholesale buyers. Non-stick, anodised, metal finish, and Soda Finish categories. MOQ 50 units. Factory-direct pricing.",
     openGraph: {
         title: "Products — Aluminium Cookware Sets Wholesale | Artisan Cookware",
         description:

@@ -84,10 +84,10 @@ export function Footer() {
                         <h3 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">Products</h3>
                         <ul className="space-y-3 text-sm">
                             {[
-                                { href: "/categories/non-stick", label: "Non-Stick Collection" },
+                                { href: "/categories/non-stick", label: "Non-Stick" },
                                 { href: "/categories/anodised-dull", label: "Hard Anodised" },
                                 { href: "/categories/metal-finish", label: "Metal Finish" },
-                                { href: "/categories/soda-finish", label: "Prestige Range" },
+                                { href: "/categories/soda-finish", label: "Soda Finish" },
                                 { href: "/products", label: "Full Catalogue" }
                             ].map(({ href, label }) => (
                                 <li key={href}>

@@ -78,7 +78,7 @@ export function CategoryProducts({ products }: { products: ProductWithRelations[
                 ))}
             </div>
 
-            {sorted.length === 0 ? <p className="mt-10 text-center text-sm text-ink-60">No products in this collection yet.</p> : null}
+            {sorted.length === 0 ? <p className="mt-10 text-center text-sm text-ink-60">No products in this category yet.</p> : null}
         </div>
     );
 }

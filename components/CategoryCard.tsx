@@ -10,7 +10,7 @@ export function CategoryCard({ category, productCount }: { category: Category; p
         <Link
             href={`/categories/${category.slug}`}
             className="group relative block aspect-[3/4] overflow-hidden bg-ink"
-            aria-label={`View ${category.name} collection`}
+            aria-label={`View ${category.name} category`}
         >
             {remote ? (
                 <Image

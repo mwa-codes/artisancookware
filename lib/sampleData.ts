@@ -32,7 +32,7 @@ export const categories: Category[] = [
     {
         id: "ad21925e-7b3d-4c28-8c4f-cc6f4ef67663",
         name: "Non-Stick",
-        description: "Modern non-stick collections designed for low-fat, effortless cooking.",
+        description: "Modern non-stick cookware designed for low-fat, effortless cooking.",
         slug: "non-stick",
         imageUrl: null,
         displayOrder: 3,
@@ -94,7 +94,7 @@ export const products: Product[] = [
             "Casseroles (20/24/28 cm), Frying Pan (24 cm), Saucepan (18 cm), Karahi/Wok (28 cm), Baking Tawa (12 inch), Plastic spoon set (6 pcs)",
         features: [
             "Healthy cooking with premium non-stick coating",
-            "Full kitchen solution in a single collection",
+            "Full kitchen solution in a single set",
             "Smart choice for modern kitchens"
         ],
         specifications: [

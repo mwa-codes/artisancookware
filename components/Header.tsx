@@ -9,7 +9,7 @@ import { cn } from "@/lib/utils";
 import { CurrencySelector } from "@/components/CurrencySelector";
 
 const navItems = [
-    { href: "/categories", label: "Collections" },
+    { href: "/categories", label: "Categories" },
     { href: "/products", label: "Products" },
     { href: "/about", label: "About" },
     { href: "/contact", label: "Contact" }

@@ -9,9 +9,9 @@ export function CategoriesHome({ categories }: { categories: Category[] }) {
         return (
             <section className="bg-white py-20">
                 <div className="container-site text-center">
-                    <p className="mb-4 text-sm text-ink-60">No collections yet.</p>
+                    <p className="mb-4 text-sm text-ink-60">No categories yet.</p>
                     <a href="/admin/categories" className="admin-btn-primary inline-flex">
-                        Add Collections in Admin →
+                        Add Categories in Admin →
                     </a>
                 </div>
             </section>
@@ -25,9 +25,9 @@ export function CategoriesHome({ categories }: { categories: Category[] }) {
                     <div>
                         <div className="eyebrow">
                             <span className="eyebrow-line" />
-                            <span className="eyebrow-text">Collections</span>
+                            <span className="eyebrow-text">Categories</span>
                         </div>
-                        <h2 className="font-heading text-section font-light text-ink">Four Signature Collections</h2>
+                        <h2 className="font-heading text-section font-light text-ink">Four Signature Categories</h2>
                     </div>
                     <Link
                         href="/categories"

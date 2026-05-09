@@ -199,7 +199,7 @@ export function InquirySection({ productOptions = [], defaultProductLabel }: Inq
 
                         <div>
                             <label className="text-[11px] font-semibold uppercase tracking-[0.1em] text-ink-60" htmlFor="inq-product">
-                                Product / Collection
+                                Product / Category
                             </label>
                             <select
                                 id="inq-product"

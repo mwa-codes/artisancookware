@@ -15,9 +15,9 @@ export default async function AdminCategoriesPage() {
     return (
         <div className="w-full space-y-6">
             <AdminPageHeader
-                title="Collections"
-                description="Manage product collections — add images, set display order, control homepage visibility."
-                crumbs={[{ label: "Collections" }]}
+                title="Categories"
+                description="Manage product categories — add images, set display order, control homepage visibility."
+                crumbs={[{ label: "Categories" }]}
             />
             <CategoriesClient categories={(data ?? []) as AdminCategory[]} />
         </div>
