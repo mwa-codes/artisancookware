@@ -112,6 +112,7 @@ export async function getCategoryProductCounts(): Promise<Record<string, number>
     if (!isSupabaseConfigured()) {
         const { products } = await import("@/lib/sampleData");
         for (const p of products) {
+            if (p.status === "discontinued") continue;
             counts[p.categoryId] = (counts[p.categoryId] ?? 0) + 1;
         }
         return counts;
@@ -119,25 +120,18 @@ export async function getCategoryProductCounts(): Promise<Record<string, number>
 
     try {
         const client = getSupabaseClient();
-        const { data } = await client.from("products").select("category_id");
-        for (const row of data ?? []) {
-            const id = (row as { category_id: string }).category_id;
-            counts[id] = (counts[id] ?? 0) + 1;
+        const { data, error } = await client.from("products").select("category_id,status");
+        if (error) {
+            logSupabaseReadFailure("getCategoryProductCounts", error);
+            return counts;
         }
-    } catch {
-        /* ignore */
-    }
-
-    /* TEMP DEBUG — remove after diagnosing count vs page mismatch */
-    for (const c of categories) {
-        console.log(
-            "[getCategoryProductCounts] category_id:",
-            c.id,
-            "slug:",
-            c.slug,
-            "count:",
-            counts[c.id] ?? 0
-        );
+        for (const row of data ?? []) {
+            const r = row as { category_id: string; status?: string | null };
+            if (r.status === "discontinued") continue;
+            counts[r.category_id] = (counts[r.category_id] ?? 0) + 1;
+        }
+    } catch (e) {
+        logSupabaseReadFailure("getCategoryProductCounts.catch", e);
     }
 
     return counts;

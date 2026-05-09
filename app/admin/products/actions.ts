@@ -41,9 +41,9 @@ async function revalidateCategoryPagesForIds(
     const ids = [...new Set(categoryIds.filter((id): id is string => Boolean(id)))];
     if (!ids.length) return;
 
-    const { data } = await supabase.from("categories").select("slug").in("id", ids);
-    for (const row of data ?? []) {
-        const slug = typeof (row as { slug?: unknown }).slug === "string" ? (row as { slug: string }).slug.trim() : "";
+    for (const id of ids) {
+        const { data } = await supabase.from("categories").select("slug").eq("id", id).maybeSingle();
+        const slug = typeof data?.slug === "string" ? data.slug.trim() : "";
         if (slug) {
             revalidatePath(`/categories/${slug}`);
         }
@@ -134,6 +134,8 @@ export async function createProductAction(_: ProductActionState, formData: FormD
     }
 
     revalidateProductRoutes();
+    revalidatePath(`/products`);
+    revalidatePath(`/products/${slug}`);
     await revalidateCategoryPagesForIds(supabase, [categoryId]);
     return { success: true };
 }
