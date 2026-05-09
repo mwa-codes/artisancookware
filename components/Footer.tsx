@@ -47,8 +47,8 @@ export function Footer() {
                             <span className="font-heading text-[20px] font-normal text-white">Artisan Cookware</span>
                         </div>
                         <p className="max-w-md text-[15px] leading-relaxed text-[rgba(255,255,255,0.55)]">
-                            Premium aluminium cookware manufactured in Gujranwala since 1998. ISO-certified production for international wholesalers and
-                            hospitality supply chains.
+                            Premium aluminium cookware manufactured in Gujranwala since 1998. Hand-finished, batch-inspected production for international
+                            wholesalers and hospitality supply chains.
                         </p>
                         <div className="space-y-4 text-sm">
                             <p className="flex gap-3">
@@ -105,7 +105,7 @@ export function Footer() {
                             {[
                                 { href: "/about", label: "About Us" },
                                 { href: "/about#manufacturing", label: "Manufacturing" },
-                                { href: "/about#certifications", label: "Certifications" },
+                                { href: "/about#quality", label: "Quality Process" },
                                 { href: "/contact", label: "Contact" }
                             ].map(({ href, label }) => (
                                 <li key={href}>

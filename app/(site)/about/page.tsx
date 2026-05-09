@@ -4,7 +4,7 @@ import { IconImagePlaceholder } from "@/components/MediaPlaceholder";
 const TIMELINE = [
     { year: "1998", title: "Founding", body: "Artisan Cookware begins aluminium forming for local distribution." },
     { year: "2005", title: "Export readiness", body: "Production scales with finishing lines aligned to export packing standards." },
-    { year: "2015", title: "ISO certification", body: "ISO 9001:2015 quality systems formalised across inspection and batch traceability." },
+    { year: "2015", title: "Quality systems", body: "In-house inspection and batch traceability formalised across the production line." },
     { year: "2024", title: "Wholesale focus", body: "Catalogue and packing standards refined for international wholesale buyers." }
 ];
 
@@ -64,7 +64,7 @@ export default function AboutPage() {
                 <h2 className="font-heading text-section font-light text-ink">Manufacturing</h2>
                 <div className="mt-12 grid gap-[2px] md:grid-cols-3">
                     {[
-                        { t: "ISO systems", d: "Documented processes from incoming aluminium to final packing." },
+                        { t: "QC process", d: "Documented in-house checks from incoming aluminium to final packing." },
                         { t: "Capacity", d: "Year-round container-ready production with staged QC gates." },
                         { t: "Inspection", d: "Batch checks before sealing — optional third-party verification." }
                     ].map((x) => (
@@ -76,7 +76,7 @@ export default function AboutPage() {
                 </div>
             </section>
 
-            <section id="certifications" className="border-t border-ink-20 bg-parchment py-20">
+            <section id="quality" className="border-t border-ink-20 bg-parchment py-20">
                 <div className="container-site grid gap-12 lg:grid-cols-2">
                     <div>
                         <h2 className="font-heading text-section font-light text-ink">Values</h2>

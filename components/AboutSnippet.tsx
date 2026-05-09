@@ -2,8 +2,8 @@ import Image from "next/image";
 
 const ITEMS = [
     {
-        title: "ISO 9001:2015 Certified Factory",
-        body: "Full QMS. Every batch inspected pre-shipment. Third-party verification available."
+        title: "Batch-Inspected Production",
+        body: "Documented in-house quality process. Every batch inspected pre-shipment. Third-party verification available on request."
     },
     {
         title: "OEM & Private Label",

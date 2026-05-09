@@ -73,7 +73,7 @@ export default function TermsPage() {
 
                     <h2 className="mb-4 mt-12 font-heading text-2xl font-light text-ink">Quality &amp; Inspection</h2>
                     <ul className="mb-4 list-disc space-y-2 pl-5 text-[15px] font-light text-ink-60">
-                        <li>All products are inspected against ISO 9001:2015 quality system requirements before shipment.</li>
+                        <li>All products are inspected against our documented in-house quality process before shipment.</li>
                         <li>Third-party pre-shipment inspection can be arranged on request at buyer&apos;s cost.</li>
                         <li>Artisan Cookware is not liable for damage caused by misuse or improper storage after delivery.</li>
                     </ul>

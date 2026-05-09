@@ -70,7 +70,7 @@ export function Hero({ products }: HeroProps) {
                             {[
                                 { n: "25+", l: "Years Manufacturing" },
                                 { n: "B2B", l: "Export Focused" },
-                                { n: "ISO", l: "Certified Factory" }
+                                { n: "QC", l: "Batch Inspection" }
                             ].map((s) => (
                                 <div key={s.l}>
                                     <p className="font-heading text-[36px] font-light leading-none text-gold-light">{s.n}</p>

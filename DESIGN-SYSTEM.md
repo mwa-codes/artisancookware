@@ -149,7 +149,7 @@ font-family: 'Inter', 'Source Sans Pro', sans-serif;
 ### Badges
 
 ```tsx
-<span className="badge-red">ISO Certified</span>
+<span className="badge-red">Batch Inspected</span>
 <span className="badge-gold">Export Quality</span>
 <span className="badge-black">Premium</span>
 ```
@@ -289,7 +289,7 @@ xl: 1280px  → Large desktop
 
 ## 🎯 Brand Voice & Tone
 
-- **Professional**: ISO certified, export quality
+- **Professional**: Batch-inspected, export-ready quality
 - **Premium**: Luxury positioning, high-quality materials
 - **Trustworthy**: 25+ years experience, international clients
 - **Pakistani Pride**: Gujranwala craftsmanship

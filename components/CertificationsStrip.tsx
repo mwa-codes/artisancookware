@@ -31,9 +31,9 @@ function Card() {
 }
 
 const ITEMS = [
-    { icon: <Shield />, name: "ISO 9001:2015", desc: "Quality Management System" },
-    { icon: <Globe />, name: "Export Registered", desc: "TDAP & PRGMEA Registered" },
-    { icon: <Star />, name: "Premium Grade", desc: "Food-Safe Materials Certified" },
+    { icon: <Shield />, name: "Batch Inspection", desc: "Documented In-House QC" },
+    { icon: <Globe />, name: "Export Ready", desc: "FOB Karachi & CIF Available" },
+    { icon: <Star />, name: "Premium Grade", desc: "Food-Grade Aluminium" },
     { icon: <Card />, name: "Secure Payments", desc: "L/C, T/T, Western Union" }
 ];
 

@@ -9,7 +9,7 @@ export const metadata: Metadata = {
         template: "%s | Artisan Cookware"
     },
     description:
-        "Premium aluminium cookware manufacturer in Gujranwala, Pakistan. ISO certified. Wholesale & B2B. Export-ready production. MOQ 50 units. FOB Karachi.",
+        "Premium aluminium cookware manufacturer in Gujranwala, Pakistan. Hand-finished, batch-inspected. Wholesale & B2B. Export-ready production. MOQ 50 units.",
     keywords: [
         "aluminium cookware",
         "cookware manufacturer Pakistan",
@@ -37,7 +37,7 @@ export const metadata: Metadata = {
     twitter: {
         card: "summary_large_image",
         title: "Artisan Cookware | Premium Aluminium Cookware — Pakistan",
-        description: "Wholesale aluminium cookware from Gujranwala — ISO certified, export-ready.",
+        description: "Wholesale aluminium cookware from Gujranwala — hand-inspected, export-ready.",
         images: ["/og-image.jpg"]
     }
 };
