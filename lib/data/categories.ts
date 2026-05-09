@@ -17,7 +17,11 @@ export const getCategories = cache(async (): Promise<Category[]> => {
 
     try {
         const client = getSupabaseClient();
-        const { data, error } = await client.from("categories").select(CATEGORY_COLUMNS).order("name");
+        const { data, error } = await client
+            .from("categories")
+            .select(CATEGORY_COLUMNS)
+            .order("display_order", { ascending: true })
+            .order("name", { ascending: true });
 
         if (error) {
             logSupabaseReadFailure("categories", error);
