@@ -34,6 +34,22 @@ function revalidateProductRoutes() {
     revalidatePath("/products");
 }
 
+async function revalidateCategoryPagesForIds(
+    supabase: ReturnType<typeof getSupabaseServiceClient>,
+    categoryIds: (string | undefined | null)[]
+) {
+    const ids = [...new Set(categoryIds.filter((id): id is string => Boolean(id)))];
+    if (!ids.length) return;
+
+    const { data } = await supabase.from("categories").select("slug").in("id", ids);
+    for (const row of data ?? []) {
+        const slug = typeof (row as { slug?: unknown }).slug === "string" ? (row as { slug: string }).slug.trim() : "";
+        if (slug) {
+            revalidatePath(`/categories/${slug}`);
+        }
+    }
+}
+
 function serialiseFeatures(value: FormDataEntryValue | null) {
     if (!value) return null;
     const raw = String(value).trim();
@@ -118,6 +134,7 @@ export async function createProductAction(_: ProductActionState, formData: FormD
     }
 
     revalidateProductRoutes();
+    await revalidateCategoryPagesForIds(supabase, [categoryId]);
     return { success: true };
 }
 
@@ -155,6 +172,8 @@ export async function updateProductAction(_: ProductActionState, formData: FormD
     }
 
     const supabase = getSupabaseServiceClient();
+
+    const { data: existingProduct } = await supabase.from("products").select("category_id").eq("id", id).maybeSingle();
 
     let imageUrl: string | undefined;
     if (imageFile && imageFile.size > 0) {
@@ -211,6 +230,8 @@ export async function updateProductAction(_: ProductActionState, formData: FormD
         revalidatePath(`/products/${updated.slug}`);
     }
 
+    await revalidateCategoryPagesForIds(supabase, [existingProduct?.category_id, categoryId]);
+
     return { success: true };
 }
 
@@ -227,6 +248,9 @@ export async function deleteProductAction(_: ProductActionState, formData: FormD
     }
 
     const supabase = getSupabaseServiceClient();
+
+    const { data: existingProduct } = await supabase.from("products").select("category_id").eq("id", id).maybeSingle();
+
     const { error } = await supabase.from("products").delete().eq("id", id);
 
     if (error) {
@@ -236,5 +260,6 @@ export async function deleteProductAction(_: ProductActionState, formData: FormD
 
     revalidateProductRoutes();
     revalidatePath(`/products`);
+    await revalidateCategoryPagesForIds(supabase, [existingProduct?.category_id]);
     return { success: true };
 }

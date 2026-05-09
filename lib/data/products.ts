@@ -47,6 +47,11 @@ function isHomepageFeaturedProduct(row: SupabaseProductRow): boolean {
     return row.status !== "discontinued";
 }
 
+/** Category `/categories/[slug]` grid: same rule as homepage — hide only discontinued so drafts stay visible until published. */
+function isVisibleOnCategoryPage(row: SupabaseProductRow): boolean {
+    return row.status !== "discontinued";
+}
+
 export const getFeaturedProducts = cache(async (limit: number = 3): Promise<ProductWithRelations[]> => {
     const take = Number.isFinite(limit) && limit > 0 ? Math.floor(limit) : 3;
     const allCategories = await getCategories();
@@ -117,7 +122,7 @@ export const getProductsByCategorySlug = cache(async (slug: string): Promise<Pro
             return [];
         }
 
-        const rows = (data as SupabaseProductRow[]).filter(isActiveRow);
+        const rows = (data as SupabaseProductRow[]).filter(isVisibleOnCategoryPage);
         const variantMap = await fetchVariantsForProductIds(rows.map((p) => p.id));
 
         return rows.map((row) => {
