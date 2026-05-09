@@ -99,13 +99,7 @@ export const getFeaturedProducts = cache(async (limit: number = 3): Promise<Prod
 });
 
 export const getProductsByCategorySlug = cache(async (slug: string): Promise<ProductWithRelations[]> => {
-    /* TEMP DEBUG — remove after diagnosing count vs page mismatch */
-    console.log("slug param:", slug);
-
     const categoryData = await getCategoryBySlug(slug);
-    console.log("category row found:", categoryData);
-    console.log("querying products with category_id:", categoryData?.id);
-
     if (!categoryData) return [];
 
     if (!isSupabaseConfigured()) {
@@ -124,20 +118,12 @@ export const getProductsByCategorySlug = cache(async (slug: string): Promise<Pro
             .order("is_featured", { ascending: false })
             .order("name");
 
-        console.log("products returned:", productsData?.length, productsData);
-
         if (error || !productsData?.length) {
             if (error) logSupabaseReadFailure("productsByCategory", error);
             return [];
         }
 
         const rows = (productsData as SupabaseProductRow[]).filter(isVisibleOnCategoryPage);
-        console.log(
-            "[getProductsByCategorySlug] rows after isVisibleOnCategoryPage filter:",
-            rows.length,
-            rows.map((r) => ({ id: r.id, status: r.status }))
-        );
-
         const variantMap = await fetchVariantsForProductIds(rows.map((p) => p.id));
 
         return rows.map((row) => {
