@@ -114,9 +114,7 @@ export const getProductsByCategorySlug = cache(async (slug: string): Promise<Pro
 
         if (error || !data?.length) {
             if (error) logSupabaseReadFailure("productsByCategory", error);
-            return sampleProducts
-                .filter((product) => product.categoryId === category.id)
-                .map((product) => attachVariants({ ...product, category }, sampleVariants));
+            return [];
         }
 
         const rows = (data as SupabaseProductRow[]).filter(isActiveRow);
@@ -129,9 +127,7 @@ export const getProductsByCategorySlug = cache(async (slug: string): Promise<Pro
         });
     } catch (error) {
         logSupabaseReadFailure("productsByCategory.catch", error);
-        return sampleProducts
-            .filter((product) => product.categoryId === category.id)
-            .map((product) => attachVariants({ ...product, category }, sampleVariants));
+        return [];
     }
 });
 
@@ -203,10 +199,6 @@ export const getProductBySlug = cache(async (slug: string): Promise<ProductWithR
             return getProductById((data as SupabaseProductRow).id);
         }
 
-        const all = sampleProducts;
-        const match = all.find((p) => p.slug === slug);
-        if (match) return getProductById(match.id);
-
         return null;
     } catch {
         return null;
@@ -235,10 +227,7 @@ export async function getAllProductsForListing(): Promise<ProductWithRelations[]
         const { data, error } = await client.from("products").select("*").order("name");
 
         if (error || !data?.length) {
-            return sampleProducts.map((product) => {
-                const category = allCategories.find((c) => c.id === product.categoryId);
-                return attachVariants({ ...product, category }, sampleVariants);
-            });
+            return [];
         }
 
         const rows = (data as SupabaseProductRow[]).filter(isActiveRow);
@@ -252,10 +241,7 @@ export async function getAllProductsForListing(): Promise<ProductWithRelations[]
         });
     } catch (e) {
         logSupabaseReadFailure("allProductsListing", e);
-        return sampleProducts.map((product) => {
-            const category = allCategories.find((c) => c.id === product.categoryId);
-            return attachVariants({ ...product, category }, sampleVariants);
-        });
+        return [];
     }
 }
 
@@ -269,13 +255,13 @@ export async function getAllProductSlugs(): Promise<{ slug: string }[]> {
         const { data, error } = await client.from("products").select("slug,status");
 
         if (error || !data?.length) {
-            return sampleProducts.filter((p) => p.status === "active").map((p) => ({ slug: p.slug }));
+            return [];
         }
 
         return (data as { slug: string; status?: string }[])
             .filter((r) => Boolean(r.slug) && (!r.status || r.status === "active"))
             .map((r) => ({ slug: r.slug }));
     } catch {
-        return sampleProducts.map((p) => ({ slug: p.slug }));
+        return [];
     }
 }

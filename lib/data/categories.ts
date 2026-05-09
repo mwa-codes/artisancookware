@@ -17,15 +17,14 @@ export const getCategories = cache(async (): Promise<Category[]> => {
 
         if (error) {
             logSupabaseReadFailure("categories", error);
-            return sampleCategories;
+            return [];
         }
 
-        return (
-            data?.map((row: SupabaseCategoryRow) => mapCategoryRow(row)) ?? sampleCategories
-        );
+        const rows = data ?? [];
+        return rows.map((row: SupabaseCategoryRow) => mapCategoryRow(row));
     } catch (error) {
         logSupabaseReadFailure("categories.catch", error);
-        return sampleCategories;
+        return [];
     }
 });
 
