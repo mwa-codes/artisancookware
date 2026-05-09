@@ -110,6 +110,7 @@ export const getProductsByCategorySlug = cache(async (slug: string): Promise<Pro
 
     try {
         const client = getSupabaseClient();
+        // Filter on products.category_id (uuid FK to categories.id) — must match DB column name.
         const { data, error } = await client
             .from("products")
             .select("*")

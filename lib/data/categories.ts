@@ -7,8 +7,20 @@ import type { Category } from "@/lib/types";
 import { mapCategoryRow, type SupabaseCategoryRow } from "@/lib/data/mappers";
 
 /** Explicit columns so `description` is never omitted by a narrowed query. */
-const CATEGORY_COLUMNS =
+export const CATEGORY_COLUMNS =
     "id, name, slug, description, image_url, display_order, is_featured" as const;
+
+/** Hyphen-insensitive match so `/categories/nonstick` resolves when DB slug is `non-stick`. */
+function compactSlugKey(s: string) {
+    return s.toLowerCase().replace(/-/g, "");
+}
+
+function findCategoryBySlugLoose(list: Category[], slug: string): Category | undefined {
+    const exact = list.find((c) => c.slug === slug || slugify(c.name) === slug);
+    if (exact) return exact;
+    const key = compactSlugKey(slug);
+    return list.find((c) => compactSlugKey(c.slug) === key);
+}
 
 export const getCategories = cache(async (): Promise<Category[]> => {
     if (!isSupabaseConfigured()) {
@@ -40,11 +52,12 @@ export const getCategoryBySlug = cache(async (slug: string) => {
     if (!slug) return null;
 
     if (!isSupabaseConfigured()) {
-        return sampleCategories.find((c) => c.slug === slug || slugify(c.name) === slug) ?? null;
+        return findCategoryBySlugLoose(sampleCategories, slug) ?? null;
     }
 
     try {
         const client = getSupabaseClient();
+        // maybeSingle() — never use .single() here (0 or 2+ rows would throw and skip fallbacks).
         const { data, error } = await client
             .from("categories")
             .select(CATEGORY_COLUMNS)
@@ -56,11 +69,11 @@ export const getCategoryBySlug = cache(async (slug: string) => {
         }
 
         const all = await getCategories();
-        return all.find((c) => c.slug === slug || slugify(c.name) === slug) ?? null;
+        return findCategoryBySlugLoose(all, slug) ?? null;
     } catch (e) {
         logSupabaseReadFailure("getCategoryBySlug", e);
         const all = await getCategories();
-        return all.find((c) => c.slug === slug || slugify(c.name) === slug) ?? null;
+        return findCategoryBySlugLoose(all, slug) ?? null;
     }
 });
 
