@@ -99,37 +99,51 @@ export const getFeaturedProducts = cache(async (limit: number = 3): Promise<Prod
 });
 
 export const getProductsByCategorySlug = cache(async (slug: string): Promise<ProductWithRelations[]> => {
-    const category = await getCategoryBySlug(slug);
-    if (!category) return [];
+    /* TEMP DEBUG — remove after diagnosing count vs page mismatch */
+    console.log("slug param:", slug);
+
+    const categoryData = await getCategoryBySlug(slug);
+    console.log("category row found:", categoryData);
+    console.log("querying products with category_id:", categoryData?.id);
+
+    if (!categoryData) return [];
 
     if (!isSupabaseConfigured()) {
         return sampleProducts
-            .filter((product) => product.categoryId === category.id)
-            .map((product) => attachVariants({ ...product, category }, sampleVariants));
+            .filter((product) => product.categoryId === categoryData.id)
+            .map((product) => attachVariants({ ...product, category: categoryData }, sampleVariants));
     }
 
     try {
         const client = getSupabaseClient();
         // Filter on products.category_id (uuid FK to categories.id) — must match DB column name.
-        const { data, error } = await client
+        const { data: productsData, error } = await client
             .from("products")
             .select("*")
-            .eq("category_id", category.id)
+            .eq("category_id", categoryData.id)
             .order("is_featured", { ascending: false })
             .order("name");
 
-        if (error || !data?.length) {
+        console.log("products returned:", productsData?.length, productsData);
+
+        if (error || !productsData?.length) {
             if (error) logSupabaseReadFailure("productsByCategory", error);
             return [];
         }
 
-        const rows = (data as SupabaseProductRow[]).filter(isVisibleOnCategoryPage);
+        const rows = (productsData as SupabaseProductRow[]).filter(isVisibleOnCategoryPage);
+        console.log(
+            "[getProductsByCategorySlug] rows after isVisibleOnCategoryPage filter:",
+            rows.length,
+            rows.map((r) => ({ id: r.id, status: r.status }))
+        );
+
         const variantMap = await fetchVariantsForProductIds(rows.map((p) => p.id));
 
         return rows.map((row) => {
             const base = mapProductRow(row);
             const variants = (variantMap.get(row.id) ?? []).map(mapVariantRow);
-            return attachVariants({ ...base, category }, variants);
+            return attachVariants({ ...base, category: categoryData }, variants);
         });
     } catch (error) {
         logSupabaseReadFailure("productsByCategory.catch", error);

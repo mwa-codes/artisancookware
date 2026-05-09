@@ -128,5 +128,17 @@ export async function getCategoryProductCounts(): Promise<Record<string, number>
         /* ignore */
     }
 
+    /* TEMP DEBUG — remove after diagnosing count vs page mismatch */
+    for (const c of categories) {
+        console.log(
+            "[getCategoryProductCounts] category_id:",
+            c.id,
+            "slug:",
+            c.slug,
+            "count:",
+            counts[c.id] ?? 0
+        );
+    }
+
     return counts;
 }
