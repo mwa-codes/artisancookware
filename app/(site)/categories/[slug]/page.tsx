@@ -42,7 +42,6 @@ export default async function CategoryDetailPage({ params }: CategoryPageProps) 
     }
 
     const products = await getProductsByCategorySlug(slug);
-    const intro = category.description?.trim();
 
     return (
         <div>
@@ -50,9 +49,9 @@ export default async function CategoryDetailPage({ params }: CategoryPageProps) 
                 <div className="container-site py-14 sm:py-16">
                     <p className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">Category</p>
                     <h1 className="font-heading text-display font-light text-ink">{category.name}</h1>
-                    {intro ? (
-                        <p className="mt-6 max-w-3xl whitespace-pre-line text-[15px] font-light leading-relaxed text-[color:rgba(13,13,13,0.6)]">
-                            {intro}
+                    {category.description?.trim() ? (
+                        <p className="mt-6 text-sm text-muted-foreground max-w-2xl whitespace-pre-line leading-relaxed">
+                            {category.description.trim()}
                         </p>
                     ) : null}
                 </div>

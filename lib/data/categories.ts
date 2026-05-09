@@ -6,6 +6,10 @@ import { logSupabaseReadFailure } from "@/lib/supabaseDevLog";
 import type { Category } from "@/lib/types";
 import { mapCategoryRow, type SupabaseCategoryRow } from "@/lib/data/mappers";
 
+/** Explicit columns so `description` is never omitted by a narrowed query. */
+const CATEGORY_COLUMNS =
+    "id, name, slug, description, image_url, display_order, is_featured" as const;
+
 export const getCategories = cache(async (): Promise<Category[]> => {
     if (!isSupabaseConfigured()) {
         return sampleCategories;
@@ -13,7 +17,7 @@ export const getCategories = cache(async (): Promise<Category[]> => {
 
     try {
         const client = getSupabaseClient();
-        const { data, error } = await client.from("categories").select("*").order("name");
+        const { data, error } = await client.from("categories").select(CATEGORY_COLUMNS).order("name");
 
         if (error) {
             logSupabaseReadFailure("categories", error);
@@ -37,7 +41,11 @@ export const getCategoryBySlug = cache(async (slug: string) => {
 
     try {
         const client = getSupabaseClient();
-        const { data, error } = await client.from("categories").select("*").eq("slug", slug).maybeSingle();
+        const { data, error } = await client
+            .from("categories")
+            .select(CATEGORY_COLUMNS)
+            .eq("slug", slug)
+            .maybeSingle();
 
         if (!error && data) {
             return mapCategoryRow(data as SupabaseCategoryRow);
@@ -61,7 +69,7 @@ export const getFeaturedCategories = cache(async (limit = 4) => {
         const client = getSupabaseClient();
         const { data, error } = await client
             .from("categories")
-            .select("*")
+            .select(CATEGORY_COLUMNS)
             .eq("is_featured", true)
             .order("display_order", { ascending: true })
             .order("name", { ascending: true })

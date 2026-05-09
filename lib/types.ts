@@ -2,6 +2,7 @@ export type Category = {
     id: string;
     name: string;
     slug: string;
+    /** Mirrors Supabase `categories.description`; surfaced on `/categories/[slug]`. */
     description: string | null;
     imageUrl: string | null;
     displayOrder: number;

@@ -9,6 +9,8 @@ const config: Config = {
     theme: {
         extend: {
             colors: {
+                /** Semantic muted body text (e.g. category descriptions). */
+                "muted-foreground": "rgba(13,13,13,0.6)",
                 ink: {
                     DEFAULT: "#0D0D0D",
                     60: "rgba(13,13,13,0.6)",
