@@ -4,6 +4,11 @@ import { CurrencyProvider } from "@/context/CurrencyContext";
 
 export const metadata: Metadata = {
     metadataBase: new URL("https://www.artisancookware.co"),
+    icons: {
+        icon: "/favicon.ico",
+        shortcut: "/favicon.ico",
+        apple: "/Artisan-logo.jpg",
+    },
     title: {
         default: "Artisan Cookware | Premium Aluminium Cookware — Pakistan",
         template: "%s | Artisan Cookware"
