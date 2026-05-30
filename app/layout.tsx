@@ -116,6 +116,12 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
 
     return (
         <html lang="en-GB">
+            <head>
+                <Script
+                    src="https://d2mvefebd70kbz.cloudfront.net/scripts/019e7aba-2291-7e69-b7d9-682f2b95d74e.js"
+                    strategy="beforeInteractive"
+                />
+            </head>
             <body className="min-h-screen bg-[#FEFEFE] font-body text-ink antialiased">
                 <Script
                     src="https://www.googletagmanager.com/gtag/js?id=G-WZZRY6LRCP"
