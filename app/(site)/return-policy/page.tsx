@@ -25,37 +25,33 @@ export default function ReturnPolicyPage() {
             <section className="bg-white">
                 <div className="container-site max-w-3xl py-20">
                     <p className="mb-4 text-[15px] font-light leading-relaxed text-ink-60">
-                        Artisan Cookware is a wholesale manufacturer and does not operate a standard consumer checkout on this website. Returns are
-                        handled on a case-by-case basis for verified manufacturing issues, shipment damage, or order discrepancies.
+                        This return policy applies to Artisan Cookware purchases and matches the return settings we use for Google Merchant Center.
+                        Returns are accepted for both defective and non-defective products, and exchanges are accepted within the policy window below.
                     </p>
 
-                    <h2 className="mb-4 mt-12 font-heading text-2xl font-light text-ink">Eligibility</h2>
+                    <h2 className="mb-4 mt-12 font-heading text-2xl font-light text-ink">Return Window</h2>
                     <ul className="mb-4 list-disc space-y-2 pl-5 text-[15px] font-light text-ink-60">
-                        <li>Claims must be reported within 14 days of receiving the shipment.</li>
-                        <li>Requests must include clear photos, order details, and a short description of the issue.</li>
-                        <li>Items must remain unused and in their original condition unless the issue was discovered after opening.</li>
-                        <li>Custom OEM or private-label orders may have separate return terms agreed in writing.</li>
+                        <li>Returns are accepted within 100 days of delivery.</li>
+                        <li>Product condition must be new only.</li>
+                        <li>Returns and exchanges must be requested within the 100-day window.</li>
                     </ul>
 
-                    <h2 className="mb-4 mt-12 font-heading text-2xl font-light text-ink">Non-Returnable Cases</h2>
+                    <h2 className="mb-4 mt-12 font-heading text-2xl font-light text-ink">Accepted Returns</h2>
                     <ul className="mb-4 list-disc space-y-2 pl-5 text-[15px] font-light text-ink-60">
-                        <li>Normal wear, misuse, improper storage, or damage after delivery.</li>
-                        <li>Minor cosmetic variation that does not affect product function.</li>
-                        <li>Orders approved with custom branding, artwork, or specifications unless otherwise agreed.</li>
-                        <li>Claims submitted after the 14-day reporting period.</li>
+                        <li>Defective products.</li>
+                        <li>Non-defective products.</li>
+                        <li>Exchanges for eligible items.</li>
                     </ul>
 
-                    <h2 className="mb-4 mt-12 font-heading text-2xl font-light text-ink">Resolution Options</h2>
+                    <h2 className="mb-4 mt-12 font-heading text-2xl font-light text-ink">Method &amp; Fees</h2>
                     <ul className="mb-4 list-disc space-y-2 pl-5 text-[15px] font-light text-ink-60">
-                        <li>Replacement of affected goods.</li>
-                        <li>Credit note toward a future wholesale order.</li>
-                        <li>Partial or full refund only when agreed in writing after inspection.</li>
+                        <li>Return method: in store at our Gujranwala location, arranged after you contact us.</li>
+                        <li>Restocking fee: no cost.</li>
                     </ul>
 
-                    <h2 className="mb-4 mt-12 font-heading text-2xl font-light text-ink">Shipping Costs</h2>
+                    <h2 className="mb-4 mt-12 font-heading text-2xl font-light text-ink">Refund Processing</h2>
                     <p className="mb-4 text-[15px] font-light leading-relaxed text-ink-60">
-                        If a return or replacement is approved, the method of return shipping and cost responsibility will be confirmed in writing based on
-                        the cause of the issue and the destination country.
+                        Once a return is received and approved, refunds are processed within 30 days.
                     </p>
 
                     <h2 className="mb-4 mt-12 font-heading text-2xl font-light text-ink">How to Request a Return</h2>
@@ -64,11 +60,11 @@ export default function ReturnPolicyPage() {
                         <a href="mailto:info@artisancookware.co" className="underline underline-offset-2">
                             info@artisancookware.co
                         </a>
-                        {" "}with your order details and supporting photos. You can also contact us by WhatsApp at{" "}
+                        {" "}or WhatsApp us at{" "}
                         <a href="https://wa.me/923016636557" className="underline underline-offset-2">
                             +92 301 6636557
                         </a>
-                        . We will review the request and respond with next steps.
+                        {" "}with your order details so we can arrange the return or exchange.
                     </p>
 
                     <h2 className="mb-4 mt-12 font-heading text-2xl font-light text-ink">Contact</h2>
