@@ -1,3 +1,4 @@
+import type { Metadata } from "next";
 import { Hero } from "@/components/Hero";
 import { TrustBar } from "@/components/TrustBar";
 import { FeaturedProducts } from "@/components/FeaturedProducts";
@@ -7,6 +8,33 @@ import { AboutSnippet } from "@/components/AboutSnippet";
 import { CertificationsStrip } from "@/components/CertificationsStrip";
 import { InquirySection } from "@/components/InquirySection";
 import { getCategoryProductCounts, getFeaturedCategories, getFeaturedProducts } from "@/lib/repository";
+
+export const metadata: Metadata = {
+    title: "Aluminium Cookware Manufacturer for Wholesale Buyers",
+    description:
+        "Wholesale aluminium cookware manufacturer in Pakistan for aluminium cookware, metal finish gift sets, anodized and dull cooking sets, non-stick cookware, and non-stick gift sets.",
+    keywords: [
+        "aluminium cookware",
+        "aluminium cookware manufacturer",
+        "metal finish gift set",
+        "metal finish cookware",
+        "anodized cookware",
+        "anodised cookware",
+        "dull cooking set",
+        "nonstick cookware",
+        "non stick cookware",
+        "nonstick gift set",
+    ],
+    openGraph: {
+        title: "Aluminium Cookware Manufacturer for Wholesale Buyers | Artisan Cookware",
+        description:
+            "Premium aluminium cookware, metal finish gift sets, anodized and dull cooking sets, non-stick cookware, and non-stick gift sets.",
+        url: "https://www.artisancookware.co",
+    },
+    alternates: {
+        canonical: "https://www.artisancookware.co",
+    },
+};
 
 export default async function HomePage() {
     const [categories, allProducts, productCounts] = await Promise.all([

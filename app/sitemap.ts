@@ -29,6 +29,30 @@ export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
             priority: 0.9,
         },
         {
+            url: `${BASE}/aluminium-cookware`,
+            lastModified: new Date(),
+            changeFrequency: "monthly",
+            priority: 0.8,
+        },
+        {
+            url: `${BASE}/metal-finish-gift-sets`,
+            lastModified: new Date(),
+            changeFrequency: "monthly",
+            priority: 0.75,
+        },
+        {
+            url: `${BASE}/non-stick-gift-sets`,
+            lastModified: new Date(),
+            changeFrequency: "monthly",
+            priority: 0.75,
+        },
+        {
+            url: `${BASE}/anodized-dull-cookware`,
+            lastModified: new Date(),
+            changeFrequency: "monthly",
+            priority: 0.75,
+        },
+        {
             url: `${BASE}/about`,
             lastModified: new Date(),
             changeFrequency: "monthly",

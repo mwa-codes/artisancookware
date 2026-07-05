@@ -84,10 +84,14 @@ export function Footer() {
                         <h3 className="text-[11px] font-semibold uppercase tracking-[0.14em] text-gold">Products</h3>
                         <ul className="space-y-3 text-sm">
                             {[
-                                { href: "/categories/non-stick", label: "Non-Stick" },
-                                { href: "/categories/anodised-dull", label: "Hard Anodised" },
-                                { href: "/categories/metal-finish", label: "Metal Finish" },
-                                { href: "/categories/soda-finish", label: "Soda Finish" },
+                                { href: "/aluminium-cookware", label: "Aluminium Cookware Guide" },
+                                { href: "/metal-finish-gift-sets", label: "Metal Finish Gift Sets" },
+                                { href: "/non-stick-gift-sets", label: "Non-Stick Gift Sets" },
+                                { href: "/anodized-dull-cookware", label: "Anodized / Dull Cookware" },
+                                { href: "/categories/non-stick", label: "Non-Stick Category" },
+                                { href: "/categories/anodised-dull", label: "Hard Anodised Category" },
+                                { href: "/categories/metal-finish", label: "Metal Finish Category" },
+                                { href: "/categories/soda-finish", label: "Soda Finish Category" },
                                 { href: "/products", label: "Full Catalogue" }
                             ].map(({ href, label }) => (
                                 <li key={href}>
