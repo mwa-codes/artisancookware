@@ -11,11 +11,11 @@ export const metadata: Metadata = {
         apple: "/Artisan-logo.jpg",
     },
     title: {
-        default: "Artisan Cookware | Premium Aluminium Cookware — Pakistan",
+        default: "Artisan Cookware — Aluminium Cookware Manufacturer & Exporter, Pakistan",
         template: "%s | Artisan Cookware"
     },
     description:
-        "Premium aluminium cookware manufacturer in Gujranwala, Pakistan. Hand-finished, batch-inspected. Wholesale & B2B. Export-ready production. MOQ 50 units.",
+        "Aluminium cookware manufacturer & exporter in Gujranwala, Pakistan. Wholesale non-stick, hard-anodised, metal finish & soda finish cookware. OEM / private label, MOQ 50 units, FOB Karachi. Export-ready.",
     keywords: [
         "aluminium cookware",
         "aluminium cookware manufacturer Pakistan",
@@ -104,6 +104,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 telephone: "+92-301-6636557",
                 contactType: "sales",
                 availableLanguage: ["English", "Urdu"],
+                areaServed: ["US", "GB", "AU", "CA", "AE", "PK"],
             },
             {
                 "@type": "ContactPoint",
@@ -111,7 +112,19 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
                 contactType: "customer support",
             },
         ],
-        sameAs: ["https://wa.me/923016636557"],
+        knowsAbout: [
+            "aluminium cookware manufacturing",
+            "non-stick cookware",
+            "hard anodised cookware",
+            "metal finish cookware gift sets",
+            "soda finish cookware",
+            "OEM / private label cookware",
+            "cookware export from Pakistan",
+        ],
+        sameAs: [
+            "https://wa.me/923016636557",
+            "https://share.google/M9iabBk3snLTJa7Lk",
+        ],
     };
 
     return (

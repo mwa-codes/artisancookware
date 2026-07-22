@@ -3,9 +3,9 @@ import { CategoryCard } from "@/components/CategoryCard";
 import { getCategories, getCategoryProductCounts } from "@/lib/repository";
 
 export const metadata: Metadata = {
-    title: "Aluminium Cookware Categories: Non-Stick, Metal Finish & Anodised",
+    title: "Cookware Categories — Non-Stick, Anodised, Metal & Soda Finish",
     description:
-        "Browse aluminium cookware categories for non-stick cookware, hard anodised and dull cooking sets, metal finish gift sets, and soda finish ranges direct from our Gujranwala factory.",
+        "Wholesale aluminium cookware categories from a Pakistan manufacturer & exporter: non-stick, hard-anodised / dull, metal finish gift sets, and soda finish ranges. OEM / private label, MOQ 50 units, FOB Karachi.",
     openGraph: {
         title: "Aluminium Cookware Categories: Non-Stick, Metal Finish & Anodised | Artisan Cookware",
         description:

@@ -10,9 +10,9 @@ import { InquirySection } from "@/components/InquirySection";
 import { getCategoryProductCounts, getFeaturedCategories, getFeaturedProducts } from "@/lib/repository";
 
 export const metadata: Metadata = {
-    title: "Aluminium Cookware Manufacturer for Wholesale Buyers",
+    title: "Aluminium Cookware Manufacturer & Wholesale Exporter — Pakistan",
     description:
-        "Wholesale aluminium cookware manufacturer in Pakistan for aluminium cookware, metal finish gift sets, anodized and dull cooking sets, non-stick cookware, and non-stick gift sets.",
+        "Aluminium cookware manufacturer & wholesale exporter in Gujranwala, Pakistan. Non-stick, hard-anodised, metal finish & soda finish cookware sets. OEM / private label, MOQ 50 units, FOB Karachi.",
     keywords: [
         "aluminium cookware",
         "aluminium cookware manufacturer",

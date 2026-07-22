@@ -3,9 +3,9 @@ import { getAllProductsForListing, getCategories } from "@/lib/repository";
 import { ProductsListing } from "@/components/ProductsListing";
 
 export const metadata: Metadata = {
-    title: "Products — Aluminium Cookware Sets Wholesale",
+    title: "Wholesale Aluminium Cookware Catalogue — Factory-Direct Sets",
     description:
-        "Browse our full range of aluminium cookware sets for wholesale buyers. Non-stick, anodised, metal finish, and Soda Finish categories. MOQ 50 units. Factory-direct pricing.",
+        "Browse the full wholesale catalogue of aluminium cookware sets from a Pakistan manufacturer & exporter. Non-stick, hard-anodised, metal finish & soda finish. OEM / private label, MOQ 50 units, FOB Karachi.",
     openGraph: {
         title: "Products — Aluminium Cookware Sets Wholesale | Artisan Cookware",
         description:
