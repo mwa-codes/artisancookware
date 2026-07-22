@@ -36,6 +36,17 @@ const nextConfig = {
         serverActions: {
             bodySizeLimit: '2mb'
         }
+    },
+    /**
+     * 301/308s for common URL patterns Google/backlinks probe that don't match our
+     * routes. Captures link equity instead of returning 404 (GSC found /about-us/ → /about).
+     * Next strips a trailing slash first, so `/about-us/` lands here via `/about-us`.
+     */
+    async redirects() {
+        return [
+            { source: '/about-us', destination: '/about', permanent: true },
+            { source: '/contact-us', destination: '/contact', permanent: true }
+        ];
     }
 };
 
